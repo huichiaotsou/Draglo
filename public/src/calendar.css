@@ -1,0 +1,68 @@
+body {
+    padding: 0;
+    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+    font-size: 14px;
+  }
+
+  .flex-col {
+    display: flex;
+    flex-direction: column;
+  }
+
+  #calendar-container {
+    padding: 10px;
+    margin-top: 3%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  
+  #calendar {
+    width: 61%;
+    margin: auto 0;
+    
+  }
+
+  #external-events {
+    display: flex;
+    flex-direction: column;
+    margin-left: auto;
+    z-index: 2;
+  }
+  
+  #external-events .fc-event {
+    cursor: move;
+    width: 100%;
+    margin: 3px 0;
+    height: 50px;
+  }
+  
+  #scroll-container {
+    display: block;
+    width: 100%;
+    height: 32vh;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    margin-top: 60px;
+    margin-bottom: 40px;
+    padding: 7px 5px;
+    overflow-x: hidden;
+    background-color: blanchedalmond;
+    border: 1px solid blanchedalmond;
+    border-radius: 10px;
+  }
+  
+  #google_maps {
+    width: 100%;
+    height: 50vh;
+    border: 1px solid black;
+    border-radius: 5px;
+  }
+
+  .right_side {
+    width: 36%;
+    margin-left: auto;
+    margin-right: 1%;
+  }
