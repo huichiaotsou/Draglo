@@ -3,6 +3,17 @@ import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import './calendar.css';
 
+//get calendar setting from URL
+const urlParams = new URLSearchParams(window.location.search);
+const range = { 
+  start: new Date(urlParams.get('start')),
+  end: new Date(urlParams.get('end'))
+};
+
+const duration = 1 + (range.end.getTime() - range.start.getTime()) / (1000 * 3600 * 24);
+const daystart = urlParams.get('daystart');
+const dayend = urlParams.get('datend');
+
 document.addEventListener('DOMContentLoaded', function() {
 
 // initialize events
@@ -14,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
       return {
         title: eventEl.innerText,
         duration: '03:00'
-      }; //create event blocks with duration 2 hours
+      }; //create event blocks with duration 3 hours
     }
   });
 
@@ -24,11 +35,13 @@ document.addEventListener('DOMContentLoaded', function() {
   const calendar = new Calendar(calendarEl, {
     plugins: [timeGridPlugin, interactionPlugin],
     initialView: 'tripView',
-    initialDate: '2021-05-08',
+    validRange: range,  
     nowIndicator: true,
     editable: true,
     eventResizableFromStart: true,
     droppable: true,
+    slotMinTime: daystart || "00:00:00",
+    slotMaxTime: dayend || "24:00:00",
     drop: function(info) {
         info.draggedEl.parentNode.removeChild(info.draggedEl);
       
@@ -46,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
     views: {
         tripView: {
         type: 'timeGrid',
-        duration: { days: 10 },
+        duration: { days: duration },
         buttonText: 'Show Full Trip',
         allDaySlot: false,
         slotEventOverlap: true
@@ -60,6 +73,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });  
 
-  calendar.setOption('height', '100%');
+  // calendar.setOption('height', '90vh');
   calendar.render();
 });
+
+
+// function openPeriodSetting() {
+//   let form = document.querySelector('#setPeriod');
+//   form.style.display = block;
+// }

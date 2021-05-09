@@ -8,50 +8,136 @@
   </head>
   <body>
 
-    <!-- [START] CALENDAR CONTAINER -->
-    <div id='calendar-container'>
-      <div id='calendar'></div>
-    </div>
-    <!-- [END] CALENDAR CONTAINER -->
-
-    <div class='right_side' class='flex-col'>
-      <div id="scroll-container">
-        <!-- [START] EXTERNAL EVENT BLOCK -->
-        <div id='external-events'>
-          <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-            <div class='fc-event-main'>My Event 1</div>
+    <header>
+      <div id='nav' class="flex-row">
+        <div id='nav-left' class="flex-col">
+          <div class="flex-row">
+            <a class="btn" onclick="openPeriodSetting()">設定旅行區間</a>
+              <div class="flex-col" id="setPeriod">
+                <input type="text" placeholder="開始日期">
+                <input type="text" placeholder="結束日期">
+                <div class="flex-row buttons">
+                  <button onclick="setPeriod()">送出</button>
+                  <button onclick="setPeriod()">取消</button>
+                </div>
+              </div>
+            <a href="#" class="btn">設定活動時間</a>
           </div>
-          <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-            <div class='fc-event-main'>My Event 2</div>
-          </div>
-          <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-            <div class='fc-event-main'>My Event 3</div>
-          </div>
-          <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-            <div class='fc-event-main'>My Event 4</div>
-          </div>
-          <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-            <div class='fc-event-main'>My Event 5</div>
-          </div>
-          <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-            <div class='fc-event-main'>My Event 6</div>
-          </div>
-          <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-            <div class='fc-event-main'>My Event 7</div>
-          </div>
-          <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-            <div class='fc-event-main'>My Event 8</div>
-          </div>
-          <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-            <div class='fc-event-main'>My Event 9</div>
+          <div class='col-bottom' class="flex-row">
+            <a href="#" class="btn">自動計算交通時間</a>
           </div>
         </div>
-        <!-- [END] EXTERNAL EVENT BLOCK -->
-      </div>
 
-      <div id="google_maps">
-        Google maps
+        <h1>行程名稱</h1>
+
+        <div id='nav-right' class="flex-col">
+          <div class="flex-row">
+            <a href="#" class="btn">自動建立行程</a>
+            <a href="#" class="btn">創建空行程</a>
+          </div>
+          <div id="city_redo" class='col-bottom flex-row'>
+
+            <!-- <div id="cities" class="flex-row">
+              <a href="#" class="btn">巴黎</a>
+              <a href="#" class="btn">倫敦</a>
+              <a href="#" class="btn">阿姆斯特丹</a>
+              <a href="#" class="btn">布魯日</a>
+              <a href="#" class="btn">鹿特丹</a>
+              <a href="#" class="btn">布魯塞爾</a>
+              <a href="#" class="btn">顯示全部</a>
+            </div> -->
+
+            <div id="cities" class="flex-row">
+              <select id="city-list">
+                <option value="顯示全部">顯示全部</option>
+                <option value="巴黎">巴黎</option>
+                <option value="倫敦">倫敦</option>
+                <option value="阿姆斯特丹">阿姆斯特丹</option>
+                <option value="鹿特丹">鹿特丹</option>
+                <option value="布魯日">布魯日</option>
+                <option value="布魯塞爾">布魯塞爾</option>
+              </select>
+            </div>
+
+            <div class="flex-row">
+              <a href="#" class="btn">復原</a>
+              <a href="#" class="btn">重做</a>
+            </div>
+
+          </div>
+        </div>
+
       </div>
-    </div>
+    </header>
+
+    <main>
+
+      <div class="flex-row" id="main">
+        <!-- [START] CALENDAR CONTAINER -->
+        <div id='calendar-container'>
+          <div id='calendar'></div>
+        </div>
+        <!-- [END] CALENDAR CONTAINER -->
+
+        <!-- [START] --------------------------RIGHT SIDE-------------------------- --> 
+        <div class='right_side' class='flex-col'>
+
+          <div class="flex-row">
+            <div class="scroll-container">
+              <!-- [START] EXTERNAL EVENT BLOCK -->
+              <div id='external-events'>
+                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+                  <div class='fc-event-main'>My Event 1</div>
+                </div>
+                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+                  <div class='fc-event-main'>My Event 2</div>
+                </div>
+                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+                  <div class='fc-event-main'>My Event 3</div>
+                </div>
+                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+                  <div class='fc-event-main'>My Event 4</div>
+                </div>
+                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+                  <div class='fc-event-main'>My Event 5</div>
+                </div>
+                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+                  <div class='fc-event-main'>My Event 6</div>
+                </div>
+                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+                  <div class='fc-event-main'>My Event 7</div>
+                </div>
+                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+                  <div class='fc-event-main'>My Event 8</div>
+                </div>
+                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+                  <div class='fc-event-main'>My Event 9</div>
+                </div>
+              </div>
+              <!-- [END] EXTERNAL EVENT BLOCK -->
+            </div>
+
+            <div id="logs-container">
+              <div class='log'>change log A</div>
+              <div class='log'>change log B</div>
+              <div class='log'>change log C</div>
+              <div class='log'>change log D</div>
+              <div class='log'>change log E</div>
+              <div class='log'>change log F</div>
+              <div class='log'>change log G</div>
+              <div class='log'>change log H</div>
+            </div>
+        </div>
+
+          <div id="google_maps">
+            Google maps
+          </div>
+        </div>
+        <!-- [END] --------------------------RIGHT SIDE-------------------------- --> 
+      </div>
+    </main>
+
+    <footer></footer>
+
   </body>
 </html>
