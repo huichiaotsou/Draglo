@@ -14622,12 +14622,13 @@ __webpack_require__.r(__webpack_exports__);
 
 //get calendar setting from URL
 const urlParams = new URLSearchParams(window.location.search);
-const range = { 
-  start: new Date(urlParams.get('start')),
-  end: new Date(urlParams.get('end'))
-};
+// const start = new Date(urlParams.get('start')),
+// const end = new Date(urlParams.get('end'))
+// const duration = 1 + (end.getTime() - start.getTime()) / (1000 * 3600 * 24);
+const start = new Date('2021-07-20');
+const end = new Date('2021-07-28');
+const duration = 9;
 
-const duration = 1 + (range.end.getTime() - range.start.getTime()) / (1000 * 3600 * 24);
 const daystart = urlParams.get('daystart');
 const dayend = urlParams.get('datend');
 
@@ -14652,7 +14653,10 @@ document.addEventListener('DOMContentLoaded', function() {
   const calendar = new _fullcalendar_core__WEBPACK_IMPORTED_MODULE_0__.Calendar(calendarEl, {
     plugins: [_fullcalendar_timegrid__WEBPACK_IMPORTED_MODULE_2__.default, _fullcalendar_interaction__WEBPACK_IMPORTED_MODULE_1__.default],
     initialView: 'tripView',
-    validRange: range,  
+    validRange: {
+      start: start ,
+      end: end
+    },  
     nowIndicator: true,
     editable: true,
     eventResizableFromStart: true,
@@ -14695,10 +14699,10 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-function openPeriodSetting() {
-  let form = document.querySelector('#setPeriod');
-  form.style.display = block;
-}
+// function openPeriodSetting() {
+//   let form = document.querySelector('#setPeriod');
+//   form.style.display = block;
+// }
 })();
 
 /******/ })()

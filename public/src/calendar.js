@@ -5,12 +5,13 @@ import './calendar.css';
 
 //get calendar setting from URL
 const urlParams = new URLSearchParams(window.location.search);
-const range = { 
-  start: new Date(urlParams.get('start')),
-  end: new Date(urlParams.get('end'))
-};
+// const start = new Date(urlParams.get('start')),
+// const end = new Date(urlParams.get('end'))
+// const duration = 1 + (end.getTime() - start.getTime()) / (1000 * 3600 * 24);
+const start = new Date('2021-07-20');
+const end = new Date('2021-07-28');
+const duration = 9;
 
-const duration = 1 + (range.end.getTime() - range.start.getTime()) / (1000 * 3600 * 24);
 const daystart = urlParams.get('daystart');
 const dayend = urlParams.get('datend');
 
@@ -35,7 +36,10 @@ document.addEventListener('DOMContentLoaded', function() {
   const calendar = new Calendar(calendarEl, {
     plugins: [timeGridPlugin, interactionPlugin],
     initialView: 'tripView',
-    validRange: range,  
+    validRange: {
+      start: start ,
+      end: end
+    },  
     nowIndicator: true,
     editable: true,
     eventResizableFromStart: true,

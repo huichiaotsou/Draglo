@@ -1314,100 +1314,57 @@ body {
     flex-direction: row;
   }
 
+  /* ------- Header ------- */
+  /* position relative/absolute */
+
   header {
-    height: 10vh;
-    width: 100%;
+    margin: 20px 10px 0;
+    height: 7vh;
+    position: relative;
   }
 
-  /* ------- nav ------- */
-  #nav {
-    padding-top: 0.5%;
-    height: 75%;
-    justify-content: space-between;
-    align-items: flex-end;
+  #back-dashboard {
+    position: absolute;
+    left: 5px;
   }
 
-  #nav-left, #nav-right {
-    height: 70px;
+  #trip-title {
+    position: absolute;
+    right: 170px;
   }
 
-  #nav-left {
-    align-items: flex-start;
+  #undo-redo {
+    position:absolute;
+    top: 3px;
+    left: 300px;
   }
 
-  #nav-right {
-    align-items: flex-end;
-    width: 36%;
+  #nav-bar {
+    position: absolute;
+    top: 0;
+    left: 107px;
   }
 
-  #setPeriod {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    padding: 5px;
-    background-color: rgb(165, 218, 247);
-    border-radius: 3px;
-    display: none;
+  #account {
+    position: absolute;
+    right: 93px;
   }
 
-  .buttons {
-    justify-content: space-around;
+  #share {
+    position: absolute;
+    right: 20px;
   }
 
-  #nav-right .col-bottom {
-    width: 100%;
-  }
-
-  .col-bottom {
+  footer {
+    margin-top: 0.5em;
+    height: 5vh;
+    border: 1px black solid;
     text-align: center;
-    margin-top: 10px;
-    padding-top: 3px;
   }
 
-  #city_redo {
-    justify-content: space-between;
-  }
 
-  #cities {
-    width: 60%;
-    flex-wrap: wrap;
-  }
-
-  #city-list {
-    background-color: #3788d8;
-    color: white;
-    border: 1px solid #3788d8;
-    border-radius: 3px;
-    font-size: 16px;
-  }
-
-  /* ------- buttons ------- */
-  .btn {
-    box-shadow: 0px 0px 0px 2px #9fb4f2;
-    background:linear-gradient(to bottom, #7892c2 5%, #476e9e 100%);
-    background-color:#7892c2;
-    border-radius:10px;
-    cursor:pointer;
-    color:#ffffff;
-    font-family:Arial;
-    font-size:14px;
-    padding:5px;
-    text-decoration:none;
-    text-shadow:0px 1px 0px #283966;  
-    margin-right: 10px;
-  }
-
-  .btn:hover {
-    background:linear-gradient(to bottom, #476e9e 5%, #7892c2 100%);
-    background-color:#476e9e;
-  }
   
-  .btn:active {
-    position:relative;
-    top:1px;
-  }
-  
-  /* ------- main ------- */
+  /* ------- Main ------- */
 
   #main {
     position: relative;
@@ -1420,13 +1377,14 @@ body {
     padding: 0;
     position: absolute;
     bottom: 5px;
+    height: 86vh;
+    margin-left: 7px;
   }
   
   #calendar {
     width: 99%;
     margin: 0;
-    height: 90vh;
-    max-height: 960px;
+    height: 100%;
   }
 
   /* ------- right side of view port ------- */
@@ -1435,7 +1393,9 @@ body {
     margin-left: auto;
     margin-right: 1%;
     padding-left: 5px;
+    height: 84vh;
   }
+
 
   /* ------- events blocks ------- */
   #external-events {
@@ -1447,61 +1407,66 @@ body {
   }
   
   #external-events .fc-event {
-    cursor: pointer;
+    cursor: move;
     margin: 3px 0;
     height: 70px;
     font-size: 14px;
   }
   
-  .scroll-container {
-    display: block;
-    width: 60%;
-    height: 32vh;
-    overflow-y: scroll;
-    scroll-behavior: smooth;
-    margin-bottom: 40px;
-    padding: 5px;
-    overflow-x: hidden;
-    background-color: blanchedalmond;
-    border: 1px solid blanchedalmond;
-    border-radius: 5px;
-    margin-right: 1px;
-  }
-
-  #logs-container {
-    width: 40%;
-    display: block;
-    height: 32vh;
-    overflow-y: scroll;
-    scroll-behavior: smooth;
-    margin-bottom: 40px;
-    padding: 5px;
-    overflow-x: hidden;
-    background-color: blanchedalmond;
-    border: 1px solid blanchedalmond;
-    border-radius: 5px;
-    margin-left: 3px;
-    font-size: 14px;
-  }
-
-  .log {
+  .fc-event-main {
     display: flex;
-    flex-direction: column;
+    line-height: 1.6;
+    padding-left: 5px;
+    font-size: 16px;
+  }
+
+  #scroll-area {
+    margin-bottom: 5%;
+    height: 35%;
+  }
+  
+  .scroll-container, #cities-container {
+    display: block;
+    height: 100%;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    padding: 5px;
+    overflow-x: hidden;
+    background-color: blanchedalmond;
+    border: 1px solid blanchedalmond;
+    border-radius: 5px;
+    margin-right: 1%;
+  }
+
+  .scroll-container{
+    width: 65%;
+  }
+
+  #cities-container {
+    width: 35%;
+  }
+
+  .city {
+    cursor: pointer;
+    display: flex;
+    /* flex-direction: column; */
     margin-left: auto;
     z-index: 2;
     padding: 2px;
     margin: 5px 0;
-    height: 40px;
+    height: 50px;
     background-color: #6199d2;
     border-radius: 3px;
     color: white;
+    text-align: center;
+    align-items: center;
   }
 
  
   /* ------- map block ------- */
   #google_maps {
     width: 100%;
-    height: 50vh;
+    height: 60%;
     border: 1px solid black;
     border-radius: 5px;
   }

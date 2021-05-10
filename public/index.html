@@ -5,73 +5,71 @@
     <!-- <link href='./src/calendar.css' rel='stylesheet' /> -->
     <link href='./dist/main.css' rel='stylesheet' />
     <script src='./dist/main.js'></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   </head>
   <body>
 
     <header>
-      <div id='nav' class="flex-row">
-        <div id='nav-left' class="flex-col">
-          <div class="flex-row">
-            <a class="btn" onclick="openPeriodSetting()">設定旅行區間</a>
-              <div class="flex-col" id="setPeriod">
-                <input type="text" placeholder="開始日期">
-                <input type="text" placeholder="結束日期">
-                <div class="flex-row buttons">
-                  <button onclick="setPeriod()">送出</button>
-                  <button onclick="setPeriod()">取消</button>
-                </div>
-              </div>
-            <a href="#" class="btn">設定活動時間</a>
-          </div>
-          <div class='col-bottom' class="flex-row">
-            <a href="#" class="btn">自動計算交通時間</a>
+
+      <button id="back-dashboard" type="button" class="btn btn-outline-success">回主控台</button>
+        
+        <div id="trip-title" class="col-sm-4 col-sm-offset-4">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="行程名稱" aria-label="" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" type="button">儲存</button>
+            </div>
           </div>
         </div>
 
-        <h1>行程名稱</h1>
-
-        <div id='nav-right' class="flex-col">
-          <div class="flex-row">
-            <a href="#" class="btn">自動建立行程</a>
-            <a href="#" class="btn">創建空行程</a>
+          <div id="undo-redo" class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-outline-secondary btn-sm">Undo</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm">Redo</button>
           </div>
-          <div id="city_redo" class='col-bottom flex-row'>
-
-            <!-- <div id="cities" class="flex-row">
-              <a href="#" class="btn">巴黎</a>
-              <a href="#" class="btn">倫敦</a>
-              <a href="#" class="btn">阿姆斯特丹</a>
-              <a href="#" class="btn">布魯日</a>
-              <a href="#" class="btn">鹿特丹</a>
-              <a href="#" class="btn">布魯塞爾</a>
-              <a href="#" class="btn">顯示全部</a>
-            </div> -->
-
-            <div id="cities" class="flex-row">
-              <select id="city-list">
-                <option value="顯示全部">顯示全部</option>
-                <option value="巴黎">巴黎</option>
-                <option value="倫敦">倫敦</option>
-                <option value="阿姆斯特丹">阿姆斯特丹</option>
-                <option value="鹿特丹">鹿特丹</option>
-                <option value="布魯日">布魯日</option>
-                <option value="布魯塞爾">布魯塞爾</option>
-              </select>
+          
+        <div id="nav-bar">
+          <!-- Single danger button -->
+          <div class="btn-group">
+            <button id="settings" class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              設定
+            </button>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="#">旅行區間</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">外出時間</a>
             </div>
+          </div>
 
-            <div class="flex-row">
-              <a href="#" class="btn">復原</a>
-              <a href="#" class="btn">重做</a>
+          <!-- Single danger button -->
+          <div class="btn-group">
+            <button id="automation" class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              自動化
+            </button>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="#">計算交通時間</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">自動安排行程</a>
             </div>
-
           </div>
         </div>
 
-      </div>
+        <button id="share" type="button" class="btn btn-outline-success">共用</button>
+
+        <!-- Single danger button -->
+          <div id="account" class="btn-group">
+            <button id="automation" class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              帳號
+            </button>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="#">帳號設定</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">登出</a>
+            </div>
+          </div>
+        
     </header>
 
     <main>
-
       <div class="flex-row" id="main">
         <!-- [START] CALENDAR CONTAINER -->
         <div id='calendar-container'>
@@ -82,7 +80,7 @@
         <!-- [START] --------------------------RIGHT SIDE-------------------------- --> 
         <div class='right_side' class='flex-col'>
 
-          <div class="flex-row">
+          <div id="scroll-area" class="flex-row">
             <div class="scroll-container">
               <!-- [START] EXTERNAL EVENT BLOCK -->
               <div id='external-events'>
@@ -117,15 +115,14 @@
               <!-- [END] EXTERNAL EVENT BLOCK -->
             </div>
 
-            <div id="logs-container">
-              <div class='log'>change log A</div>
-              <div class='log'>change log B</div>
-              <div class='log'>change log C</div>
-              <div class='log'>change log D</div>
-              <div class='log'>change log E</div>
-              <div class='log'>change log F</div>
-              <div class='log'>change log G</div>
-              <div class='log'>change log H</div>
+            <div id="cities-container">
+              <div class='city'>顯示全部</div>
+              <div class='city'>巴黎</div>
+              <div class='city'>阿姆斯特丹</div>
+              <div class='city'>鹿特丹</div>
+              <div class='city'>倫敦</div>
+              <div class='city'>哥本哈根</div>
+              <div class='city'>柏林</div>
             </div>
         </div>
 
@@ -137,7 +134,12 @@
       </div>
     </main>
 
-    <footer></footer>
+    <footer>
+      footer area
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
   </body>
 </html>
