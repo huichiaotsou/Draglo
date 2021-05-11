@@ -2,6 +2,7 @@ import { Calendar } from '@fullcalendar/core';
 import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import './calendar.css';
+import { Loader } from "@googlemaps/js-api-loader"
 
 //get calendar setting from URL
 const urlParams = new URLSearchParams(window.location.search);
@@ -82,7 +83,14 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-// function openPeriodSetting() {
-//   let form = document.querySelector('#setPeriod');
-//   form.style.display = block;
-// }
+const loader = new Loader({
+  apiKey: "YOUR_API_KEY",
+  version: "weekly",
+  ...additionalOptions,
+});
+loader.load().then(() => {
+  map = new google.maps.Map(document.getElementById("map"), {
+    center: { lat: -34.397, lng: 150.644 },
+    zoom: 8,
+  });
+});
