@@ -1,5 +1,8 @@
 const express = require('express');
 const app = express();
+app.listen(4000, ()=>{
+    console.log('app running on port 4000');
+})
 
 app.use(express.static('public'));
 app.use('/',
@@ -9,10 +12,6 @@ app.use('/',
         require('./server/route/automation_route')
     ]
 )
-
-app.listen(4000, ()=>{
-    console.log('app running on port 4000');
-})
 
 app.use((err, req, res, next)=>{
     console.log(err);
