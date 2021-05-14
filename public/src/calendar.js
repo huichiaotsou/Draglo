@@ -84,13 +84,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 const loader = new Loader({
-  apiKey: "YOUR_API_KEY",
+  apiKey: "AIzaSyC7JZBoemp8yVauFZ_9J2cShM2J7uJqCjQ",
   version: "weekly",
-  ...additionalOptions,
 });
 loader.load().then(() => {
   map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: -34.397, lng: 150.644 },
+    center: { lat: 48.864716, lng: 2.349014 },
     zoom: 8,
   });
 });

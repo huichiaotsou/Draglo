@@ -13,30 +13,16 @@
 
       <button id="back-dashboard" type="button" class="btn btn-outline-success">回主控台</button>
         
-        <div id="trip-title" class="col-sm-4 col-sm-offset-4">
-          <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="行程名稱" aria-label="" aria-describedby="basic-addon2">
-            <div class="input-group-append">
-              <button class="btn btn-outline-secondary" type="button">儲存</button>
-            </div>
-          </div>
-        </div>
-
-          <div id="undo-redo" class="btn-group" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-outline-secondary btn-sm">Undo</button>
-            <button type="button" class="btn btn-outline-secondary btn-sm">Redo</button>
-          </div>
-          
         <div id="nav-bar">
           <!-- Single danger button -->
           <div class="btn-group">
             <button id="settings" class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              設定
+              編輯
             </button>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="#">旅行區間</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">外出時間</a>
+              <a class="dropdown-item" href="#">設定旅行日期</a>
+              <a class="dropdown-item" href="#">設定外出時段</a>
+              <a class="dropdown-item" href="#">創建空白時段</a>
             </div>
           </div>
 
@@ -47,25 +33,47 @@
             </button>
             <div class="dropdown-menu">
               <a class="dropdown-item" href="#">計算交通時間</a>
+              <a class="dropdown-item" href="#">設定偏好交通工具</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="#">自動安排行程</a>
+              <a class="dropdown-item" href="#">設定啟程城市</a>
+              <a class="dropdown-item" href="#">設定最大步行時間</a>
+            </div>
+          </div>
+        </div> 
+  
+        <div id="undo-redo" class="btn-group" role="group" aria-label="Basic example">
+          <button type="button" class="btn btn-outline-secondary btn-sm">Undo</button>
+          <button type="button" class="btn btn-outline-secondary btn-sm">Redo</button>
+        </div>
+
+        <div id="trip-title" class="col-sm-4 col-sm-offset-4">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="未命名行程" aria-label="" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" type="button">儲存</button>
             </div>
           </div>
         </div>
 
-        <button id="share" type="button" class="btn btn-outline-success">共用</button>
 
         <!-- Single danger button -->
-          <div id="account" class="btn-group">
-            <button id="automation" class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              帳號
-            </button>
-            <div class="dropdown-menu">
-              <a class="dropdown-item" href="#">帳號設定</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">登出</a>
-            </div>
+        <div id="account" class="btn-group">
+          <button id="automation" class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            帳號
+          </button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="#">切換行程：</a>
+            <a class="dropdown-item" href="#">跟媽媽去巴黎</a>
+            <a class="dropdown-item" href="#">澎湖花火節</a>
+            <a class="dropdown-item" href="#">AppWorks一日遊</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">帳號設定</a>
+            <a class="dropdown-item" href="#">登出</a>
           </div>
+        </div>
+        
+        <button id="share" type="button" class="btn btn-outline-success">共用</button>
         
     </header>
 
@@ -82,34 +90,61 @@
 
           <div id="scroll-area" class="flex-row">
             <div class="scroll-container">
+              <div class="col-sm-13 col-sm-offset-7">
+                <div class="input-group mb-3">
+                  <input type="text" class="form-control" placeholder="搜尋新景點" aria-label="" aria-describedby="basic-addon2">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-dark" type="button">搜尋</button>
+                  </div>
+                </div>
+              </div>
+
               <!-- [START] EXTERNAL EVENT BLOCK -->
               <div id='external-events'>
                 <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>My Event 1</div>
+                  <div class='fc-event-main'>凱旋門,60</div>
                 </div>
                 <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>My Event 2</div>
+                  <div class='fc-event-main'>埃菲爾鐵塔, 90</div>
                 </div>
                 <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>My Event 3</div>
+                  <div class='fc-event-main'>大皇宮, 120</div>
                 </div>
                 <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>My Event 4</div>
+                  <div class='fc-event-main'>地下墓穴,90</div>
                 </div>
                 <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>My Event 5</div>
+                  <div class='fc-event-main'>盧森堡公園, 120</div>
                 </div>
                 <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>My Event 6</div>
+                  <div class='fc-event-main'>聖母院, 60</div>
                 </div>
                 <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>My Event 7</div>
+                  <div class='fc-event-main'>龐畢度中心, 120</div>
                 </div>
                 <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>My Event 8</div>
+                  <div class='fc-event-main'>彩虹街道, 30</div>
                 </div>
                 <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>My Event 9</div>
+                  <div class='fc-event-main'>羅浮宮, 60</div>
+                </div>
+                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+                  <div class='fc-event-main'>歌劇院, 80</div>
+                </div>
+                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+                  <div class='fc-event-main'>聖心堂, 60</div>
+                </div>
+                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+                  <div class='fc-event-main'>瑪德蓮教堂, 30</div>
+                </div>
+                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+                  <div class='fc-event-main'>新橋, 30</div>
+                </div>
+                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+                  <div class='fc-event-main'>巴黎皇家宮殿, 60</div>
+                </div>
+                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
+                  <div class='fc-event-main'>協和廣場, 30</div>
                 </div>
               </div>
               <!-- [END] EXTERNAL EVENT BLOCK -->

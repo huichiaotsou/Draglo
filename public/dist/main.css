@@ -1409,7 +1409,7 @@ body {
   #external-events .fc-event {
     cursor: move;
     margin: 3px 0;
-    height: 70px;
+    height: 80px;
     font-size: 14px;
   }
   
@@ -1421,7 +1421,7 @@ body {
   }
 
   #scroll-area {
-    margin-bottom: 5%;
+    margin-bottom: 2%;
     height: 35%;
   }
   
@@ -1439,11 +1439,11 @@ body {
   }
 
   .scroll-container{
-    width: 65%;
+    width: 70%;
   }
 
   #cities-container {
-    width: 35%;
+    width: 30%;
   }
 
   .city {
@@ -1467,7 +1467,6 @@ body {
   #google_maps_container {
     width: 100%;
     height: 60%;
-    border: 1px solid black;
     border-radius: 5px;
   }
 
