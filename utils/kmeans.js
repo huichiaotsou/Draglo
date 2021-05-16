@@ -3,27 +3,26 @@ const {
     calculateCloserPoint,
 } = require('./geopackage');
 
-function getClusters(placeIds, vectors, k, polePoint){
-    if(k > placeIds.length){
+function getClusters(spotIds, vectors, k, startSpotId){
+    if(k > spotIds.length){
         return {error: 'cluster numbers exceed place numbers'};
     }
     // get k initial centroids
     let centroids = []
     for (let i = 0; i < k; i++){
-        centroids.push(vectors[placeIds[i]]);
+        centroids.push(vectors[spotIds[i]].vector);
     }
 
     let groupIds = []
     let keepTuning = true;
     while (keepTuning) {
         //count the distance between (centroids : all points), define who’s closer
-        for(let i = 0; i < placeIds.length; i++){
-            let groupId = calculateCloserPoint(centroids, vectors[placeIds[i]], 'groupVectors');
+        for(let i = 0; i < spotIds.length; i++){
+            let groupId = calculateCloserPoint(centroids, vectors[spotIds[i]].vector, 'groupVectors');
             groupIds[i] = groupId;
         } 
-        //照順序分好的叢集
-        //groupIds: [1 0 1 0 2 2]
-        //placeIds: [1 2 3 4 5 6]
+        //照順序分好的叢集 groupIds: [1 0 1 0 2 2]
+                    //  spotIds: [1 2 3 4 5 6]
         let groupedPlaces = {};
         let newCentroids = [];
         //loop k次，每次 loop 過全部的 groupid
@@ -32,15 +31,15 @@ function getClusters(placeIds, vectors, k, polePoint){
             let sumX, sumY, count = 0;
             for (let j = 0; j < groupIds.length; j++) {
                 if (groupIds[j] == i) {
-                    groupedPlace.push(placeIds[j]);
+                    groupedPlace.push(spotIds[j]);
                     //如果 groupId[j] 跟 i(叢集號) 對到 => 加總取平均 = newCentroids[i]
                     if (groupIds[j] == i){
-                        sumX = sumX + vectors[placeIds[j]][0];
-                        sumY = sumY + vectors[placeIds[j]][1];
+                        sumX = sumX + vectors[spotIds[j]].vector[0];
+                        sumY = sumY + vectors[spotIds[j]].vector[1];
                         count ++;
                     }
-                    if (placeIds[j] == polePoint) {
-                        groupedPlaces.inOrder = [i];
+                    if (spotIds[j] == startSpotId) { //define starting cluster
+                        groupedPlaces.sequence = [i];
                     }
                 }
             }
@@ -51,21 +50,18 @@ function getClusters(placeIds, vectors, k, polePoint){
             }
         }
 
-        //check if centroids similar
+        //check if centroids are already stable
         let countStableCentroids = 0;
         for (let i = 0; i < centroids.length; i++){
-            if (getGeoDistance(centroids[i][0], centroids[i][1], newCentroids[i][0], newCentroids[i][1]) < 50){
+            if (getGeoDistance(centroids[i], newCentroids[i]) < 50){
                 countStableCentroids++
             }
         }
         if (countStableCentroids == k){
             console.log('stop tuning');
             keepTuning = false;
-            console.log(centroids);
-            console.log(centroids[groupedPlaces.inOrder]);
-            console.log(groupedPlaces.inOrder[0]);
-            let closestGroupId = calculateCloserPoint(centroids, centroids[groupedPlaces.inOrder], 'getCloserCluster')
-            groupedPlaces.inOrder.push(closestGroupId);
+            let closestGroupId = calculateCloserPoint(centroids, centroids[groupedPlaces.sequence], 'getClosePoint')
+            groupedPlaces.sequence.push(closestGroupId);
             return groupedPlaces;
         } else {
             for (let i = 0; i < centroids.length; i++){
@@ -76,7 +72,6 @@ function getClusters(placeIds, vectors, k, polePoint){
         }
     }
 }
-
 
 
 module.exports = {

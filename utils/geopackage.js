@@ -1,11 +1,10 @@
 //https://www.itread01.com/content/1541853492.html
-
 function getRad(d){
     var PI = Math.PI;
     return d*PI/180.0;
 }
 
-function CoolWPDistance(lat1,lng1,lat2,lng2){
+function CoolWPDistance([lat1,lng1],[lat2,lng2]){
     var f = getRad((lat1 + lat2)/2);
     var g = getRad((lat1 - lat2)/2);
     var l = getRad((lng1 - lng2)/2);
@@ -36,27 +35,28 @@ function CoolWPDistance(lat1,lng1,lat2,lng2){
     return s; //單位=公尺
 }
 
-function calculateCloserPoint(centroids, vector, behavior){
+function calculateCloserPoint(vectors, vector, behavior){
+    if (vectors.length == 1) {
+        return -1;
+    }
     let min = Infinity;
-    let closestGroup = 0;
-    for (let i in centroids){
-        let distance = CoolWPDistance(centroids[i][0], centroids[i][1], vector[0], vector[1]);
+    let closestPoint = 0;
+    for (let i in vectors){
+        let distance = CoolWPDistance(vectors[i], vector);
         if (behavior == 'groupVectors'){
             if (distance < min) {
                 min = distance;
-                closestGroup = i;
+                closestPoint = i;
             }
-        } else if (behavior == 'getCloserCluster'){
+        } else if (behavior == 'getClosePoint'){
             if (distance < min && distance != 0) {
                 min = distance;
-                closestGroup = i;
-            }
+                closestPoint = i;
+            } 
         }
     }
-    return parseInt(closestGroup);
+    return parseInt(closestPoint);
 }
-
-
 
 module.exports = {
     getGeoDistance: CoolWPDistance,
