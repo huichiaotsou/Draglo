@@ -4,15 +4,26 @@ const {
 } = require('./geopackage');
 
 function getClusters(spotIds, vectors, k, startSpotId){
-    if(k > spotIds.length){
-        return {error: 'cluster numbers exceed place numbers'};
+    console.log("k: " + k);
+    // if(k > spotIds.length){
+    //     return {
+    //         0 : spotIds,
+    //         sequence : [0]
+    //     };
+    // }
+    if(k == 1 || k == 0 || k > spotIds.length) {
+        return {
+            0: spotIds,
+            sequence: [0]
+        }
     }
+
     // get k initial centroids
     let centroids = []
     for (let i = 0; i < k; i++){
         centroids.push(vectors[spotIds[i]].vector);
     }
-
+    
     let groupIds = []
     let keepTuning = true;
     while (keepTuning) {
@@ -28,7 +39,9 @@ function getClusters(spotIds, vectors, k, startSpotId){
         //loop k次，每次 loop 過全部的 groupid
         for (let i = 0; i < k; i++){
             let groupedPlace = []
-            let sumX, sumY, count = 0;
+            let sumX = 0;
+            let sumY = 0;
+            let count = 0;
             for (let j = 0; j < groupIds.length; j++) {
                 if (groupIds[j] == i) {
                     groupedPlace.push(spotIds[j]);
@@ -43,9 +56,10 @@ function getClusters(spotIds, vectors, k, startSpotId){
                     }
                 }
             }
+
             groupedPlaces[i] = groupedPlace;
             newCentroids[i] = [sumX/count, sumY/count];
-            if (isNaN(newCentroids[i][0])){ //若有叢集沒景點，sum會是0，此時指派原本重心
+            if (isNaN(newCentroids[i][0])){ //若有叢集沒被分配到景點，sum會是0，此時指派原本重心
                 newCentroids[i] = centroids[i];
             }
         }
@@ -58,16 +72,19 @@ function getClusters(spotIds, vectors, k, startSpotId){
             }
         }
         if (countStableCentroids == k){
-            console.log('stop tuning');
+            console.log('kmeans: clusters are established');
+            console.log('--------------------------------');
             keepTuning = false;
             let closestGroupId = calculateCloserPoint(centroids, centroids[groupedPlaces.sequence], 'getClosePoint')
             groupedPlaces.sequence.push(closestGroupId);
+            console.log("kmeans result: ");
+            console.log(groupedPlaces);
             return groupedPlaces;
         } else {
             for (let i = 0; i < centroids.length; i++){
                 centroids[i] = newCentroids[i]
             }
-            console.log('keep tuning');
+            console.log('kmeans: keep tuning');
             keepTuning = true;
         }
     }

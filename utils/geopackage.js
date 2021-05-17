@@ -36,7 +36,7 @@ function CoolWPDistance([lat1,lng1],[lat2,lng2]){
 }
 
 function calculateCloserPoint(vectors, vector, behavior){
-    if (vectors.length == 1) {
+    if (vectors.length == 1 && behavior == 'groupVectors') {
         return -1;
     }
     let min = Infinity;
