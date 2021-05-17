@@ -6,4 +6,12 @@ router.use(express.urlencoded({ extended: false }));
 
 router.post('/automation', calculateTrips)
 
+
+const { getTravelingTime } = require('../model/automation_model')
+
+router.get('/traveltime', async (req, res)=>{
+    let travelingTime = await getTravelingTime('ChIJE-kmU2mpQjQRg3J0ihh6nvI','ChIJKyaoGAmpQjQR99RS3zrx9Ms');
+    res.send({travelingTime});
+})
+
 module.exports = router;

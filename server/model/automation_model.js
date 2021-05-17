@@ -1,4 +1,6 @@
+const Google = require('../../utils/google');
 const { begin, query, commit, rollback } = require('./mysql');
+require('dotenv').config();
 
 const getSpotInfo = async (spotId) => { 
     let queryStr = 'SELECT linger_time, open_days, open_hour, closed_hour FROM spots WHERE google_id = ?';
@@ -15,7 +17,6 @@ const getSpotInfo = async (spotId) => {
         closedHour: closed_hour
     }
 }
-
 const getTravelingTime = async (prevSpotId, nextSpotId) => {
     let sql = {
         queryStr: 'SELECT transit_time FROM itinararies WHERE start_google_id = ? AND end_google_id = ?',
@@ -23,12 +24,12 @@ const getTravelingTime = async (prevSpotId, nextSpotId) => {
     }
     let result = await query(sql.queryStr, sql.condition);
     if (result.length == 0) {
-        return 30;
-        //get time from google API & store in DB
-        //
-        //
+        // get time from google API & store in DB
+        let response = await Google.directionAPI(prevSpotId, nextSpotId);
+        await query('INSERT INTO itinararies SET ? ', response);
+        return Math.round(response.transit_time / 60);
     } else {
-        return (result[0].transit_time / 60);
+        return Math.round(result[0].transit_time / 60); //mins
     }
 }
 
@@ -38,3 +39,5 @@ module.exports = {
 }
 
 
+
+    
