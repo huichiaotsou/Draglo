@@ -18,7 +18,10 @@
   },
   "homepage": "https://github.com/huichiaotsou/draglo#readme",
   "dependencies": {
+    "axios": "^0.21.1",
+    "dotenv": "^9.0.2",
     "express": "^4.17.1",
+    "mysql": "^2.18.1",
     "nodemon": "^2.0.7"
   }
 }
