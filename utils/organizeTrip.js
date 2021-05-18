@@ -4,10 +4,6 @@ const { calculateCloserPoint } = require('./geopackage');
 let removeSpot = (spotIdToRemove, spotIds) => {
     for (let i in spotIds) {
         if (spotIds[i] == spotIdToRemove) {
-            // console.log('REMOVE');
-            // console.log(spotIdToRemove);
-            // console.log('FROM');
-            // console.log(spotIds);
             spotIds.splice(i, 1);
         }
     }
@@ -49,7 +45,11 @@ let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spots
     }
 
     let checkDayFull = startTime + transitTime + spotInfo.lingerTime;
-    if ( checkDayFull > 1110 && checkDayFull <= 1200) { //行程安排後，若會介於 18:30 ~ 20:00 間，call it a day
+    if (checkDayFull > 1200 || startTime < spotInfo.openHour || startTime > spotInfo.closedHour || !open) {
+        console.log("-------------------------------------------");
+        console.log("行程將會超時(8pm)、太早去、太晚去、今天沒開");
+        return -1;
+    } else if ( checkDayFull > 1110 && checkDayFull <= 1200) { //行程安排後，若會介於 18:30 ~ 20:00 間，call it a day
         return {
             keepArranging : false,
             arrangement : [
@@ -67,10 +67,6 @@ let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spots
                 }
             ]
         }
-    } else if (checkDayFull > 1200 || startTime < spotInfo.openHour || startTime > spotInfo.closedHour || !open) {
-        console.log("-------------------------------------------");
-        console.log("行程將會超時(8pm)、太早去、太晚去、今天沒開");
-        return -1;
     } else {
         if (startTime > 720 && startTime < 810) { //12h ~ 13h30 吃飯
             console.log('新增午餐時間 90 分鐘');

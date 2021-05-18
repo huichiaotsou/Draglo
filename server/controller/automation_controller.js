@@ -11,7 +11,8 @@ const calculateTrips = async (req, res, next) => {
 
     let wholeTrip = {};
     let nightEvents = wholeTrip.night_events = []
-    while(spotIds.length > 0) { //一直跑到安排完所有景點
+    while(spotIds.length > 0) { //while 一直跑到安排完所有景點
+        //確認起始點
         let startSpotId = poleSpotIds[Math.floor(Math.random() * poleSpotIds.length)];
         if (startSpotId == undefined) {
             startSpotId = spotIds[Math.floor(Math.random() * spotIds.length)];
@@ -19,7 +20,7 @@ const calculateTrips = async (req, res, next) => {
         console.log('  ');
         console.log('-------------- New Day Start --------------');
         let clusters = Kmeans.getClusters(spotIds, spotsInfo, tripDuration, startSpotId);
-        console.log("Day start spot id: "+ startSpotId);
+        console.log("Day start with spot id: "+ startSpotId);
         console.log('-------------------------------------------');
 
         let spotInfo = await Automation.getSpotInfo(startSpotId);
@@ -52,6 +53,7 @@ const calculateTrips = async (req, res, next) => {
             }
         }
 
+        let pendingArrangement = [];
         let keepArranging = true;
         while (keepArranging) { //一直跑到當日景點排滿為止
              if (Object.keys(clusters).length == 1) { // clusters empty
@@ -66,8 +68,24 @@ const calculateTrips = async (req, res, next) => {
             let nextActivity = await arrangeNextActivity(dayId, startTime, startSpotId, nextSpotId, spotsInfo);
             console.log(startSpotId + ' -> ' + nextSpotId + ' : transit and Spot to be added:');
             console.log(nextActivity);
+
+            console.log("pendingArrangement.length: ");
+            console.log(pendingArrangement.length);
+            if (pendingArrangement.length > 0) {
+                console.log('current clusters: ');
+                console.log(clusters);
+                clusters[clusters.sequence[0]].concat(pendingArrangement);
+                console.log(('pending arrangement added: '));
+                console.log(clusters);                
+            }
+
             //行程超時(8pm)、太早去、太晚去、沒開(return -1) -> 從 clusters 去除景點並找下個景點來安排，直到結束時間介於 6:30 ~ 8:00間
             if (nextActivity == -1) {
+
+                pendingArrangement.push(nextSpotId);
+                console.log('Pending Arrangement: ');
+                console.log(pendingArrangement);
+
                 removeSpot(nextSpotId, clusters[clusters.sequence[0]]);
                 if(clusters[clusters.sequence[0]].length == 0) {
                     delete clusters[clusters.sequence[0]]

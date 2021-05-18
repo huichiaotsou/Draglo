@@ -25,9 +25,10 @@ const getTravelingTime = async (prevSpotId, nextSpotId) => {
     let result = await query(sql.queryStr, sql.condition);
     if (result.length == 0) {
         // get time from google API & store in DB
-        let response = await Google.directionAPI(prevSpotId, nextSpotId);
-        await query('INSERT INTO itinararies SET ? ', response);
-        return Math.round(response.transit_time / 60);
+        // let response = await Google.directionAPI(prevSpotId, nextSpotId);
+        // await query('INSERT INTO itinararies SET ? ', response);
+        // return Math.round(response.transit_time / 60);
+        return 30;
     } else {
         return Math.round(result[0].transit_time / 60); //mins
     }
