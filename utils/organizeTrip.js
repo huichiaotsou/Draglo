@@ -24,9 +24,9 @@ let getNextSpotId = (currentSpotId, sequence, clusters, spotsInfo) => {
         console.log("currentSpotId: " + currentSpotId + ", sequence : " + sequence);
         console.log("clusters");
         console.log(clusters);
-        return getNextSpotId(currentSpotId, sequence, clusters, spotsInfo)
+        return getNextSpotId(currentSpotId, sequence, clusters, spotsInfo);
     } else {
-        return clusters[sequence][nextSpotIndex]
+        return clusters[sequence][nextSpotIndex];
     }
 }
 

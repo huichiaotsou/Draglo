@@ -74,8 +74,10 @@ const calculateTrips = async (req, res, next) => {
             if (pendingArrangement.length > 0) {
                 console.log('current clusters: ');
                 console.log(clusters);
+                console.log("pending arrangement: ");
+                console.log(pendingArrangement);
                 clusters[clusters.sequence[0]].concat(pendingArrangement);
-                console.log(('pending arrangement added: '));
+                console.log(('clusters with pending arrangement added: '));
                 console.log(clusters);                
             }
 
