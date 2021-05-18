@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-  	<title>Login</title>
+  	<title>Registration</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -27,16 +27,16 @@
 		      	
 			<div class="signup-form">
 				<div class="form-group">
-					<input type="text" class="form-control" placeholder="Username" required>
+					<input id="email" type="text" class="form-control" placeholder="Email Address" required>
 				</div>
 	            <div class="form-group">
 	              <input id="password-field" type="password" class="form-control" placeholder="Password" required>
 	            </div>
 				<div class="form-group">
-					<input id="password-field" type="password" class="form-control" placeholder="Repeat Password" required>
+					<input id="password-repeat" type="password" class="form-control" placeholder="Repeat Password" required>
 				  </div>
 	            <div class="form-group">
-	            	<button type="submit" class="form-control btn btn-primary submit px-3">Sign Up</button>
+	            	<button onclick="signUp()" type="submit" class="form-control btn btn-primary submit px-3">Sign Up</button>
 	            </div>
 			</div>
 
