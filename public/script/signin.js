@@ -1,3 +1,7 @@
+if (document.cookie) {
+  location.assign('/dashboard.html')
+}
+
 function signIn() {
     let email = document.getElementById('email').value;
     let password = document.getElementById('password-field').value;
@@ -22,12 +26,12 @@ function signIn() {
         if (xhr.status === 200) {
           const serverResponse = JSON.parse(xhr.responseText);
           document.cookie = `access_token = ${serverResponse.data.access_token}`;
-          window.location.assign('/');
+          window.location.assign('/dashboard.html');
         } else if (xhr.status === 403) {
           alert(xhr.responseText);
         } else if (xhr.status === 400) {
           alert(xhr.responseText);
-          location.assign('/signup');
+          location.assign('/signup.html');
         }
       }
   

@@ -1,3 +1,7 @@
+if (document.cookie) {
+  location.assign('/dashboard.html')
+}
+
 function signUp() {
     let email = document.getElementById('email').value;
     let password = document.getElementById('password-field').value;
@@ -33,10 +37,10 @@ function signUp() {
           const serverResponse = JSON.parse(xhr.responseText);
           document.cookie = `access_token = ${serverResponse.data.access_token}`;
           alert('註冊成功');
-          location.assign('/');
+          location.assign('/dashboard.html');
         } else if (xhr.status === 403) {
           alert('Email已被使用，請登入');
-          location.assign('/signin');
+          location.assign('/signin.html');
         }
       };
     };

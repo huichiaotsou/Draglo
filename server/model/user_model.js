@@ -14,7 +14,6 @@ const signUp = async (email, password) => {
         }
         let user = {email};
         let accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '28800s' });
-
         user.password = encryptPassword(password);
         let signUpSQL = await query('INSERT INTO users SET ?', user);
         user.id = signUpSQL.insertId;
