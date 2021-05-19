@@ -11,7 +11,7 @@
 
     <header>
 
-      <button id="back-dashboard" type="button" class="btn btn-outline-success">回主控台</button>
+      <button id="back-dashboard" type="button" class="btn btn-outline-success" onclick="backToDashboard()">回主控台</button>
         
         <div id="nav-bar">
           <!-- Single danger button -->
@@ -20,7 +20,7 @@
               編輯
             </button>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="#">設定旅行日期</a>
+              <a class="dropdown-item" href="#">設定旅行日期</a>    
               <a class="dropdown-item" href="#">設定外出時段</a>
               <a class="dropdown-item" href="#">封存行程</a>
             </div>
@@ -92,9 +92,9 @@
             <div class="scroll-container">
               <div class="col-sm-13 col-sm-offset-7">
                 <div class="input-group mb-3">
-                  <input type="text" class="form-control" placeholder="搜尋新景點" aria-label="" aria-describedby="basic-addon2">
+                  <input id="search" type="text" class="form-control" placeholder="搜尋新景點" aria-label="" aria-describedby="basic-addon2">
                   <div class="input-group-append">
-                    <button class="btn btn-outline-dark" type="button">搜尋</button>
+                    <button class="btn btn-outline-dark" type="button" onclick="searchSpots()">搜尋</button>
                   </div>
                 </div>
               </div>
@@ -102,49 +102,7 @@
               <!-- [START] EXTERNAL EVENT BLOCK -->
               <div id='external-events'>
                 <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>凱旋門,60</div>
-                </div>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>埃菲爾鐵塔, 90</div>
-                </div>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>大皇宮, 120</div>
-                </div>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>地下墓穴,90</div>
-                </div>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>盧森堡公園, 120</div>
-                </div>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>聖母院, 60</div>
-                </div>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>龐畢度中心, 120</div>
-                </div>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>彩虹街道, 30</div>
-                </div>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>羅浮宮, 60</div>
-                </div>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>歌劇院, 80</div>
-                </div>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>聖心堂, 60</div>
-                </div>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>瑪德蓮教堂, 30</div>
-                </div>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>新橋, 30</div>
-                </div>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>巴黎皇家宮殿, 60</div>
-                </div>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>協和廣場, 30</div>
+                  <div class='fc-event-main'>凱旋門</div>
                 </div>
               </div>
               <!-- [END] EXTERNAL EVENT BLOCK -->
@@ -175,6 +133,13 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/trip.css">
+    <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7JZBoemp8yVauFZ_9J2cShM2J7uJqCjQ&callback=initMap&libraries=&v=weekly"
+    async
+    ></script>
+    <script src="./script/trip.js"></script>
+    
 
   </body>
 </html>

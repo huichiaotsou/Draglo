@@ -2,7 +2,6 @@ import { Calendar } from '@fullcalendar/core';
 import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import './calendar.css';
-import { Loader } from "@googlemaps/js-api-loader"
 
 //get calendar setting from URL
 const urlParams = new URLSearchParams(window.location.search);
@@ -36,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const calendarEl = document.getElementById('calendar');
   const calendar = new Calendar(calendarEl, {
     plugins: [timeGridPlugin, interactionPlugin],
-    initialView: 'tripView',
+    initialView: 'weekView',
     validRange: {
       start: start ,
       end: end
@@ -47,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
     droppable: true,
     slotMinTime: daystart || "00:00:00",
     slotMaxTime: dayend || "24:00:00",
+    scrollTime: "09:00:00",
     drop: function(info) {
         info.draggedEl.parentNode.removeChild(info.draggedEl);
       
@@ -57,24 +57,39 @@ document.addEventListener('DOMContentLoaded', function() {
         end: ''
     },
     footerToolbar: {
-      start: 'weekView',
-      center: 'tripView', 
+      start: 'dayView threeDaysView weekView tripView',
+      center: '', 
       end: 'prev,next'
     },
     views: {
         tripView: {
-        type: 'timeGrid',
-        duration: { days: duration },
-        buttonText: 'Show Full Trip',
-        allDaySlot: false,
-        slotEventOverlap: true
-      }, weekView: {
-        type: 'timeGrid',
-        duration: { days: 7 },
-        buttonText: '7 Days View',
-        allDaySlot: false,
-        slotEventOverlap: true
-      },
+          type: 'timeGrid',
+          duration: { days: duration },
+          buttonText: 'Show Full Trip',
+          allDaySlot: false,
+          slotEventOverlap: true
+        }, 
+        dayView: {
+          type: 'timeGrid',
+          duration: { days: 1 },
+          buttonText: 'Day View',
+          allDaySlot: false,
+          slotEventOverlap: true
+        },
+        threeDaysView: {
+          type: 'timeGrid',
+          duration: { days: 3 },
+          buttonText: '3 Days View',
+          allDaySlot: false,
+          slotEventOverlap: true
+        },
+        weekView: {
+          type: 'timeGrid',
+          duration: { days: 7 },
+          buttonText: '7 Days View',
+          allDaySlot: false,
+          slotEventOverlap: true
+        },
     }
   });  
 
@@ -83,13 +98,3 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-const loader = new Loader({
-  apiKey: "AIzaSyC7JZBoemp8yVauFZ_9J2cShM2J7uJqCjQ",
-  version: "weekly",
-});
-loader.load().then(() => {
-  map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: 48.864716, lng: 2.349014 },
-    zoom: 8,
-  });
-});

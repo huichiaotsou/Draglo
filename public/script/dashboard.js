@@ -38,29 +38,47 @@ function getDashboard(behavior){
           let data = response.data;
           //clear default and render user's trips information
           if(data.length > 0) {
-              container.innerHTML = '';
-          }
-          for (let d of data) {
-              let link = document.createElement('a');
-              link.href = "trip?id=" + d.trip_id;
-              container.appendChild(link);
-              let tripBlock = document.createElement('div');
-              tripBlock.className = "trip-block"
-              link.appendChild(tripBlock);
-              let tripImg = document.createElement('img');
-              tripImg.className = "trip-img";
-              tripImg.src = d.image;
-              tripBlock.appendChild(tripImg);
-              let tripTitle = document.createElement('p');
-              tripTitle.className = "trip-title";
-              tripTitle.innerHTML = d.name;
-              tripBlock.appendChild(tripTitle);
-              let tripDuration = document.createElement('p');
-              tripDuration.className = "trip-duration";
-              tripDuration.innerHTML = d.trip_start + " ~ " + d.trip_end;
-              tripBlock.appendChild(tripDuration);
-          }
-        
+              container.innerHTML = ""
+              for (let d of data) {
+                  let link = document.createElement('a');
+                  link.href = "trip?id=" + d.trip_id;
+                  container.appendChild(link);
+                  let tripBlock = document.createElement('div');
+                  tripBlock.className = "trip-block";
+                  link.appendChild(tripBlock);
+                  let tripImg = document.createElement('img');
+                  tripImg.className = "trip-img";
+                  setTimeout(()=>{
+                      tripImg.src = d.image;
+                      tripBlock.appendChild(tripImg);
+                      let tripTitle = document.createElement('p');
+                      tripTitle.className = "trip-title";
+                      tripTitle.innerHTML = d.name;
+                      tripBlock.appendChild(tripTitle);
+                      let tripDuration = document.createElement('p');
+                      tripDuration.className = "trip-duration";
+                      tripDuration.innerHTML = d.trip_start + " ~ " + d.trip_end;
+                      tripBlock.appendChild(tripDuration);
+                  }, 300)
+              }
+            } else {
+                if (behavior != 'archived') {
+                    let link = document.createElement('a');
+                    link.href = "trip?id=new";
+                    container.appendChild(link);
+                    let tripBlock = document.createElement('div');
+                    tripBlock.className = "trip-block";
+                    link.appendChild(tripBlock);
+                    let tripImg = document.createElement('img');
+                    tripImg.className = "trip-img";
+                    tripImg.src = "images/bg.jpg";
+                    tripBlock.appendChild(tripImg);
+                    let tripTitle = document.createElement('p');
+                    tripTitle.className = "trip-title";
+                    tripTitle.innerHTML = '新增旅程';
+                    tripBlock.appendChild(tripTitle);
+                }
+            }        
         }
       }
     };

@@ -1,4 +1,5 @@
 /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./node_modules/@fullcalendar/common/main.js":
@@ -7,7 +8,6 @@
   \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Component": () => (/* reexport safe */ _vdom_js__WEBPACK_IMPORTED_MODULE_1__.Component),
@@ -9163,7 +9163,6 @@ var version = '5.6.0'; // important to type it, so .d.ts has generic string
   \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Component": () => (/* binding */ Component),
@@ -9199,7 +9198,6 @@ var unmountComponentAtNode = FullCalendarVDom.unmountComponentAtNode;
   \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "BASE_OPTION_DEFAULTS": () => (/* reexport safe */ _fullcalendar_common__WEBPACK_IMPORTED_MODULE_1__.BASE_OPTION_DEFAULTS),
@@ -9550,7 +9548,6 @@ var Calendar = /** @class */ (function (_super) {
   \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var preact__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! preact */ "./node_modules/preact/dist/preact.module.js");
@@ -9641,7 +9638,6 @@ function unmountComponentAtNode(node) {
   \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
@@ -10822,7 +10818,6 @@ var main = (0,_fullcalendar_common__WEBPACK_IMPORTED_MODULE_1__.createPlugin)({
   \********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
@@ -13003,7 +12998,6 @@ var main = (0,_fullcalendar_common__WEBPACK_IMPORTED_MODULE_0__.createPlugin)({
   \*****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
@@ -14213,7 +14207,6 @@ var main = (0,_fullcalendar_common__WEBPACK_IMPORTED_MODULE_1__.createPlugin)({
   \******************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "DEFAULT_ID": () => (/* binding */ DEFAULT_ID),
@@ -14521,7 +14514,6 @@ class Loader {
   \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
@@ -14534,7 +14526,6 @@ __webpack_require__.r(__webpack_exports__);
   \*****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
@@ -14547,7 +14538,6 @@ __webpack_require__.r(__webpack_exports__);
   \******************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
@@ -14560,7 +14550,6 @@ __webpack_require__.r(__webpack_exports__);
   \**************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
@@ -14573,7 +14562,6 @@ __webpack_require__.r(__webpack_exports__);
   \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "render": () => (/* binding */ N),
@@ -14601,7 +14589,6 @@ var n,l,u,i,t,o,r={},f=[],e=/acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|z
   \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "__extends": () => (/* binding */ __extends),
@@ -14925,9 +14912,8 @@ function __classPrivateFieldSet(receiver, state, value, kind, f) {
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+// This entry need to be wrapped in an IIFE because it need to be isolated against other entry modules.
 (() => {
-"use strict";
 var __webpack_exports__ = {};
 /*!*************************!*\
   !*** ./src/calendar.js ***!
@@ -14937,8 +14923,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _fullcalendar_interaction__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @fullcalendar/interaction */ "./node_modules/@fullcalendar/interaction/main.js");
 /* harmony import */ var _fullcalendar_timegrid__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @fullcalendar/timegrid */ "./node_modules/@fullcalendar/timegrid/main.js");
 /* harmony import */ var _calendar_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./calendar.css */ "./src/calendar.css");
-/* harmony import */ var _googlemaps_js_api_loader__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @googlemaps/js-api-loader */ "./node_modules/@googlemaps/js-api-loader/dist/index.esm.js");
-
 
 
 
@@ -14976,7 +14960,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const calendarEl = document.getElementById('calendar');
   const calendar = new _fullcalendar_core__WEBPACK_IMPORTED_MODULE_0__.Calendar(calendarEl, {
     plugins: [_fullcalendar_timegrid__WEBPACK_IMPORTED_MODULE_2__.default, _fullcalendar_interaction__WEBPACK_IMPORTED_MODULE_1__.default],
-    initialView: 'tripView',
+    initialView: 'weekView',
     validRange: {
       start: start ,
       end: end
@@ -14987,6 +14971,7 @@ document.addEventListener('DOMContentLoaded', function() {
     droppable: true,
     slotMinTime: daystart || "00:00:00",
     slotMaxTime: dayend || "24:00:00",
+    scrollTime: "09:00:00",
     drop: function(info) {
         info.draggedEl.parentNode.removeChild(info.draggedEl);
       
@@ -14997,24 +14982,39 @@ document.addEventListener('DOMContentLoaded', function() {
         end: ''
     },
     footerToolbar: {
-      start: 'weekView',
-      center: 'tripView', 
+      start: 'dayView threeDaysView weekView tripView',
+      center: '', 
       end: 'prev,next'
     },
     views: {
         tripView: {
-        type: 'timeGrid',
-        duration: { days: duration },
-        buttonText: 'Show Full Trip',
-        allDaySlot: false,
-        slotEventOverlap: true
-      }, weekView: {
-        type: 'timeGrid',
-        duration: { days: 7 },
-        buttonText: '7 Days View',
-        allDaySlot: false,
-        slotEventOverlap: true
-      },
+          type: 'timeGrid',
+          duration: { days: duration },
+          buttonText: 'Show Full Trip',
+          allDaySlot: false,
+          slotEventOverlap: true
+        }, 
+        dayView: {
+          type: 'timeGrid',
+          duration: { days: 1 },
+          buttonText: 'Day View',
+          allDaySlot: false,
+          slotEventOverlap: true
+        },
+        threeDaysView: {
+          type: 'timeGrid',
+          duration: { days: 3 },
+          buttonText: '3 Days View',
+          allDaySlot: false,
+          slotEventOverlap: true
+        },
+        weekView: {
+          type: 'timeGrid',
+          duration: { days: 7 },
+          buttonText: '7 Days View',
+          allDaySlot: false,
+          slotEventOverlap: true
+        },
     }
   });  
 
@@ -15023,16 +15023,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-const loader = new _googlemaps_js_api_loader__WEBPACK_IMPORTED_MODULE_4__.Loader({
-  apiKey: "AIzaSyC7JZBoemp8yVauFZ_9J2cShM2J7uJqCjQ",
-  version: "weekly",
-});
-loader.load().then(() => {
-  map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: 48.864716, lng: 2.349014 },
-    zoom: 8,
-  });
-});
+
 })();
 
 // This entry need to be wrapped in an IIFE because it need to be isolated against other entry modules.
@@ -15040,6 +15031,21 @@ loader.load().then(() => {
 /*!*********************!*\
   !*** ./src/maps.js ***!
   \*********************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _googlemaps_js_api_loader__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @googlemaps/js-api-loader */ "./node_modules/@googlemaps/js-api-loader/dist/index.esm.js");
+
+
+// const loader = new Loader({
+//   apiKey: "AIzaSyC7JZBoemp8yVauFZ_9J2cShM2J7uJqCjQ",
+//   version: "weekly",
+// });
+// loader.load().then(() => {
+//   map = new google.maps.Map(document.getElementById("map"), {
+//     center: { lat: 48.864716, lng: 2.349014 },
+//     zoom: 8,
+//   });
+// });
+
 
 })();
 
