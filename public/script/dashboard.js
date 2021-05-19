@@ -40,16 +40,16 @@ function getDashboard(behavior){
           if(data.length > 0) {
               container.innerHTML = '';
           }
-          data.map( d => {
+          for (let d of data) {
               let link = document.createElement('a');
               link.href = "trip?id=" + d.trip_id;
               container.appendChild(link);
               let tripBlock = document.createElement('div');
               tripBlock.className = "trip-block"
               link.appendChild(tripBlock);
-              let tripImg = document.createElement('div');
+              let tripImg = document.createElement('img');
               tripImg.className = "trip-img";
-              tripImg.setAttribute('style', 'background-image: url('+ d.image +');')
+              tripImg.src = d.image;
               tripBlock.appendChild(tripImg);
               let tripTitle = document.createElement('p');
               tripTitle.className = "trip-title";
@@ -59,7 +59,8 @@ function getDashboard(behavior){
               tripDuration.className = "trip-duration";
               tripDuration.innerHTML = d.trip_start + " ~ " + d.trip_end;
               tripBlock.appendChild(tripDuration);
-          })
+          }
+        
         }
       }
     };
