@@ -4,7 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 module.exports = {
   mode: 'development',
   devtool: 'source-map',
-  entry: ['./src/calendar.js', './src/maps.js'],
+  entry: ['./src/calendar.js'],
   resolve: {
     extensions: [ '.js' ]
   },

@@ -6,77 +6,78 @@
     <link href='./dist/main.css' rel='stylesheet' />
     <script src='./dist/main.js'></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
   </head>
   <body>
-
+    
     <header>
-
+      
       <button id="back-dashboard" type="button" class="btn btn-outline-success" onclick="backToDashboard()">回主控台</button>
-        
-        <div id="nav-bar">
-          <!-- Single danger button -->
-          <div class="btn-group">
-            <button id="settings" class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              編輯
-            </button>
-            <div class="dropdown-menu">
-              <a class="dropdown-item" href="#">設定旅行日期</a>    
-              <a class="dropdown-item" href="#">設定外出時段</a>
-              <a class="dropdown-item" href="#">封存行程</a>
-            </div>
-          </div>
-
-          <!-- Single danger button -->
-          <div class="btn-group">
-            <button id="automation" class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              自動化
-            </button>
-            <div class="dropdown-menu">
-              <a class="dropdown-item" href="#">計算交通時間</a>
-              <a class="dropdown-item" href="#">設定偏好交通工具</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">自動安排行程</a>
-              <a class="dropdown-item" href="#">設定啟程城市</a>
-              <a class="dropdown-item" href="#">設定最大步行時間</a>
-            </div>
-          </div>
-        </div> 
-  
-        <div id="undo-redo" class="btn-group" role="group" aria-label="Basic example">
-          <button type="button" class="btn btn-outline-secondary btn-sm">Undo</button>
-          <button type="button" class="btn btn-outline-secondary btn-sm">Redo</button>
-        </div>
-
-        <div id="trip-title" class="col-sm-4 col-sm-offset-4">
-          <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="未命名行程" aria-label="" aria-describedby="basic-addon2">
-            <div class="input-group-append">
-              <button class="btn btn-outline-secondary" type="button">儲存</button>
-            </div>
-          </div>
-        </div>
-
-
+      
+      <div id="nav-bar">
         <!-- Single danger button -->
-        <div id="account" class="btn-group">
-          <button id="automation" class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            帳號
+        <div class="btn-group">
+          <button id="settings" class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            編輯
           </button>
           <div class="dropdown-menu">
-            <a class="dropdown-item" href="#">切換行程：</a>
-            <a class="dropdown-item" href="#">跟媽媽去巴黎</a>
-            <a class="dropdown-item" href="#">澎湖花火節</a>
-            <a class="dropdown-item" href="#">AppWorks一日遊</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">帳號設定</a>
-            <a class="dropdown-item" href="#">登出</a>
+            <a class="dropdown-item" href="#">設定旅行日期</a>    
+            <a class="dropdown-item" href="#">設定外出時段</a>
+            <a class="dropdown-item" href="#">封存行程</a>
           </div>
         </div>
         
-        <button id="share" type="button" class="btn btn-outline-success">共用</button>
-        
+        <!-- Single danger button -->
+        <div class="btn-group">
+          <button id="automation" class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            自動化
+          </button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="#">計算交通時間</a>
+            <a class="dropdown-item" href="#">設定偏好交通工具</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">自動安排行程</a>
+            <a class="dropdown-item" href="#">設定啟程城市</a>
+            <a class="dropdown-item" href="#">設定最大步行時間</a>
+          </div>
+        </div>
+      </div> 
+      
+      <div id="undo-redo" class="btn-group" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-outline-secondary btn-sm">Undo</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm">Redo</button>
+      </div>
+      
+      <div id="trip-title" class="col-sm-4 col-sm-offset-4">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="未命名行程" aria-label="" aria-describedby="basic-addon2">
+          <div class="input-group-append">
+            <button id="save-trip-name" class="btn btn-outline-secondary" type="button">儲存</button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <!-- Single danger button -->
+      <div id="account" class="btn-group">
+        <button id="automation" class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          帳號
+        </button>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="#">切換行程：</a>
+          <a class="dropdown-item" href="#">跟媽媽去巴黎</a>
+          <a class="dropdown-item" href="#">澎湖花火節</a>
+          <a class="dropdown-item" href="#">AppWorks一日遊</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">帳號設定</a>
+          <a class="dropdown-item" href="#">登出</a>
+        </div>
+      </div>
+      
+      <button id="share" type="button" class="btn btn-outline-success">共用</button>
+      
     </header>
-
+    
     <main>
       <div class="flex-row" id="main">
         <!-- [START] CALENDAR CONTAINER -->
@@ -84,30 +85,24 @@
           <div id='calendar'></div>
         </div>
         <!-- [END] CALENDAR CONTAINER -->
-
+        
         <!-- [START] --------------------------RIGHT SIDE-------------------------- --> 
         <div class='right_side' class='flex-col'>
-
+          
           <div id="scroll-area" class="flex-row">
             <div class="scroll-container">
-              <div class="col-sm-13 col-sm-offset-7">
-                <div class="input-group mb-3">
-                  <input id="search" type="text" class="form-control" placeholder="搜尋新景點" aria-label="" aria-describedby="basic-addon2">
-                  <div class="input-group-append">
-                    <button class="btn btn-outline-dark" type="button" onclick="searchSpots()">搜尋</button>
-                  </div>
-                </div>
-              </div>
-
+              
+              
               <!-- [START] EXTERNAL EVENT BLOCK -->
               <div id='external-events'>
-                <div class='fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event'>
-                  <div class='fc-event-main'>凱旋門</div>
+                <div class="flex-row">
+                  <span id='spots-list-title'>景點清單:</span>
+                  <span id='delete-message'>雙擊以刪除景點</span>
                 </div>
               </div>
               <!-- [END] EXTERNAL EVENT BLOCK -->
             </div>
-
+            
             <div id="cities-container">
               <div class='city'>顯示全部</div>
               <div class='city'>巴黎</div>
@@ -117,16 +112,29 @@
               <div class='city'>哥本哈根</div>
               <div class='city'>柏林</div>
             </div>
-        </div>
-
+          </div>
+          
           <div id="google_maps_container">
+            <div style="display: none">
+              <input
+              id="pac-input"
+              class="controls"
+              type="text"
+              placeholder="搜尋景點"
+              />
+            </div>
             <div id="map"></div>
+            <div id="infowindow-content">
+              <span id="place-name" class="title"></span><br />
+              <strong>Place ID</strong>: <span id="place-id"></span><br />
+              <span id="place-address"></span>
+            </div>
           </div>
         </div>
         <!-- [END] --------------------------RIGHT SIDE-------------------------- --> 
       </div>
     </main>
-
+    
     <footer>
       footer area
     </footer>
@@ -134,12 +142,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="css/trip.css">
+    <script src="./script/trip.js"></script>
     <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7JZBoemp8yVauFZ_9J2cShM2J7uJqCjQ&callback=initMap&libraries=&v=weekly"
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7JZBoemp8yVauFZ_9J2cShM2J7uJqCjQ&callback=initMap&libraries=places&v=weekly"
     async
     ></script>
-    <script src="./script/trip.js"></script>
     
-
   </body>
-</html>
+  </html>
