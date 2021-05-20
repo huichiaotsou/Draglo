@@ -6,6 +6,12 @@ const beaches = [
   ["Maroubra Beach", -33.950198, 151.259302, 1],
 ];
 
+main();
+
+function main () {
+  initMap(beaches)
+}
+
 function initMap(beaches) {
     const map = new google.maps.Map(document.getElementById("map"), {
       zoom: 10,
@@ -31,7 +37,7 @@ function initMap(beaches) {
         zIndex: beach[3],
       });
       let infowindow = new google.maps.InfoWindow({
-        content:`<h5 id='beach'>Beach</h5><br><button onclick="createEvent()"> 新增景點 </button>`
+        content:`<button onclick="createEvent('hello')"> ADD </button>`
       });
       new google.maps.event.addListener(marker, 'click', function() {
         infowindow.open(map,marker);
@@ -43,7 +49,6 @@ function initMap(beaches) {
 function backToDashboard() {
     location.assign('/dashboard.html')
 }
-
 
 function searchSpots(){
     let search = document.getElementById('search').value;
@@ -69,9 +74,7 @@ function searchSpots(){
 }
 
 
-function createEvent(){
-    let spotName = document.getElementById('beach').innerHTML;
-    console.log(spotName);
+function createEvent(spotName){
     let eventContainer = document.getElementById('external-events');
     let event = document.createElement('div');
     event.className = 'fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event';
