@@ -91,7 +91,8 @@ function getDashboard(behavior){
                   }, 650)
               }
             } else {
-                if (behavior != 'archived') {
+                container.innerHTML = ""
+                if (behavior == null) {
                     let link = document.createElement('a');
                     link.setAttribute('onclick', 'createTrip()')
                     container.appendChild(link);
