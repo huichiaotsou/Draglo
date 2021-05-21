@@ -93,7 +93,7 @@ function getDashboard(behavior){
             } else {
                 if (behavior != 'archived') {
                     let link = document.createElement('a');
-                    link.href = "trip?id=new";
+                    link.setAttribute('onclick', 'createTrip()')
                     container.appendChild(link);
                     let tripBlock = document.createElement('div');
                     tripBlock.className = "trip-block";
