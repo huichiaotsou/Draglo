@@ -5,7 +5,7 @@ if (accessToken) {
     // 驗tripid 是否屬於author or contributors
     getTripSettings(accessToken, tripId);
 } else { 
-    location.assign('/signin.html');
+    location.assign('/index.html');
 }
 
 function getTripSettings(accessToken, tripId) {
@@ -265,7 +265,7 @@ window.addEventListener('storage', ()=>{
 
 function signOut() {
     document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    location.assign('/signin.html');
+    location.assign('/index.html');
 }
 
 //clear local storage

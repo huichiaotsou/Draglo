@@ -3,7 +3,7 @@ let accessToken = document.cookie.split('=')[1];
 if (accessToken) {
     getDashboard()
 } else { //if no token, redirect to sign in page
-    location.assign('/signin.html');
+    location.assign('/index.html');
 }
 
 function createTrip() {
@@ -19,9 +19,9 @@ function createTrip() {
               Swal.fire({
                 position: 'center',
                 icon: 'success',
-                title: '為您創建新旅程',
+                title: '創建新旅程',
                 showConfirmButton: false,
-                timer: 1000
+                timer: 1100
               });
               setTimeout(()=>{
                   location.assign(`/trip.html?id=${response.tripId}`);
@@ -35,7 +35,7 @@ function createTrip() {
 
 function signOut() {
     document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    location.assign('/signin.html');
+    location.assign('/index.html');
 }
 
 function getDashboard(behavior){
@@ -59,7 +59,7 @@ function getDashboard(behavior){
         if (xhr.status != 200) {
           alert('Please sign in again!');
           document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-          window.location.assign('/signin.html');
+          window.location.assign('/index.html');
         } else if (xhr.status == 200) {
           let response = JSON.parse(xhr.responseText);
           let data = response.data;
@@ -88,7 +88,7 @@ function getDashboard(behavior){
                       tripDuration.className = "trip-duration";
                       tripDuration.innerHTML = tripStart + " ~ " + tripEnd;
                       tripBlock.appendChild(tripDuration);
-                  }, 600)
+                  }, 650)
               }
             } else {
                 if (behavior != 'archived') {

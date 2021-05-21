@@ -38,7 +38,7 @@ function signUp() {
           location.assign('/dashboard.html');
         } else if (xhr.status === 403) {
           alert('Email已被使用，請登入');
-          location.assign('/signin.html');
+          location.assign('/index.html');
         }
       };
     };
