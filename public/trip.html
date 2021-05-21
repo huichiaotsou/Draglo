@@ -7,11 +7,12 @@
     <script src='./dist/main.js'></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="./script/trip.js"></script>
   </head>
   <body>
     
-    <header>
-      
+    <header>      
       <button id="back-dashboard" type="button" class="btn btn-outline-success" onclick="backToDashboard()">回主控台</button>
       
       <div id="nav-bar">
@@ -21,9 +22,10 @@
             編輯
           </button>
           <div class="dropdown-menu">
-            <a class="dropdown-item" href="#">設定旅行日期</a>    
-            <a class="dropdown-item" href="#">設定外出時段</a>
-            <a class="dropdown-item" href="#">封存行程</a>
+            <a class="dropdown-item" onclick="changeTripPeriod()">設定旅行區間</a>    
+            <a class="dropdown-item" onclick="archiveTrip(1)" id="archive-trip">封存行程</a>
+            <a class="dropdown-item" onclick="archiveTrip(2)" id="delete-trip">刪除行程</a>
+            <a class="dropdown-item" onclick="archiveTrip(0)" id="recover-trip">回復行程</a>
           </div>
         </div>
         
@@ -43,16 +45,11 @@
         </div>
       </div> 
       
-      <div id="undo-redo" class="btn-group" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-outline-secondary btn-sm">Undo</button>
-        <button type="button" class="btn btn-outline-secondary btn-sm">Redo</button>
-      </div>
-      
       <div id="trip-title" class="col-sm-4 col-sm-offset-4">
         <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="未命名行程" aria-label="" aria-describedby="basic-addon2">
+          <input id="trip-name" type="text" class="form-control" placeholder="未命名行程" aria-label="" aria-describedby="basic-addon2">
           <div class="input-group-append">
-            <button id="save-trip-name" class="btn btn-outline-secondary" type="button">儲存</button>
+            <button id="save-trip-name" class="btn btn-outline-secondary" type="button" onclick="updateTripName()">儲存</button>
           </div>
         </div>
       </div>
@@ -63,14 +60,11 @@
         <button id="automation" class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           帳號
         </button>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" href="#">切換行程：</a>
-          <a class="dropdown-item" href="#">跟媽媽去巴黎</a>
-          <a class="dropdown-item" href="#">澎湖花火節</a>
-          <a class="dropdown-item" href="#">AppWorks一日遊</a>
-          <div class="dropdown-divider"></div>
+        <div class="dropdown-menu" id="account-setting">
           <a class="dropdown-item" href="#">帳號設定</a>
-          <a class="dropdown-item" href="#">登出</a>
+          <a class="dropdown-item" onclick="signOut()">登出</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">我的其他行程：</a>
         </div>
       </div>
       
@@ -142,7 +136,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="css/trip.css">
-    <script src="./script/trip.js"></script>
+    <script src="./script/map.js"></script>
     <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7JZBoemp8yVauFZ_9J2cShM2J7uJqCjQ&callback=initMap&libraries=places&v=weekly"
     async

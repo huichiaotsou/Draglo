@@ -11,8 +11,6 @@ function signUp() {
         alert('Please provide complete information')
         return;
     }
-    console.log(password);
-    console.log(confirmPassword);
     if (password != confirmPassword) {
         alert('Passwords are not identical');
         return;

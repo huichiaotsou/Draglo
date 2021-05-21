@@ -5,6 +5,7 @@ nav {
 a, a:hover {
     text-decoration: none;
     color: gray;
+    cursor: pointer;
 }
 
 

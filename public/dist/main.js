@@ -14620,25 +14620,18 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-document.addEventListener('DOMContentLoaded', function() {
-  
-  //get calendar setting from URL
-  const urlParams = new URLSearchParams(window.location.search);
-  // const start = new Date(urlParams.get('start')),
-  // const end = new Date(urlParams.get('end'))
-  // const duration = 1 + (end.getTime() - start.getTime()) / (1000 * 3600 * 24);
-  const start = new Date('2021-07-20');
-  const end = new Date('2021-07-28');
-  const duration = 9;
-  
-  const daystart = urlParams.get('daystart');
-  const dayend = urlParams.get('datend');
-  
+window.addEventListener('storage', function() {
+  const tripSettingsString = localStorage.getItem('trip_settings');
+  const tripSettings = JSON.parse(tripSettingsString);
+  const start = tripSettings.trip_start
+  const end = tripSettings.trip_end
+  const duration = tripSettings.duration; 
+
   // initialize the calendar
   // -----------------------------------------------------------------
   const calendarEl = document.getElementById('calendar');
   const calendar = new _fullcalendar_core__WEBPACK_IMPORTED_MODULE_0__.Calendar(calendarEl, {
-    timeZone: 'UTC',
+    timeZone: 'local',
     plugins: [_fullcalendar_timegrid__WEBPACK_IMPORTED_MODULE_2__.default, _fullcalendar_interaction__WEBPACK_IMPORTED_MODULE_1__.default],
     initialView: 'weekView',
     validRange: {
@@ -14649,8 +14642,8 @@ document.addEventListener('DOMContentLoaded', function() {
     editable: true,
     eventResizableFromStart: true,
     droppable: true,
-    slotMinTime: daystart || "00:00:00",
-    slotMaxTime: dayend || "24:00:00",
+    slotMinTime: "00:00:00",
+    slotMaxTime: "24:00:00",
     scrollTime: "09:00:00",
     drop: function(info) {
       info.draggedEl.parentNode.removeChild(info.draggedEl);
@@ -14658,8 +14651,8 @@ document.addEventListener('DOMContentLoaded', function() {
     eventDragStop: function( event ) {
       let {publicId, title} = event.event._def
       let jsEvent = event.jsEvent;
-      calendar.getEventById(publicId).remove()
       if (isEventOut(jsEvent.clientX, jsEvent.clientY)) {
+        calendar.getEventById(publicId).remove()
         let eventContainer = document.getElementById('external-events');
         let eventBack = document.createElement('div');
         eventBack.className = 'fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event';
@@ -14723,17 +14716,15 @@ let isEventOut = function(x, y) {
   return false;
 }
 
-
-
   // initialize events
   // -----------------------------------------------------------------
   const containerEl = document.getElementById('external-events');
   new _fullcalendar_interaction__WEBPACK_IMPORTED_MODULE_1__.Draggable(containerEl, {
     itemSelector: '.fc-event',
-    eventData: function (eventEl) {
+    eventData: function (event) {
       return {
-        id: eventEl.id,
-        title: eventEl.innerText,
+        id: event.id,
+        title: event.innerText,
         duration: '02:00'
       }; //create event blocks with duration 2 hours
     }

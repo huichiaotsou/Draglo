@@ -12,7 +12,8 @@ app.use('/',
     //authenticator(ROLE),
     [
         require('./server/route/user_route'),
-        require('./server/route/automation_route')
+        require('./server/route/automation_route'),
+        require('./server/route/trip_route')
     ]
 )
 

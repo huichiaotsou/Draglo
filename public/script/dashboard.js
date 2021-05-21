@@ -6,13 +6,40 @@ if (accessToken) {
     location.assign('/signin.html');
 }
 
+function createTrip() {
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', '/trip');
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          if (xhr.status != 200) {
+              alert('Create Trip failed, please try again later');
+          }
+          if(xhr.status == 200) {
+              let response = JSON.parse(xhr.responseText); 
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: '為您創建新旅程',
+                showConfirmButton: false,
+                timer: 1000
+              });
+              setTimeout(()=>{
+                  location.assign(`/trip.html?id=${response.tripId}`);
+              }, 1100)
+          }
+        }
+    }
+    xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
+    xhr.send();
+}
+
 function signOut() {
     document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     location.assign('/signin.html');
 }
 
-let container = document.getElementById('trips-container');
 function getDashboard(behavior){
+    let container = document.getElementById('trips-container');
     let keyword = document.getElementById('keyword').value;
     let xhr = new XMLHttpRequest();
     if (keyword) {
@@ -29,11 +56,11 @@ function getDashboard(behavior){
     }
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
-        if (xhr.status !== 200) {
+        if (xhr.status != 200) {
           alert('Please sign in again!');
           document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
           window.location.assign('/signin.html');
-        } else if (xhr.status === 200) {
+        } else if (xhr.status == 200) {
           let response = JSON.parse(xhr.responseText);
           let data = response.data;
           //clear default and render user's trips information
@@ -41,7 +68,7 @@ function getDashboard(behavior){
               container.innerHTML = ""
               for (let d of data) {
                   let link = document.createElement('a');
-                  link.href = "trip?id=" + d.trip_id;
+                  link.href = "/trip.html?id=" + d.trip_id;
                   container.appendChild(link);
                   let tripBlock = document.createElement('div');
                   tripBlock.className = "trip-block";
@@ -56,10 +83,12 @@ function getDashboard(behavior){
                       tripTitle.innerHTML = d.name;
                       tripBlock.appendChild(tripTitle);
                       let tripDuration = document.createElement('p');
+                      let tripStart = d.trip_start.split('T')[0];
+                      let tripEnd = d.trip_end.split('T')[0];
                       tripDuration.className = "trip-duration";
-                      tripDuration.innerHTML = d.trip_start + " ~ " + d.trip_end;
+                      tripDuration.innerHTML = tripStart + " ~ " + tripEnd;
                       tripBlock.appendChild(tripDuration);
-                  }, 300)
+                  }, 600)
               }
             } else {
                 if (behavior != 'archived') {
