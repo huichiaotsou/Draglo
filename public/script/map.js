@@ -2,7 +2,6 @@ function backToDashboard() {
   location.assign('/dashboard.html')
 }
 
-
 // Maps API
 function initMap() {
   const map = new google.maps.Map(document.getElementById("map"), {
@@ -63,9 +62,9 @@ function popUpAddSpot(spotName, placeId) {
     confirmButtonText: 'OK',
     confirmButtonColor: '#3085d6'
   }).then((result) => {
-    /* Read more about isConfirmed, isDenied below */
     if (result.isConfirmed) {
       createEvent(spotName, placeId);
+      insertSpotInfo(spotName, placeId);
     } 
   })
 }
@@ -82,6 +81,17 @@ function createEvent(spotName, placeId){
     eventDetails.innerHTML = spotName;
     eventDetails.dataset.place_id = placeId;
     event.appendChild(eventDetails);
+}
+
+function insertSpotInfo(spotName, placeId) {
+  let xhr = new XMLHttpRequest();
+  xhr.open('POST', '/spots');
+  xhr.onreadystatechange = function () {
+
+  }
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
+  xhr.send(data);
 }
 
 function removeEvent(placeId) {

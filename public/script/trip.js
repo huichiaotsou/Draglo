@@ -136,7 +136,11 @@ function modifyTripDuration(tripId, tripStart, tripEnd) {
                     timer: 1000
                 })
             } else if (xhr.status == 403) {
-                alert('Permission Denied')
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: '您的權限不足',
+                  })                  
             } else {
                 alert('Server Error, please try again later')
             }
@@ -166,7 +170,11 @@ function updateTripName() {
                     timer: 1000
                 })
             } else if (xhr.status == 403) {
-                alert('Permission Denied')
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: '您的權限不足',
+                  })     
             }
         }
     };
@@ -220,7 +228,11 @@ function archiveTrip(action) {
                     })
                 }
             } else if (xhr.status == 403) {
-                alert('Permission Denied')
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: '您的權限不足',
+                  })
             }
         }
     };
