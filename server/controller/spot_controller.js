@@ -20,6 +20,10 @@ const addSpot = async (req, res, next) => {
                 //find city: either in locality or in admin level 1
                 let city;
                 for (let component of result.address_components) {
+                    if( component.types[0] == 'postal_town'){
+                        city = component.short_name;
+                        break
+                    }
                     if (component.types[0] == 'locality') {
                         city = component.short_name;
                         break;
@@ -30,8 +34,11 @@ const addSpot = async (req, res, next) => {
                     }
                 }
 
-                let photoPath = process.env.PHOTO_PATH + result.photos[0].photo_reference;
-                await Trip.updateImage(tripId, photoPath);
+                if(result.photos[0]) {
+                    let photoPath = process.env.PHOTO_PATH + result.photos[0].photo_reference;
+                    await Trip.updateImage(tripId, photoPath);
+                }
+
                 let spotInfo = {
                     google_id: placeId,
                     city: city,
@@ -48,25 +55,34 @@ const addSpot = async (req, res, next) => {
                 //record open days
                 if (result.opening_hours) {
                     let periods = result.opening_hours.periods;
-                    spotInfo.open_days = periods.map(status => status.open.day);
-                    spotInfo.open_hour = periods[0].open.time;
-                    spotInfo.closed_hour = periods[0].close.time;
+                    spotInfo.open_days = periods.map(status => status.open.day).toString();
+                    if (periods[0].open) {
+                        spotInfo.open_hour = periods[0].open.time;
+                    }
+                    if (periods[0].close) {
+                        spotInfo.closed_hour = periods[0].close.time;
+                    }
                 }
 
-                let spotAdded = await Spot.addSpot(spotInfo);
+                //init arrangements
+                let initArrangements = {
+                    trip_id: tripId,
+                    user_id: userId,
+                    is_arranged: 0
+                }
+
+                let spotAdded = await Spot.addSpot(spotInfo, initArrangements);
 
                 if(spotAdded.error){
                     res.sendStatus(500);
                 } else {
-                    res.status(200).send({city: spotInfo.city})
+                    res.sendStatus(200);
                 }
             });
     } else {
         res.sendStatus(403);
     }
 }
-
-
 
 
 

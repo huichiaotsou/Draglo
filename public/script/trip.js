@@ -105,7 +105,7 @@ function changeTripPeriod() {
                             icon: 'error',
                             title: 'Oops...',
                             text: '行程結束日不得早於開始日',
-                          })                          
+                          })
                     } else {
                         modifyTripDuration(tripId, currentTripStart, newEndDate);
                     }

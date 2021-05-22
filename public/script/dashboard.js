@@ -34,8 +34,16 @@ function createTrip() {
 }
 
 function signOut() {
+    Swal.fire({
+        icon: 'success',
+        title: '下次再會 :)',
+        showConfirmButton: false,
+        timer: 700
+      });
     document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    location.assign('/index.html');
+    setTimeout(()=>{
+        location.assign('/index.html');
+    }, 700)
 }
 
 function getDashboard(behavior){

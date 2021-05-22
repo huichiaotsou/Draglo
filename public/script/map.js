@@ -44,7 +44,6 @@ function initMap() {
         location: results[0].geometry.location,
       });
       marker.setVisible(true);
-      console.log(results);
 
       infowindowContent.children["place-name"].textContent = place.name;
       infowindowContent.children["place-id"].textContent = place.name;
@@ -53,6 +52,11 @@ function initMap() {
     });
   });
 }
+
+//init pending arrangements list
+window.addEventListener('storage', ()=>{
+  getPendingArrangements(null, JSON.parse(localStorage.getItem('trip_settings')).id);
+})
 
 function popUpAddSpot(spotName, placeId) {
   Swal.fire({
@@ -79,13 +83,13 @@ function saveSpotInfo(spotName, placeId) {
   xhr.onreadystatechange = function () {
     if(xhr.readyState == 4) {
       if(xhr.status == 200) {
-        let city = JSON.parse(xhr.responseText).city
-        createEvent(spotName, placeId, city);
+        console.log('reload getPendingArrangements for save spot INfo');
+        getPendingArrangements(null, data.tripId)
       } else {
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
-          text: '新增失敗，請再試一次或聯絡網站管理員',
+          text: '景點新增失敗，請再試一次或聯絡網站管理員',
         }) 
       }
     }
@@ -95,22 +99,64 @@ function saveSpotInfo(spotName, placeId) {
   xhr.send(JSON.stringify(data));
 }
 
-function createEvent(spotName, placeId, cityName) {
-  //push in events container 
-  let eventContainer = document.getElementById('external-events');
-  let event = document.createElement('div');
-  event.className = 'fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event';
-  event.setAttribute('id', placeId)
-  event.setAttribute('ondblclick', `removeEvent('${placeId}')`)
-  eventContainer.appendChild(event);
-  let eventDetails = document.createElement('div');
-  eventDetails.className = 'fc-event-main';
-  eventDetails.innerHTML = spotName;
-  eventDetails.dataset.place_id = placeId;
-  event.appendChild(eventDetails);
+function getPendingArrangements(city, tripId) {
+  let xhr = new XMLHttpRequest();
+  if (city) {
+    xhr.open('GET', `/arrangement?status=pending&id=${tripId}&city=${city}`);
+  } else {
+    xhr.open('GET', `/arrangement?status=pending&id=${tripId}`);
   }
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4) {
+      if (xhr.status == 200) {
+        let response = JSON.parse(xhr.responseText);
+        let { cities, spots } = response;
+    
+        //append spots
+        let spotsContainer = document.getElementById('external-events');
+        spotsContainer.innerHTML = '';
+        spots.map( s =>{
+          let spot = document.createElement('div');
+          spot.className = 'fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event';
+          spot.setAttribute('id', s.google_id)
+          spot.setAttribute('ondblclick', `removeEvent('${s.spot_id}', '${tripId}')`)
+          spotsContainer.appendChild(spot);
+          let spotDetails = document.createElement('div');
+          spotDetails.className = 'fc-event-main';
+          spotDetails.innerHTML = `${s.name}<br>@ ${s.city}`;
+          spotDetails.dataset.place_id = s.google_id;
+          spot.appendChild(spotDetails); 
+        })
+    
+        //append cities
+        let citiesContainer = document.getElementById('cities-container');
+        citiesContainer.innerHTML = '';
+        let showAll = document.createElement('div');
+        showAll.className = 'city';
+        showAll.innerHTML = '顯示全部';
+        showAll.setAttribute('onclick', `getPendingArrangements(${null}, ${tripId})`);
+        citiesContainer.appendChild(showAll)
+        cities.map(cityName => {
+          let city = document.createElement('div');
+          city.className = 'city';
+          city.innerHTML = cityName;
+          city.setAttribute('onclick', `getPendingArrangements('${cityName}', ${tripId})`);
+          citiesContainer.appendChild(city)
+        })
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: '景點重整失敗，請再試一次或聯絡網站管理員',
+        }) 
+      }
+    }
+  }
+  xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
+  xhr.send();
+}
 
-function removeEvent(placeId) {
+function removeEvent(spotId, tripId) {
   Swal.fire({
     position: 'top-end',
     title: '確認刪除景點',
@@ -122,10 +168,22 @@ function removeEvent(placeId) {
     confirmButtonText: 'OK'
   }).then((result) => {
     if (result.isConfirmed) {
-      //delete event from events container
-      let eventContainer = document.getElementById('external-events');
-      let event = document.getElementById(placeId);
-      eventContainer.removeChild(event);
+      //set is_arranged to -1 and reload spot list
+      let data = {
+        spotId,
+        tripId
+      }
+      let xhr = new XMLHttpRequest();
+      xhr.open('DELETE', '/arrangement');
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            getPendingArrangements(null, tripId);
+        }
+      }
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
+      xhr.send(JSON.stringify(data));      
+
     }
   })
 }

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { createTrip, getTripSettings, modifyTripSettings } = require('../controller/trip_controller');
 const { addSpot, removeSpot, getSavedSpots } = require('../controller/spot_controller');
+const { getArrangements, removeArrangement } = require('../controller/arrangement_controller');
 
 router.route('/trip')
     .post( createTrip )
@@ -13,10 +14,11 @@ router.route('/spot')
     .delete( removeSpot )
     .get( getSavedSpots )
 
-// router.route('/arrangement')
-//     .post( addArrangements )     （arrangement時要平均spots 的 linger time）
-//     .patch( modifyArrangements )
-//     .get( getArrangements )
+router.route('/arrangement')
+    .get( getArrangements )
+    .delete( removeArrangement )
+    // .post( arrangeSpots )
+//     .patch( modifyArrangements ) -> (修改arrangement的linger time 時要平均spots 的 linger time）
 
 // router.route('/itinerary')
 //     .post( saveCalculatedItinerary )

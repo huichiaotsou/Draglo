@@ -32,10 +32,17 @@ function signUp() {
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
+          Swal.fire({
+            icon: 'success',
+            title: '註冊成功',
+            showConfirmButton: false,
+            timer: 700
+          })
           const serverResponse = JSON.parse(xhr.responseText);
           document.cookie = `access_token = ${serverResponse.data.access_token}`;
-          alert('註冊成功');
-          location.assign('/dashboard.html');
+          setTimeout(()=>{
+            window.location.assign('/dashboard.html');
+          }, 700)
         } else if (xhr.status === 403) {
           alert('Email已被使用，請登入');
           location.assign('/index.html');
