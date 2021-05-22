@@ -5,6 +5,8 @@ if (document.cookie) {
 function signIn() {
     let email = document.getElementById('email').value;
     let password = document.getElementById('password-field').value;
+    console.log(email);
+    console.log(password);
     if(!email || !password) {
         alert('please enter login information')
         return;
@@ -15,7 +17,8 @@ function signIn() {
     };
   
     let userData = JSON.stringify(user);
-  
+    console.log(userData);
+    
     //AJAX
     const xhr = new XMLHttpRequest();
     xhr.open('POST', '/signin');

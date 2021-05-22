@@ -1,11 +1,12 @@
 const Trip = require('../model/trip_model')
+const { checkOwnership } = require('../../utils/utils')
 
 const createTrip = async (req, res, next) => {
     let { id } = req.user;
     let start = new Date();
     let now = new Date()
     let end = new Date (now.setDate(now.getDate() + 6));
-    let initialTrip = {
+    let initTrip = {
         name: '未命名行程',
         trip_start: start,
         trip_end: end,
@@ -15,18 +16,18 @@ const createTrip = async (req, res, next) => {
         user_id: id,
         image: '/images/bg.jpg'
     }
-    let result = await Trip.createTrip(initialTrip);
+    let result = await Trip.createTrip(initTrip);
     res.status(200).send({tripId: result});
 }
 
 const getTripSettings = async (req, res, next) => {
     let userId = req.user.id;
     let tripId = req.query.id;
-    let checkOwnership = await Trip.checkOwnership(userId, tripId);
-    let role = checkOwnership.role;
+    let ownership = await checkOwnership(userId, tripId);
+    let role = ownership.role;
     if(role == 'author' || role == 'contributor') {
         let result =  await Trip.getTripSettings(userId, tripId);
-        result.duration = (result.trip_end - result.trip_start)/(1000*60*60*24) + 1;
+        result.duration = (result.trip_end - result.trip_start) / (1000 * 60 * 60 * 24) + 1;
         res.status(200).send(result);
     } else if (!tripId) {
         res.sendStatus(400);
@@ -40,8 +41,8 @@ const modifyTripSettings = async (req, res, next) => {
     let { tripId, tripStart, tripEnd, modify, tripName, archived } = req.body;
     tripStart = new Date(tripStart);
     tripEnd = new Date(tripEnd);
-    let checkOwnership = await Trip.checkOwnership(userId, tripId);
-    let role = checkOwnership.role;
+    let ownership = await checkOwnership(userId, tripId);
+    let role = ownership.role;
     if(role == 'author') {
         if(modify == 'duration') {
             let result = await Trip.updateDuration(tripId, tripStart, tripEnd);

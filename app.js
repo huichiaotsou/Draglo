@@ -6,14 +6,17 @@ app.listen(4000, ()=>{
     console.log('app running on port 4000');
 })
 
+const { verifyToken } = require('./utils/utils')
+
 app.use(express.static('public'));
+
+//rateLimiter
+app.use('/', require('./server/route/user_route'))
 app.use('/',
-    //rateLimiter,
-    //authenticator(ROLE),
+    verifyToken,
     [
-        require('./server/route/user_route'),
         require('./server/route/automation_route'),
-        require('./server/route/trip_route')
+        require('./server/route/trip_route'),
     ]
 )
 

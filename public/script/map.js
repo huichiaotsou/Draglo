@@ -63,36 +63,52 @@ function popUpAddSpot(spotName, placeId) {
     confirmButtonColor: '#3085d6'
   }).then((result) => {
     if (result.isConfirmed) {
-      createEvent(spotName, placeId);
-      insertSpotInfo(spotName, placeId);
+      saveSpotInfo(spotName, placeId);
     } 
   })
 }
 
-function createEvent(spotName, placeId){
-    let eventContainer = document.getElementById('external-events');
-    let event = document.createElement('div');
-    event.className = 'fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event';
-    event.setAttribute('id', placeId)
-    event.setAttribute('ondblclick', `removeEvent('${placeId}')`)
-    eventContainer.appendChild(event);
-    let eventDetails = document.createElement('div');
-    eventDetails.className = 'fc-event-main';
-    eventDetails.innerHTML = spotName;
-    eventDetails.dataset.place_id = placeId;
-    event.appendChild(eventDetails);
-}
-
-function insertSpotInfo(spotName, placeId) {
+function saveSpotInfo(spotName, placeId) {
+  let data = {
+    spotName,
+    placeId,
+    tripId: JSON.parse(localStorage.getItem('trip_settings')).id
+  }
   let xhr = new XMLHttpRequest();
-  xhr.open('POST', '/spots');
+  xhr.open('POST', '/spot');
   xhr.onreadystatechange = function () {
-
+    if(xhr.readyState == 4) {
+      if(xhr.status == 200) {
+        let city = JSON.parse(xhr.responseText).city
+        createEvent(spotName, placeId, city);
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: '新增失敗，請再試一次或聯絡網站管理員',
+        }) 
+      }
+    }
   }
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
-  xhr.send(data);
+  xhr.send(JSON.stringify(data));
 }
+
+function createEvent(spotName, placeId, cityName) {
+  //push in events container 
+  let eventContainer = document.getElementById('external-events');
+  let event = document.createElement('div');
+  event.className = 'fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event';
+  event.setAttribute('id', placeId)
+  event.setAttribute('ondblclick', `removeEvent('${placeId}')`)
+  eventContainer.appendChild(event);
+  let eventDetails = document.createElement('div');
+  eventDetails.className = 'fc-event-main';
+  eventDetails.innerHTML = spotName;
+  eventDetails.dataset.place_id = placeId;
+  event.appendChild(eventDetails);
+  }
 
 function removeEvent(placeId) {
   Swal.fire({
@@ -106,6 +122,7 @@ function removeEvent(placeId) {
     confirmButtonText: 'OK'
   }).then((result) => {
     if (result.isConfirmed) {
+      //delete event from events container
       let eventContainer = document.getElementById('external-events');
       let event = document.getElementById(placeId);
       eventContainer.removeChild(event);
