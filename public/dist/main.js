@@ -14623,6 +14623,7 @@ __webpack_require__.r(__webpack_exports__);
 window.addEventListener('storage', function() {
   const tripSettingsString = localStorage.getItem('trip_settings');
   const tripSettings = JSON.parse(tripSettingsString);
+  const tripId = tripSettings.id;
   const start = tripSettings.trip_start
   const end = tripSettings.trip_end
   const duration = tripSettings.duration; 
@@ -14635,22 +14636,19 @@ window.addEventListener('storage', function() {
     plugins: [_fullcalendar_timegrid__WEBPACK_IMPORTED_MODULE_2__.default, _fullcalendar_interaction__WEBPACK_IMPORTED_MODULE_1__.default],
     initialView: 'weekView',
     validRange: {
-      start: start ,
+      start: start,
       end: end
     }, 
     nowIndicator: true,
     editable: true,
-    eventResizableFromStart: true,
     droppable: true,
     slotMinTime: "00:00:00",
     slotMaxTime: "24:00:00",
     scrollTime: "09:00:00",
-    drop: function(info) {
-      info.draggedEl.parentNode.removeChild(info.draggedEl);
-    },
-    eventDragStop: function( event ) {
-      let {publicId, title} = event.event._def
-      let jsEvent = event.jsEvent;
+    eventDragStop: function(info) {
+      let publicId = info.event.id
+      let { title } = info.event
+      let jsEvent = info.jsEvent;
       if (isEventOut(jsEvent.clientX, jsEvent.clientY)) {
         calendar.getEventById(publicId).remove()
         let eventContainer = document.getElementById('external-events');
@@ -14664,10 +14662,38 @@ window.addEventListener('storage', function() {
         eventDetails.innerHTML = title;
         eventDetails.dataset.place_id = publicId;
         eventBack.appendChild(eventDetails);
+        //change is_arranged back to 0
+        let { spotId } = info.event.extendedProps
+        updateArrangement(0, spotId, tripId, 'null', 'null'); 
       }
     },
+    // drop: function(info) {
+    //   console.log(info.draggedEl);
+    //   // info.draggedEl.parentNode.removeChild(info.draggedEl);
+    // },
+    eventReceive: function(info) {
+      //change is_arranged = 1 and record period
+      let { spotId } = info.event.extendedProps
+      let { start, end } = info.event
+      updateArrangement(1, spotId, tripId, start, end); 
+
+    },
+    eventDrop: function(info) {
+      //change arrangement period
+      let { spotId } = info.event.extendedProps
+      let { start, end } = info.event
+      updateArrangement(1, spotId, tripId, start, end); 
+
+    },
+    eventResize : function(info) {
+      //change arrangement period
+      let { spotId } = info.event.extendedProps
+      let { start, end } = info.event
+      updateArrangement(1, spotId, tripId, start, end); 
+      
+    },
     headerToolbar: {
-        start: '', // buttons for switching between views
+        start: '',
         center: '', 
         end: ''
     },
@@ -14706,15 +14732,7 @@ window.addEventListener('storage', function() {
           slotEventOverlap: true
         },
     }
-  });  
-
-let isEventOut = function(x, y) {
-  let calendar = document.getElementById('calendar-container');
-  if (x >= calendar.offsetWidth - 20 || y < 100)  { 
-    return true; 
-  }
-  return false;
-}
+  }); 
 
   // initialize events
   // -----------------------------------------------------------------
@@ -14725,25 +14743,85 @@ let isEventOut = function(x, y) {
       return {
         id: event.id,
         title: event.innerText,
-        duration: '02:00'
+        duration: '01:30',
+        extendedProps: {
+          spotId: event.dataset.spotId
+        }
       }; //create event blocks with duration 2 hours
     }
   });
 
-  let saveTripName = document.getElementById('save-trip-name')
-  saveTripName.addEventListener('click', ()=>{
-    let arr = calendar.getEvents();
-    console.log("title: "+ arr[0]._def.title);
-    console.log("id: "+ arr[0]._def.publicId);
-    console.log("start: " + new Date(arr[0]._instance.range.start).toUTCString());
-    console.log("end: " + new Date(arr[0]._instance.range.end).toUTCString());
-  })
-
+    getArrangements(calendar, tripId); //-> render events -> render calendar
     calendar.render();
+    
   });
 
 
+  function isEventOut (x, y) {
+    let calendar = document.getElementById('calendar-container');
+    if (x >= calendar.offsetWidth - 20 || y < 100)  { 
+      return true; 
+    }
+    return false;
+  }
 
+
+  function getArrangements (calendar, tripId) {
+    //get all arrangements and push in calendar
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', `/arrangement?status=arranged&id=${tripId}`);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState == 4 && xhr.status == 200) {
+        let arrangements = JSON.parse(xhr.responseText);
+        arrangements.map( a => {
+          let timezoneOffset = (new Date(a.start_time).getTimezoneOffset()) / 60; 
+          let start = new Date(a.start_time)
+          let end = new Date(a.end_time)
+          calendar.addEvent({
+            id: a.google_id,
+            title: a.name,
+            start: new Date(start.setHours(start.getHours() - timezoneOffset)),
+            end: new Date(end.setHours(end.getHours() - timezoneOffset)),
+            extendedProps: {
+              spotId: a.spot_id
+            }
+          });
+        })
+        calendar.render();
+      }
+    }
+    xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
+    xhr.send();
+  }
+
+  function updateArrangement (isArranged, spotId, tripId, startTime, endTime) {
+    let data = { 
+      isArranged, 
+      spotId, 
+      tripId, 
+      startTime, 
+      endTime
+    };
+    let xhr = new XMLHttpRequest();
+    xhr.open('PATCH', '/arrangement');
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState == 4) {
+        if (xhr.status == 200) {
+          console.log('update OK');
+        } else if (xhr.status == 403){
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '您的權限不足',
+          })
+        }
+      }
+    };
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
+    xhr.send(JSON.stringify(data));
+
+  }
 })();
 
 /******/ })()

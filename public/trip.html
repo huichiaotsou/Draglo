@@ -13,9 +13,20 @@
   <body>
     
     <header>      
-      <button id="back-dashboard" type="button" class="btn btn-outline-success" onclick="backToDashboard()">回主控台</button>
+      <button id="back-dashboard" type="button" class="btn btn-outline-secondary" onclick="backToDashboard()">回主控台</button>
       
       <div id="nav-bar">
+        <!-- Single danger button -->
+      <div id="account" class="btn-group">
+        <button id="automation" class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          帳號
+        </button>
+        <div class="dropdown-menu" id="account-setting">
+          <a class="dropdown-item" onclick="signOut()">登出</a>
+          <div class="dropdown-divider"></div>
+          <a style="margin-left: 10px;">我的其他行程：</a>
+        </div>
+      </div>
         <!-- Single danger button -->
         <div class="btn-group">
           <button id="settings" class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -23,6 +34,7 @@
           </button>
           <div class="dropdown-menu">
             <a class="dropdown-item" onclick="changeTripPeriod()">設定旅行區間</a>    
+            <a class="dropdown-item" onclick="" id="archive-trip">分享行程</a>
             <a class="dropdown-item" onclick="archiveTrip(0)" id="recover-trip">回復行程</a>
             <a class="dropdown-item" onclick="archiveTrip(1)" id="archive-trip">封存行程</a>
             <a class="dropdown-item" onclick="archiveTrip(2)" id="delete-trip">刪除行程</a>
@@ -45,6 +57,8 @@
         </div>
       </div> 
       
+      
+      
       <div id="trip-title" class="col-sm-4 col-sm-offset-4">
         <div class="input-group mb-3">
           <input id="trip-name" type="text" class="form-control" placeholder="未命名行程" aria-label="" aria-describedby="basic-addon2">
@@ -54,20 +68,6 @@
         </div>
       </div>
       
-      
-      <!-- Single danger button -->
-      <div id="account" class="btn-group">
-        <button id="automation" class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          帳號
-        </button>
-        <div class="dropdown-menu" id="account-setting">
-          <a class="dropdown-item" onclick="signOut()">登出</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">我的其他行程：</a>
-        </div>
-      </div>
-      
-      <button id="share" type="button" class="btn btn-outline-success">共用</button>
       
     </header>
     
@@ -87,11 +87,11 @@
               
               
               <!-- [START] EXTERNAL EVENT BLOCK -->
+              <div class="flex-row">
+                <span id='spots-list-title'>景點清單:</span>
+                <span id='delete-message'>雙擊以刪除景點</span>
+              </div>
               <div id='external-events'>
-                <div class="flex-row">
-                  <span id='spots-list-title'>景點清單:</span>
-                  <span id='delete-message'>雙擊以刪除景點</span>
-                </div>
               </div>
               <!-- [END] EXTERNAL EVENT BLOCK -->
             </div>
@@ -122,7 +122,6 @@
     </main>
     
     <footer>
-      footer area
     </footer>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

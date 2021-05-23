@@ -1296,8 +1296,6 @@ A VERTICAL event
     margin-left: 3px;
   }
 
-
-
 body {
     padding: 0;
     font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
@@ -1318,49 +1316,39 @@ body {
   /* position relative/absolute */
 
   header {
-    margin: 20px 10px 0;
-    height: 7vh;
+    padding: 10px;
+    margin: 0 0 40px;
+    height: 57px;
     position: relative;
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   }
 
   #back-dashboard {
     position: absolute;
-    left: 5px;
+    left: 15px;
+  }
+
+
+
+  #nav-bar {
+    position: absolute;
+    left: 117px;
   }
 
   #trip-title {
     position: absolute;
-    right: 170px;
+    right: 25px;
   }
 
-  #undo-redo {
-    position:absolute;
-    top: 3px;
-    left: 300px;
-  }
 
-  #nav-bar {
-    position: absolute;
-    top: 0;
-    left: 107px;
-  }
 
-  #account {
-    position: absolute;
-    right: 93px;
-  }
-
-  #share {
-    position: absolute;
-    right: 20px;
-  }
-
-  footer {
+  /* footer {
     margin-top: 0.5em;
     height: 5vh;
     border: 1px black solid;
     text-align: center;
-  }
+  } */
 
 
   
@@ -1377,14 +1365,16 @@ body {
     padding: 0;
     position: absolute;
     bottom: 5px;
-    height: 86vh;
+    height: 89vh;
     margin-left: 7px;
+    border-radius: 5px;
   }
   
   #calendar {
     width: 99%;
     margin: 0;
     height: 100%;
+    border-radius: 5px;
   }
 
   /* ------- right side of view port ------- */
@@ -1393,7 +1383,7 @@ body {
     margin-left: auto;
     margin-right: 1%;
     padding-left: 5px;
-    height: 84vh;
+    height: 87vh;
   }
 
 
@@ -1422,7 +1412,7 @@ body {
 
   #scroll-area {
     margin-bottom: 2%;
-    height: 35%;
+    height: 37%;
   }
   
   .scroll-container, #cities-container {
@@ -1467,11 +1457,13 @@ body {
   #google_maps_container {
     width: 100%;
     height: 60%;
+    margin-top: 3%;
     border-radius: 5px;
   }
 
   #map {
     height: 100%;
+    border-radius: 5px;
   }
 
 

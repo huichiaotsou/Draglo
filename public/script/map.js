@@ -7,6 +7,8 @@ function initMap() {
   const map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: 23.9036873, lng: 121.0793705 },
     zoom: 2,
+    mapTypeControl: false,
+    fullscreenControl: false,
   });
   const input = document.getElementById("pac-input");
   const autocomplete = new google.maps.places.Autocomplete(input);
@@ -44,7 +46,6 @@ function initMap() {
         location: results[0].geometry.location,
       });
       marker.setVisible(true);
-
       infowindowContent.children["place-name"].textContent = place.name;
       infowindowContent.children["place-id"].textContent = place.name;
       infowindowContent.children["place-address"].textContent = results[0].formatted_address;
@@ -57,6 +58,20 @@ function initMap() {
 window.addEventListener('storage', ()=>{
   getPendingArrangements(null, JSON.parse(localStorage.getItem('trip_settings')).id);
 })
+
+//reload pending arrangements upon dragging in & out
+document.getElementById('calendar-container').addEventListener('mouseup', ()=>{
+  setTimeout(()=>{
+    getPendingArrangements(null, JSON.parse(localStorage.getItem('trip_settings')).id);
+  }, 200)
+})
+document.getElementById('calendar-container').addEventListener('mouseout', ()=>{
+  setTimeout(()=>{
+    getPendingArrangements(null, JSON.parse(localStorage.getItem('trip_settings')).id);
+  }, 200)
+})
+
+
 
 function popUpAddSpot(spotName, placeId) {
   Swal.fire({
@@ -83,7 +98,6 @@ function saveSpotInfo(spotName, placeId) {
   xhr.onreadystatechange = function () {
     if(xhr.readyState == 4) {
       if(xhr.status == 200) {
-        console.log('reload getPendingArrangements for save spot INfo');
         getPendingArrangements(null, data.tripId)
       } else {
         Swal.fire({
@@ -115,34 +129,39 @@ function getPendingArrangements(city, tripId) {
         //append spots
         let spotsContainer = document.getElementById('external-events');
         spotsContainer.innerHTML = '';
-        spots.map( s =>{
-          let spot = document.createElement('div');
-          spot.className = 'fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event';
-          spot.setAttribute('id', s.google_id)
-          spot.setAttribute('ondblclick', `removeEvent('${s.spot_id}', '${tripId}')`)
-          spotsContainer.appendChild(spot);
-          let spotDetails = document.createElement('div');
-          spotDetails.className = 'fc-event-main';
-          spotDetails.innerHTML = `${s.name}<br>@ ${s.city}`;
-          spotDetails.dataset.place_id = s.google_id;
-          spot.appendChild(spotDetails); 
-        })
+        if (spots) {
+          spots.map( s =>{
+            let spot = document.createElement('div');
+            spot.className = 'fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event';
+            spot.setAttribute('id', s.google_id);
+            spot.setAttribute('ondblclick', `removeEvent('${s.spot_id}', '${tripId}')`);
+            spot.dataset.spotId = s.spot_id;
+            spotsContainer.appendChild(spot);
+            let spotDetails = document.createElement('div');
+            spotDetails.className = 'fc-event-main';
+            spotDetails.innerHTML = `${s.name}`;
+            spotDetails.dataset.place_id = s.google_id;
+            spot.appendChild(spotDetails); 
+          })
+        }
     
         //append cities
         let citiesContainer = document.getElementById('cities-container');
         citiesContainer.innerHTML = '';
-        let showAll = document.createElement('div');
-        showAll.className = 'city';
-        showAll.innerHTML = '顯示全部';
-        showAll.setAttribute('onclick', `getPendingArrangements(${null}, ${tripId})`);
-        citiesContainer.appendChild(showAll)
-        cities.map(cityName => {
-          let city = document.createElement('div');
-          city.className = 'city';
-          city.innerHTML = cityName;
-          city.setAttribute('onclick', `getPendingArrangements('${cityName}', ${tripId})`);
-          citiesContainer.appendChild(city)
-        })
+        if (cities) {
+          let showAll = document.createElement('div');
+          showAll.className = 'city';
+          showAll.innerHTML = '顯示全部';
+          showAll.setAttribute('onclick', `getPendingArrangements(${null}, ${tripId})`);
+          citiesContainer.appendChild(showAll)
+          cities.map(cityName => {
+            let city = document.createElement('div');
+            city.className = 'city';
+            city.innerHTML = cityName;
+            city.setAttribute('onclick', `getPendingArrangements('${cityName}', ${tripId})`);
+            citiesContainer.appendChild(city)
+          })
+        }
       } else {
         Swal.fire({
           icon: 'error',

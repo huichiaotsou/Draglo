@@ -34,7 +34,7 @@ const addSpot = async (req, res, next) => {
                     }
                 }
 
-                if(result.photos[0]) {
+                if(result.photos) {
                     let photoPath = process.env.PHOTO_PATH + result.photos[0].photo_reference;
                     await Trip.updateImage(tripId, photoPath);
                 }

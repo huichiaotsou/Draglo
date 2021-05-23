@@ -27,11 +27,36 @@ const removeArrangement = async (spotId, tripId) => {
         return true;
     } catch (error) {
         console.log(error);
+        return {error};
+    }
+}
+
+const updateArrangement = async (isArranged, spotId, tripId, startTime, endTime) => {
+    try {
+        let queryStr = 'UPDATE arrangements SET is_arranged = ?, start_time = ?, end_time = ? WHERE spot_id = ? AND trip_id = ?';
+        let conditions = [isArranged, startTime, endTime, spotId, tripId];
+        await query(queryStr, conditions);
+        return true;
+    } catch (error) {
+        console.log(error);
+        return {error};
+    }
+}
+
+const getArrangements = async (tripId) => {
+    try {
+        let queryStr = 'SELECT DISTINCT name, city, google_id, spot_id, start_time, end_time FROM spots JOIN arrangements ON spots.id = arrangements.spot_id WHERE is_arranged = 1 AND trip_id = ? ';
+        let result = await query(queryStr, tripId);
+        return result;
+    } catch (error) {
+        console.log(error);
         return {error}
     }
 }
 
 module.exports = {
     getPendingArrangements,
-    removeArrangement
+    removeArrangement,
+    updateArrangement,
+    getArrangements
 }
