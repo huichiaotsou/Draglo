@@ -157,14 +157,16 @@ window.addEventListener('storage', function() {
       if (xhr.readyState == 4 && xhr.status == 200) {
         let arrangements = JSON.parse(xhr.responseText);
         arrangements.map( a => {
-          let timezoneOffset = (new Date(a.start_time).getTimezoneOffset()) / 60; 
-          let start = new Date(a.start_time)
-          let end = new Date(a.end_time)
+          // let timezoneOffset = (new Date(a.start_time).getTimezoneOffset()) / 60; 
+          // let start = new Date(a.start_time)
+          // let end = new Date(a.end_time)
           calendar.addEvent({
             id: a.google_id,
             title: a.name,
-            start: new Date(start.setHours(start.getHours() - timezoneOffset)),
-            end: new Date(end.setHours(end.getHours() - timezoneOffset)),
+            start: a.start_time,
+            end: a.end_time,
+            // start: new Date(start.setHours(start.getHours() - timezoneOffset)),
+            // end: new Date(end.setHours(end.getHours() - timezoneOffset)),
             extendedProps: {
               spotId: a.spot_id
             }
