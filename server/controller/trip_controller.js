@@ -6,6 +6,8 @@ const createTrip = async (req, res, next) => {
     let start = new Date(new Date().setHours(0,0,0,0));
     let now = new Date(new Date().setHours(0,0,0,0));
     let end = new Date (now.setDate(now.getDate() + 8));
+    console.log(start);
+    console.log(end);
     let initTrip = {
         name: '未命名行程',
         trip_start: start,
