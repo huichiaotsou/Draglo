@@ -80,7 +80,7 @@ function changeTripPeriod() {
                     let currentTripEnd = new Date(tripSettings.trip_end) //format: 2021-09-17T16:00:00.000Z
                     if (newStartDate > currentTripEnd) {
                         let newStartDatePushBack = new Date(newStartDate.getTime()); //clone Date object
-                        modifyTripDuration(tripId, newStartDate, new Date(newStartDatePushBack.setDate(newStartDatePushBack.getDate() + 6)));
+                        modifyTripDuration(tripId, newStartDate, new Date(newStartDatePushBack.setDate(newStartDatePushBack.getDate() + 7)));
                     } else {
                         modifyTripDuration(tripId, newStartDate, currentTripEnd);
                     }
