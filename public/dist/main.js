@@ -14632,7 +14632,7 @@ window.addEventListener('storage', function() {
   // -----------------------------------------------------------------
   const calendarEl = document.getElementById('calendar');
   const calendar = new _fullcalendar_core__WEBPACK_IMPORTED_MODULE_0__.Calendar(calendarEl, {
-    timeZone: 'local',
+    timeZone: 'UTC',
     plugins: [_fullcalendar_timegrid__WEBPACK_IMPORTED_MODULE_2__.default, _fullcalendar_interaction__WEBPACK_IMPORTED_MODULE_1__.default],
     initialView: 'weekView',
     validRange: {
