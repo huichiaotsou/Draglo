@@ -14782,6 +14782,8 @@ window.addEventListener('storage', function() {
         /* Read more about handling dismissals below */
         if (result.dismiss === Swal.DismissReason.timer) {
           getPendingArrangements(null, JSON.parse(localStorage.getItem('trip_settings')).id);
+          console.log("6");
+
           getArrangements(calendar, tripId);
           calendar.render();
         }

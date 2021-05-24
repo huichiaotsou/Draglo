@@ -102,6 +102,7 @@ function restoreSearchBox() {
 //init pending arrangements list
 window.addEventListener('storage', ()=>{
   getPendingArrangements(null, JSON.parse(localStorage.getItem('trip_settings')).id);
+  console.log("1");
 })
 
 //reload pending arrangements upon dragging in & out
@@ -109,12 +110,16 @@ document.getElementById('calendar-container').addEventListener('mouseup', ()=>{
   setTimeout(()=>{
     getPendingArrangements(null, JSON.parse(localStorage.getItem('trip_settings')).id);
   }, 200)
+  console.log("2");
+
 })
-document.getElementById('calendar-container').addEventListener('mouseout', ()=>{
-  setTimeout(()=>{
-    getPendingArrangements(null, JSON.parse(localStorage.getItem('trip_settings')).id);
-  }, 200)
-})
+// document.getElementById('calendar-container').addEventListener('mouseout', ()=>{
+//   setTimeout(()=>{
+//     getPendingArrangements(null, JSON.parse(localStorage.getItem('trip_settings')).id);
+//   }, 200)
+//   console.log("3");
+
+// })
 
 
 function popUpAddSpot(spotName, placeId) {
@@ -143,6 +148,8 @@ function saveSpotInfo(spotName, placeId) {
     if(xhr.readyState == 4) {
       if(xhr.status == 200) {
         getPendingArrangements(null, data.tripId)
+        console.log("4");
+
       } else {
         Swal.fire({
           icon: 'error',
@@ -266,6 +273,8 @@ function removeEvent(spotId, tripId) {
       xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             getPendingArrangements(null, tripId);
+            console.log("5");
+
         }
       }
       xhr.setRequestHeader('Content-Type', 'application/json');
