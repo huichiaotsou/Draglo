@@ -27,7 +27,7 @@ window.addEventListener('storage', function() {
     droppable: true,
     slotMinTime: "00:00:00",
     slotMaxTime: "24:00:00",
-    scrollTime: "09:00:00",
+    scrollTime: "07:30:00",
     eventDragStop: function(info) {
       let publicId = info.event.id
       let { title } = info.event
@@ -134,10 +134,46 @@ window.addEventListener('storage', function() {
     }
   });
 
-    getArrangements(calendar, tripId); //-> render events -> render calendar
-    calendar.render();
-    
-  });
+  getArrangements(calendar, tripId); //-> render events -> render calendar
+
+  let calculateTripBtn = document.getElementById('calculateTrip');
+  calculateTripBtn.addEventListener('click', ()=>{
+    if (calculateTripBtn.dataset.city == 'null') {
+      Swal.fire({
+        position: 'top-start',
+        icon: 'warning',
+        title: '自動安排行程目前僅限於城市內',
+        text: '請先在城市清單中選擇一個城市',
+      }) 
+    } else {
+      let cityName = calculateTripBtn.dataset.city
+      calculateTrip(cityName);
+      let timerInterval
+      Swal.fire({
+        title: '行程計算中!',
+        html: '請耐心等候',
+        timer: 12000,
+        timerProgressBar: true,
+        allowOutsideClick: () => !Swal.isLoading(),
+        didOpen: () => {
+          Swal.showLoading()
+        },
+        willClose: () => {
+          clearInterval(timerInterval)
+        }
+      }).then((result) => {
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+          getPendingArrangements(null, JSON.parse(localStorage.getItem('trip_settings')).id);
+          getArrangements(calendar, tripId);
+          calendar.render();
+        }
+      })
+    }
+  })
+
+  calendar.render();    
+});
 
 
   function isEventOut (x, y) {

@@ -19,25 +19,48 @@ const getSpotInfo = async (spotId) => {
 }
 const getTravelingTime = async (prevSpotId, nextSpotId) => {
     let sql = {
-        queryStr: 'SELECT transit_time FROM itinararies WHERE start_google_id = ? AND end_google_id = ?',
+        queryStr: 'SELECT transit_time FROM itineraries WHERE start_google_id = ? AND end_google_id = ?',
         condition: [prevSpotId, nextSpotId],
     }
     let result = await query(sql.queryStr, sql.condition);
     if (result.length == 0) {
         // get time from google API & store in DB
-        // let response = await Google.directionAPI(prevSpotId, nextSpotId);
-        // await query('INSERT INTO itinararies SET ? ', response);
-        // return Math.round(response.transit_time / 60);
-        return 30;
+        let itinerary = await Google.directionAPI(prevSpotId, nextSpotId)
+        await query('INSERT INTO itineraries SET ?', itinerary);
+        return Math.round(itinerary.transit_time) + 15;
     } else {
-        return Math.round(result[0].transit_time / 60); //mins
+        return Math.round(result[0].transit_time) + 15;
     }
+}
+
+const arrangeAutomationResult = async (tripId, userId, dayId, startDate, wholeTrip) => {
+    let queryStr = 'INSERT INTO arrangements (trip_id, user_id, spot_id, start_time, end_time, is_arranged) VALUES ? '
+    let upsert = 'ON DUPLICATE KEY UPDATE start_time = VALUES(start_time), end_time = VALUES(end_time), is_arranged = VALUES(is_arranged), user_id = VALUES(user_id) '
+    let values = []; 
+    delete wholeTrip.night_events;
+    let keys = Object.keys(wholeTrip);
+    keys.map( unixDay =>{
+        wholeTrip[unixDay].map(activity => {
+            let dateForStart = new Date(parseInt(unixDay));
+            let dateForEnd = new Date(parseInt(unixDay));
+            let timezoneOffset = dateForStart.getTimezoneOffset() / 60;
+            let timeStart = new Date(dateForStart.setMinutes(dateForStart.getMinutes() + activity.startTime)).setHours(dateForStart.getHours() + timezoneOffset)
+            let timeEnd = new Date(dateForEnd.setMinutes(dateForEnd.getMinutes() + activity.end)).setHours(dateForEnd.getHours() + timezoneOffset)
+            if (activity.activity != 'transit') {
+                values.push([tripId, userId, activity.spotId, new Date(timeStart), new Date(timeEnd), 1])
+            }
+        })
+    })
+    await query(queryStr.concat(upsert), [values]);
 }
 
 module.exports = {
     getSpotInfo,
-    getTravelingTime
+    getTravelingTime,
+    arrangeAutomationResult
 }
+
+
 
 
 

@@ -9,6 +9,7 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./script/trip.js"></script>
+    <script src="./script/automation.js"></script>
   </head>
   <body>
     
@@ -24,7 +25,7 @@
         <div class="dropdown-menu" id="account-setting">
           <a class="dropdown-item" onclick="signOut()">登出</a>
           <div class="dropdown-divider"></div>
-          <a style="margin-left: 10px;">我的其他行程：</a>
+          <a style="margin-left: 10px; font-weight: 800;">我的其他行程：</a>
         </div>
       </div>
         <!-- Single danger button -->
@@ -48,11 +49,7 @@
           </button>
           <div class="dropdown-menu">
             <a class="dropdown-item" href="#">計算交通時間</a>
-            <a class="dropdown-item" href="#">設定偏好交通工具</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">自動安排行程</a>
-            <a class="dropdown-item" href="#">設定啟程城市</a>
-            <a class="dropdown-item" href="#">設定最大步行時間</a>
+            <a class="dropdown-item" id="calculateTrip" data-city="null">自動安排行程</a>
           </div>
         </div>
       </div> 
@@ -102,17 +99,11 @@
           
           <div id="google_maps_container">
             <div style="display: none">
-              <input
-              id="pac-input"
-              class="controls"
-              type="text"
-              placeholder="搜尋景點"
-              />
+              <input id="pac-input" class="controls" type="text" placeholder="搜尋景點">
             </div>
             <div id="map"></div>
             <div id="infowindow-content">
-              <span id="place-name" class="title"></span><br />
-              <strong>Place ID</strong>: <span id="place-id"></span><br />
+              <span id="place-name" class="title"></span><br>
               <span id="place-address"></span>
             </div>
           </div>
@@ -129,7 +120,7 @@
     <link rel="stylesheet" href="css/trip.css">
     <script src="./script/map.js"></script>
     <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7JZBoemp8yVauFZ_9J2cShM2J7uJqCjQ&callback=initMap&libraries=places&v=weekly"
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7JZBoemp8yVauFZ_9J2cShM2J7uJqCjQ&callback=initMap&libraries=places&language=zh-TW&v=weekly"
     async
     ></script>
     

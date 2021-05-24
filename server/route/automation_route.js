@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const { calculateTrips } = require('../controller/automation_controller');
+const { verifyToken } = require('../../utils/utils')
 router.use(express.json());
 router.use(express.urlencoded({ extended: false }));
 
-router.post('/automation', calculateTrips)
+router.post('/automation', verifyToken, calculateTrips)
 
 // const { getTravelingTime } = require('../model/automation_model')
 // router.get('/traveltime', async (req, res)=>{

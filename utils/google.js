@@ -11,7 +11,7 @@ let directionAPI = async (prevSpotId, nextSpotId) => {
                 start_google_id: prevSpotId,
                 end_google_id: nextSpotId,
                 distance: detail.distance.value,
-                transit_time: detail.duration.value,
+                transit_time: (detail.duration.value / 60),
             }
             if (data.routes[0].fare) {
                 sqlData.transit_cost = data.routes[0].fare.text;

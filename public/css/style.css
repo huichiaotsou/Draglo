@@ -133,6 +133,7 @@ sup {
   top: -.5em; }
 
 a {
+  cursor: pointer;
   color: #007bff;
   text-decoration: none;
   background-color: transparent; }
@@ -8154,11 +8155,13 @@ body {
     z-index: -1; }
 
 a {
+  cursor: pointer;
   -webkit-transition: .3s all ease;
   -o-transition: .3s all ease;
   transition: .3s all ease;
   color: #fbceb5; }
   a:hover, a:focus {
+    cursor: pointer;
     text-decoration: none !important;
     outline: none !important;
     -webkit-box-shadow: none;

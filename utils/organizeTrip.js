@@ -1,5 +1,5 @@
 const { getSpotInfo, getTravelingTime } = require('../server/model/automation_model');
-const { calculateCloserPoint } = require('./geopackage');
+const { getGeoDistance, calculateCloserPoint } = require('./geopackage');
 
 let removeSpot = (spotIdToRemove, spotIds) => {
     for (let i in spotIds) {
@@ -14,6 +14,9 @@ let getNextSpotId = (currentSpotId, sequence, clusters, spotsInfo) => {
         console.log("one last remaining spot: "+ clusters[sequence][0]);
         return clusters[sequence][0]
     }
+    console.log('debuggerrrrr-----');
+    console.log(clusters);
+    console.log(clusters[sequence]);
     let currentClusterVectors = clusters[sequence].map(id => spotsInfo[id].vector);
     let currentSpotVector = spotsInfo[currentSpotId].vector;
     let nextSpotIndex = calculateCloserPoint(currentClusterVectors, currentSpotVector,'getClosePoint')
@@ -56,20 +59,19 @@ let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spots
                 {
                     activity: 'transit',
                     startTime: startTime,
-                    duration: transitTime,
                     end: startTime + transitTime
                 },
                 {
                     activity: spotsInfo[nextSpotId].name,
+                    spotId: spotsInfo[nextSpotId].spotId,
                     startTime: startTime + transitTime,
-                    duration: spotInfo.lingerTime,
                     end: startTime + transitTime + spotInfo.lingerTime
                 }
             ]
         }
     } else {
-        if (startTime > 720 && startTime < 810) { //12h ~ 13h30 吃飯
-            console.log('新增午餐時間 90 分鐘');
+        if (startTime > 720 && startTime < 810) { //若行程開始於 12h ~ 13h30，新增午餐時間
+            console.log('新增午餐時間');
             console.log('--------------------');
             startTime = startTime + 90;
         }
@@ -79,13 +81,12 @@ let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spots
                 {
                     activity: 'transit',
                     startTime: startTime,
-                    duration: transitTime,
                     end: startTime + transitTime
                 },
                 {
                     activity: spotsInfo[nextSpotId].name,
+                    spotId: spotsInfo[nextSpotId].spotId,
                     startTime: startTime + transitTime,
-                    duration: spotInfo.lingerTime,
                     end: startTime + transitTime + spotInfo.lingerTime
                 }
             ] 
@@ -93,9 +94,27 @@ let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spots
     }
 }
 
+const findPoleSpotIds = (spotIds, spotsInfo) => {
+    let maxDistance = 0;
+    let poleSpotIds= [];
+    console.log("findPoleSpotIds");
+    spotIds.map(base => {
+        spotIds.map(comparison => {
+            let distance = getGeoDistance(spotsInfo[base].vector, spotsInfo[comparison].vector)
+            if (distance > maxDistance) {
+                maxDistance = distance;
+                poleSpotIds[0] = base;
+                poleSpotIds[1] = comparison;
+            }
+        })
+    })
+    return poleSpotIds;
+}
+
 
 module.exports = {
     getNextSpotId,
     arrangeNextActivity,
-    removeSpot
+    removeSpot,
+    findPoleSpotIds
 }
