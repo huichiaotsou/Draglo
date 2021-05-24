@@ -44,8 +44,8 @@ const arrangeAutomationResult = async (tripId, userId, dayId, startDate, wholeTr
             let dateForStart = new Date(parseInt(unixDay));
             let dateForEnd = new Date(parseInt(unixDay));
             let timezoneOffset = dateForStart.getTimezoneOffset() / 60;
-            let timeStart = new Date(dateForStart.setMinutes(dateForStart.getMinutes() + activity.startTime)).setHours(dateForStart.getHours() + timezoneOffset)
-            let timeEnd = new Date(dateForEnd.setMinutes(dateForEnd.getMinutes() + activity.end)).setHours(dateForEnd.getHours() + timezoneOffset)
+            let timeStart = new Date(dateForStart.setMinutes(dateForStart.getMinutes() + activity.startTime)).setHours(dateForStart.getHours() + (timezoneOffset * 2))
+            let timeEnd = new Date(dateForEnd.setMinutes(dateForEnd.getMinutes() + activity.end)).setHours(dateForEnd.getHours() + (timezoneOffset * 2))
             if (activity.activity != 'transit') {
                 values.push([tripId, userId, activity.spotId, new Date(timeStart), new Date(timeEnd), 1])
             }
