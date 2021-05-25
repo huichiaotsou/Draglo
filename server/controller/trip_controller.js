@@ -19,6 +19,10 @@ const createTrip = async (req, res, next) => {
         image: '/images/bg.jpg'
     }
     let result = await Trip.createTrip(initTrip);
+    console.log('trip created with id: ');
+    console.log(result);
+    console.log('and init settings: ');
+    console.log(initTrip);
     res.status(200).send({tripId: result});
 }
 

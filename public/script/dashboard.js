@@ -19,7 +19,7 @@ function createTrip() {
               Swal.fire({
                 position: 'center',
                 icon: 'success',
-                title: '創建新旅程',
+                title: '建立新旅程',
                 showConfirmButton: false,
                 timer: 1100
               });

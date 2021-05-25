@@ -34,7 +34,7 @@ let getNextSpotId = (currentSpotId, sequence, clusters, spotsInfo) => {
 }
 
 let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spotsInfo) => {
-    let transitTime = await getTravelingTime(prevSpotId, nextSpotId);
+    let transitTime = await getTravelingTime(prevSpotId, nextSpotId, spotsInfo);
     let spotInfo = await getSpotInfo(nextSpotId); 
     //linger_time, open_days, open_hour, closed_hour
 
