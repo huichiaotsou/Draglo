@@ -261,15 +261,19 @@ function archiveTrip(action) {
     }
 }
 
+function shareTrip(){
+}
+
 //decide if drop down menu visible: 
 window.addEventListener('storage', ()=>{
     let tripSettingsString = localStorage.getItem('trip_settings');
     let tripSettings = JSON.parse(tripSettingsString);
     let isArchived = tripSettings.is_archived
-    if(isArchived == 0) {
+    if(isArchived == 0) { //active trips, hide recover button
         let recoverBtn = document.getElementById('recover-trip')
         recoverBtn.style.display = 'none';
-    } else if (isArchived == 1) {
+    }
+    if (isArchived == 1) { //archived trip, hide archive button
         let archiveBtn = document.getElementById('archive-trip')
         archiveBtn.style.display = 'none';
     }

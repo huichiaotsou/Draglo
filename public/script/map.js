@@ -14,10 +14,15 @@ function initMap(spots) {
     fullscreenControl: false,
   });
   if (spots) {
+    let center = [0,0] //get the centeroid of all spots
+    spots.map(spot => {
+      center[0] += spot[0]
+      center[1] += spot[1]
+    })
     map = new google.maps.Map(document.getElementById("map"), {
       center: { 
-        lat: spots[0][0], 
-        lng: spots[0][1]},
+        lat: (center[0] /spots.length), 
+        lng: (center[1] /spots.length)},
       zoom: 12,
       mapTypeControl: false,
       fullscreenControl: false,
