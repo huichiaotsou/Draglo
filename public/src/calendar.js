@@ -38,7 +38,7 @@ window.addEventListener('storage', function() {
         let eventBack = document.createElement('div');
         eventBack.className = 'fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event';
         eventBack.setAttribute('id', publicId)
-        eventBack.setAttribute('ondblclick', `removeEvent('${publicId}')`)
+        eventBack.setAttribute('ondblclick', `removeEvent('${publicId}', '${tripId}')`)
         eventContainer.appendChild(eventBack);
         let eventDetails = document.createElement('div');
         eventDetails.className = 'fc-event-main';
