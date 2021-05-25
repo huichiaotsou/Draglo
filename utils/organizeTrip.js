@@ -73,7 +73,7 @@ let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spots
         if (startTime > 720 && startTime < 810) { //若行程開始於 12h ~ 13h30，新增午餐時間
             console.log('新增午餐時間');
             console.log('--------------------');
-            startTime = startTime + 90;
+            startTime = startTime + 60;
         }
         return {
             keepArranging: true,
