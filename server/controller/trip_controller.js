@@ -6,8 +6,6 @@ const createTrip = async (req, res, next) => {
     let start = new Date(new Date().setHours(0,0,0,0));
     let now = new Date(new Date().setHours(0,0,0,0));
     let end = new Date (now.setDate(now.getDate() + 7));
-    console.log(start);
-    console.log(end);
     let initTrip = {
         name: '未命名行程',
         trip_start: start,
@@ -19,10 +17,6 @@ const createTrip = async (req, res, next) => {
         image: '/images/bg.jpg'
     }
     let result = await Trip.createTrip(initTrip);
-    console.log('trip created with id: ');
-    console.log(result);
-    console.log('and init settings: ');
-    console.log(initTrip);
     res.status(200).send({tripId: result});
 }
 

@@ -30,7 +30,6 @@ const nativeSignIn = async (email, password) => {
     try {
         let queryStr = 'SELECT id, email, password FROM users WHERE email = ?';
         let checkUser = await pool.query(queryStr, email);
-        console.log(checkUser);
         let user = checkUser[0][0];
         let inputPassword = encryptPassword(password);
         if (user.length == 0) {

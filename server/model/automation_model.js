@@ -51,6 +51,7 @@ const arrangeAutomationResult = async (tripId, userId, dayId, startDate, wholeTr
             }
         })
     })
+    console.log("arrangements raw data: ");
     console.log(values);
     await pool.query(queryStr.concat(upsert), [values]);
 }

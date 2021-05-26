@@ -6,7 +6,6 @@ const { getNextSpotId , arrangeNextActivity, removeSpot, findPoleSpotIds } = req
 
 const calculateTrips = async (req, res, next) => {
     console.log(req.body);
-    //spotIds are google_ids
     let { tripId, dayId, googleIds, spotsInfo, tripDuration, startTime, startDate } = req.body;
     let startDateDatetime = new Date(startDate)
     let startDateUnix = startDateDatetime.getTime();
@@ -16,17 +15,22 @@ const calculateTrips = async (req, res, next) => {
     
     let wholeTrip = {};
     let nightEvents = wholeTrip.night_events = []
+    let pendingArrangement = [];
+    let tooEarlyArrangement = [];
     while(googleIds.length > 0) { //while 一直跑到安排完所有景點
+        console.log('  ');
+        console.log('1: -------------- New Day Start --------------');
+        console.log("2: 剩下的景點：");
+        googleIds.map(id => {
+            console.log(spotsInfo[id].name);
+        })
+        console.log('---------------------------');
+
         let poleSpotIds = findPoleSpotIds(googleIds, spotsInfo);
         //確認起始點
         let startSpotId = poleSpotIds[Math.floor(Math.random() * poleSpotIds.length)];
-        if (startSpotId == undefined) {
-            startSpotId = googleIds[Math.floor(Math.random() * googleIds.length)];
-        }
-        console.log('  ');
-        console.log('-------------- New Day Start --------------');
         let clusters = Kmeans.getClusters(googleIds, spotsInfo, tripDuration, startSpotId);
-        console.log("Day start with spot id: "+ startSpotId);
+        console.log("3: Day start with spot: "+ spotsInfo[startSpotId].name);
         console.log('-------------------------------------------');
 
         let spotInfo = await Automation.getSpotInfo(startSpotId);
@@ -36,79 +40,133 @@ const calculateTrips = async (req, res, next) => {
             nightEvents.push(spotInfo);
             //刪除並找下一個startSpotId
             removeSpot(startSpotId, googleIds);  
-            removeSpot(startSpotId, poleSpotIds); 
+            // removeSpot(startSpotId, poleSpotIds); 
             removeSpot(startSpotId, clusters[clusters.sequence[0]]); 
-            startSpotId = getNextSpotId(startSpotId, clusters.sequence[0], clusters, spotsInfo);;
+            // startSpotId = getNextSpotId(startSpotId, clusters.sequence[0], clusters, spotsInfo);;
             continue;
         } else {
-            wholeTrip[startDateUnix] = [ //initialize the day
-                {
-                    activity: spotsInfo[startSpotId].name,
-                    spotId: spotsInfo[startSpotId].spotId,
-                    startTime: startTime,
-                    end: startTime + spotInfo.lingerTime
+            //檢查起始點是否營業：
+            let open = false;
+            let openDays = spotInfo.openDays.split(',');
+            for (let day of openDays) {
+                if (parseInt(day) == parseInt(dayId)) {
+                    open = true;
                 }
-            ];
-            startTime += spotInfo.lingerTime; 
-            removeSpot(startSpotId, googleIds);  
-            removeSpot(startSpotId, poleSpotIds); 
-            removeSpot(startSpotId, clusters[clusters.sequence[0]]); 
-            if(clusters[clusters.sequence[0]].length == 0) {
-                delete clusters[clusters.sequence[0]]
-                clusters.sequence.splice(0,1);
-                console.log('clusters.sequence.splice(0,1);');
+            }
+            console.log('4: 起始點今天是否營業:');
+            console.log(open);
+            if (open) {
+                wholeTrip[startDateUnix] = [ //initialize the day
+                    {
+                        activity: spotsInfo[startSpotId].name,
+                        spotId: spotsInfo[startSpotId].spotId,
+                        startTime: startTime,
+                        end: startTime + spotInfo.lingerTime
+                    }
+                ];
+                startTime += spotInfo.lingerTime; 
+                removeSpot(startSpotId, googleIds);  
+                // removeSpot(startSpotId, poleSpotIds); 
+                removeSpot(startSpotId, clusters[clusters.sequence[0]]); 
+                if(clusters[clusters.sequence[0]].length == 0) {
+                    console.log('5: 叢集已沒有景點，刪除叢集編號：');
+                    console.log(clusters.sequence[0]);
+                    delete clusters[clusters.sequence[0]]
+                    clusters.sequence.splice(0,1);
+                    console.log("5-1: 刪除完used up叢集後的sequnce: ");
+                    console.log(clusters.sequence);
+                }
+            } else {
+                //-> 從 clusters 去除景點並找下個景點來安排
+                console.log('6: 起始點今日沒有營業');
+                console.log( "7: 將  "+ startSpotId +"  加入到pendingArrangements");
+                pendingArrangement.push(startSpotId);
+                console.log('8: Current Pending Arrangement: ');
+                console.log(pendingArrangement);
+
+                removeSpot(startSpotId, googleIds);
+                removeSpot(startSpotId, clusters[clusters.sequence[0]]);
+                if(clusters[clusters.sequence[0]].length == 0) {
+                    console.log('9: 叢集已沒有景點，刪除叢集編號：');
+                    console.log(clusters.sequence[0]);
+                    delete clusters[clusters.sequence[0]]
+                    clusters.sequence.splice(0,1);
+                    console.log("9-1: 刪除完used up叢集後的sequnce: ");
+                    console.log(clusters.sequence);
+                }
+                startSpotId = getNextSpotId(startSpotId, clusters.sequence[0], clusters, spotsInfo);
+                continue;
             }
         }
 
-        let pendingArrangement = [];
         let keepArranging = true;
         while (keepArranging) { //一直跑到當日景點排滿為止
              if (Object.keys(clusters).length == 1) { // clusters empty
                 break;
              }
             if (Object.keys(clusters).length > 1 &&  clusters.sequence.length == 0) {
-                console.log('Object.keys(clusters)[0]: ');
+                console.log('10: Object.keys(clusters)[0]: ');
                 console.log(Object.keys(clusters)[0]);
                 clusters.sequence.push(Object.keys(clusters)[0]);
             }
-            console.log("current spot id: " + startSpotId);
+            console.log("11: current spot: " + spotsInfo[startSpotId].name);
+            console.log("11-1: 要在這個編號的叢集裡面找下一個景點："+ clusters.sequence[0]);
+            console.log('目前clusters狀況: ');
+            console.log(clusters);
             let nextSpotId = getNextSpotId(startSpotId, clusters.sequence[0], clusters, spotsInfo);
-            console.log("calculated next spot id: " + nextSpotId);
+            console.log("12: calculated next spot: " + spotsInfo[nextSpotId].name);
             let nextActivity = await arrangeNextActivity(dayId, startTime, startSpotId, nextSpotId, spotsInfo);
-            console.log(startSpotId + ' -> ' + nextSpotId + ' : transit and Spot to be added:');
+            console.log(spotsInfo[startSpotId].name + ' -> ' + spotsInfo[nextSpotId].name + ' : transit and Spot to be added:');
             console.log(nextActivity);
 
-            console.log("pendingArrangement.length: ");
-            console.log(pendingArrangement.length);
-            if (pendingArrangement.length > 0) {
-                console.log('current clusters: ');
-                console.log(clusters);
-                console.log("pending arrangement: ");
-                console.log(pendingArrangement);
-                clusters[clusters.sequence[0]].concat(pendingArrangement);
-                console.log(('clusters with pending arrangement added: '));
-                console.log(clusters);                
+            if (tooEarlyArrangement.length > 0) { //將先前太早去的景點加回到cluster
+                console.log('13: ---- 將先前太早去的景點加回到cluster ----');
+                console.log("14: current early arrangement: ");
+                console.log(tooEarlyArrangement);
+                clusters[clusters.sequence[0]] = clusters[clusters.sequence[0]].concat(tooEarlyArrangement);
+                tooEarlyArrangement = []; //清空too early
+                console.log(('15: full list with early arrangement added: '));
+                console.log(clusters); 
             }
-
-            //行程超時(8pm)、太早去、太晚去、沒開(return -1) -> 從 clusters 去除景點並找下個景點來安排，直到結束時間介於 6:30 ~ 8:00間
-            if (nextActivity == -1) {
-
+            
+            if (nextActivity == -1) { //行程超時(8pm)、太晚去、沒開(return -1) 
+                //-> 從 clusters 去除景點並找下個景點來安排，直到結束時間介於 6:30 ~ 8:00間
+                console.log( "16: 將  "+ nextSpotId +"  加入到pendingArrangements");
                 pendingArrangement.push(nextSpotId);
-                console.log('Pending Arrangement: ');
+                console.log('17: Current Pending Arrangement: ');
                 console.log(pendingArrangement);
 
                 removeSpot(nextSpotId, clusters[clusters.sequence[0]]);
+                removeSpot(nextSpotId, googleIds);
                 if(clusters[clusters.sequence[0]].length == 0) {
+                    console.log('18: 叢集已沒有景點，刪除叢集編號：');
+                    console.log(clusters.sequence[0]);
                     delete clusters[clusters.sequence[0]]
                     clusters.sequence.splice(0,1);
+                    console.log("18-1: 刪除完used up叢集後的sequnce: ");
+                    console.log(clusters.sequence);
                 }
-                startSpotId = nextSpotId;
+                // startSpotId = nextSpotId;
+            } else if (nextActivity == -2) { // 太早去的行程放進too early稍待安排
+                console.log( "19: 將  "+ nextSpotId +"  放進tooEarlyArrangement稍待安排");
+                tooEarlyArrangement.push(nextSpotId)
+                console.log("20: tooEarlyArrangement:"); console.log(tooEarlyArrangement);
+
+                removeSpot(nextSpotId, clusters[clusters.sequence[0]]);
+                if(clusters[clusters.sequence[0]].length == 0) {
+                    console.log('21: 叢集已沒有景點，刪除叢集編號：');
+                    console.log(clusters.sequence[0]);
+                    delete clusters[clusters.sequence[0]]
+                    clusters.sequence.splice(0,1);
+                    console.log("21-1: 刪除完used up叢集後的sequnce: ");
+                    console.log(clusters.sequence);
+                }
+                // startSpotId = nextSpotId;
             } else {
                 keepArranging = nextActivity.keepArranging; //while(true or false)
                 wholeTrip[startDateUnix] = wholeTrip[startDateUnix].concat(nextActivity.arrangement);
-                console.log("Latest Arrangement of whole day: ");
+                console.log("22: Latest Arrangement of whole day: ");
                 console.log(wholeTrip[startDateUnix]);
-        
                 startSpotId = nextSpotId;
                 if (keepArranging) {
                     startTime = nextActivity.arrangement[1].end;
@@ -117,26 +175,44 @@ const calculateTrips = async (req, res, next) => {
                 removeSpot(nextSpotId, poleSpotIds);
                 removeSpot(nextSpotId, clusters[clusters.sequence[0]]); 
                 if (clusters[clusters.sequence[0]].length == 0) {
+                    console.log('23: 叢集已沒有景點，刪除叢集編號：');
+                    console.log(clusters.sequence[0]);
                     delete clusters[clusters.sequence[0]];
                     clusters.sequence.splice(0,1);
+                    console.log("23-1: 刪除完used up叢集後的sequnce: ");
+                    console.log(clusters.sequence);
                 }
             }
         }
-        console.log("remaining spots before moving to new day:");
-        console.log(googleIds);    
+
+        if (pendingArrangement.length > 0) { //將太晚去、沒開、行程超時的景點加回到總清單
+            console.log('24: ---- 將太晚去、沒開、行程超時pendingArrangment加回至總清單 ----');
+            console.log("25: current pending arrangement: ");
+            console.log(pendingArrangement);
+            googleIds = googleIds.concat(pendingArrangement);
+            console.log(('26: full list with pending arrangement added: '));
+            console.log(googleIds);                
+            pendingArrangement = []; //清空 pending arrangements
+        }
+
+        console.log("27: remaining spots before moving to new day:");
+        googleIds.map(id => {
+            console.log(spotsInfo[id].name);
+        })
         dayId ++; //換日
         if (dayId == 7){
             dayId = 0;
         }
         //add one day to unix
         startDateUnix = startDateDatetime.setDate(startDateDatetime.getDate() + 1);
-        console.log("Next Day Id: " + dayId);
+        console.log("28: Next Day Id: " + dayId);
         startTime = originalStartTime;
         tripDuration --;
     }
-    console.log("remaining spots before send wholeTrip response");
+    
+    console.log("29: remaining spots before sending wholeTrip response");
     console.log(googleIds);
-    console.log('wholeTrip');
+    console.log('30: wholeTrip');
     console.log(wholeTrip);
 
     await Automation.arrangeAutomationResult(tripId, req.user.id, dayId, startDate, wholeTrip);

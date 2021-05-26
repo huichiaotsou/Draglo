@@ -71,12 +71,23 @@ function getClusters(spotIds, vectors, k, startSpotId){
                 countStableCentroids++
             }
         }
-        if (countStableCentroids == k){
+        if (countStableCentroids == k) {
             console.log('kmeans: clusters are established');
             console.log('--------------------------------');
             keepTuning = false;
-            let closestGroupId = calculateCloserPoint(centroids, centroids[groupedPlaces.sequence], 'getClosePoint')
-            groupedPlaces.sequence.push(closestGroupId);
+
+            let centroidsForSequence = [ ...centroids ]
+            centroids.splice(groupedPlaces.sequence[0],1)
+            for (let i = 0 ; i < centroidsForSequence.length - 1; i++) {     
+                let closestCentroidIndex = calculateCloserPoint(centroids, centroidsForSequence[groupedPlaces.sequence[i]], 'getClosePoint')
+                for (let j in centroidsForSequence) {
+                    if (centroidsForSequence[j][0] == centroids[closestCentroidIndex][0] && centroidsForSequence[j][0] == centroids[closestCentroidIndex][0]) {
+                        groupedPlaces.sequence.push(j);
+                        centroids.splice(closestCentroidIndex,1);
+                        break;
+                    }
+                }
+            }
             console.log("kmeans result: ");
             console.log(groupedPlaces);
             return groupedPlaces;

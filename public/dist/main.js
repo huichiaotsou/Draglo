@@ -14770,7 +14770,7 @@ window.addEventListener('storage', function() {
       Swal.fire({
         title: '行程計算中!',
         html: '請耐心等候',
-        timer: 7000,
+        timer: 12000,
         timerProgressBar: true,
         allowOutsideClick: () => !Swal.isLoading(),
         didOpen: () => {
