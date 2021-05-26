@@ -29,16 +29,18 @@ window.addEventListener('storage', function() {
     slotMaxTime: "24:00:00",
     scrollTime: "07:30:00",
     eventDragStop: function(info) {
-      let publicId = info.event.id
-      let { title } = info.event
       let jsEvent = info.jsEvent;
       if (isEventOut(jsEvent.clientX, jsEvent.clientY)) {
+        let event = info.event
+        let publicId = event.id
+        let { title } = event
+        let { spotId } = event.extendedProps
         calendar.getEventById(publicId).remove()
         let eventContainer = document.getElementById('external-events');
         let eventBack = document.createElement('div');
         eventBack.className = 'fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event';
         eventBack.setAttribute('id', publicId)
-        eventBack.setAttribute('ondblclick', `removeEvent('${publicId}', '${tripId}')`)
+        eventBack.setAttribute('ondblclick', `removeEvent('${spotId}', '${tripId}')`)
         eventContainer.appendChild(eventBack);
         let eventDetails = document.createElement('div');
         eventDetails.className = 'fc-event-main';
@@ -46,7 +48,6 @@ window.addEventListener('storage', function() {
         eventDetails.dataset.place_id = publicId;
         eventBack.appendChild(eventDetails);
         //change is_arranged back to 0
-        let { spotId } = info.event.extendedProps
         updateArrangement(0, spotId, tripId, 'null', 'null'); 
       }
     },

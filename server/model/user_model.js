@@ -1,12 +1,12 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const { query } = require('./mysql');
+const { pool } = require('./mysql');
 
 const signUp = async (email, password) => {
     try {
-        let checkEmail = await query('SELECT email FROM users WHERE email = ?', [email]);
-        if (checkEmail.length > 0) {
+        let checkEmail = await pool.query('SELECT email FROM users WHERE email = ?', [email]);
+        if (checkEmail[0].length > 0) {
             return { 
                 statusCode: 403,
                 error: 'email already exists'
@@ -14,8 +14,8 @@ const signUp = async (email, password) => {
         }
         let user = {email};
         user.password = encryptPassword(password);
-        let signUpSQL = await query('INSERT INTO users SET ?', user);
-        user.id = signUpSQL.insertId;
+        let signUpSQL = await pool.query('INSERT INTO users SET ?', user);
+        user.id = signUpSQL[0].insertId;
         delete user.password;
         let accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '28800s' });
         user.access_token = accessToken;
@@ -26,14 +26,14 @@ const signUp = async (email, password) => {
     }
 };
 
-
 const nativeSignIn = async (email, password) => {
     try {
         let queryStr = 'SELECT id, email, password FROM users WHERE email = ?';
-        let checkUser = await query(queryStr, email);
-        let user = checkUser[0];
+        let checkUser = await pool.query(queryStr, email);
+        console.log(checkUser);
+        let user = checkUser[0][0];
         let inputPassword = encryptPassword(password);
-        if (checkUser.length == 0) {
+        if (user.length == 0) {
             return {
                 statusCode: 400,
                 error: 'User is not registered, redirecting to registration page'

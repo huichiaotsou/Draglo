@@ -1,11 +1,11 @@
 const Google = require('../../utils/google');
-const { begin, query, commit, rollback } = require('./mysql');
+const { pool } = require('./mysql');
 require('dotenv').config();
 
 const getSpotInfo = async (spotId) => { 
     let queryStr = 'SELECT linger_time, open_days, open_hour, closed_hour FROM spots WHERE google_id = ?';
-    let result = await query(queryStr, spotId);
-    let { linger_time, open_days, open_hour, closed_hour } = result[0]
+    let result = await pool.query(queryStr, spotId);
+    let { linger_time, open_days, open_hour, closed_hour } = result[0][0]
     if (open_hour == null) open_hour = 0;
     if (closed_hour == null) closed_hour = 2400;
     open_hour = open_hour/100 * 60;
@@ -22,14 +22,14 @@ const getTravelingTime = async (prevSpotId, nextSpotId, spotsInfo) => {
         queryStr: 'SELECT transit_time FROM itineraries WHERE start_google_id = ? AND end_google_id = ?',
         condition: [prevSpotId, nextSpotId],
     }
-    let result = await query(sql.queryStr, sql.condition);
-    if (result.length == 0) {
+    let result = await pool.query(sql.queryStr, sql.condition);
+    if (result[0].length == 0) {
         // get time from google API & store in DB
-        let itinerary = await Google.directionAPI(prevSpotId, nextSpotId, spotsInfo)
-        await query('INSERT INTO itineraries SET ?', itinerary);
+        let itinerary = await Google.directionAPI(prevSpotId, nextSpotId)
+        await pool.query('INSERT INTO itineraries SET ?', itinerary);
         return Math.round(itinerary.transit_time) + 15;
     } else {
-        return Math.round(result[0].transit_time) + 15;
+        return Math.round(result[0][0].transit_time) + 15;
     }
 }
 
@@ -39,7 +39,7 @@ const arrangeAutomationResult = async (tripId, userId, dayId, startDate, wholeTr
     let values = []; 
     delete wholeTrip.night_events;
     let keys = Object.keys(wholeTrip);
-    keys.map( unixDay =>{
+    keys.map( unixDay => {
         wholeTrip[unixDay].map(activity => {
             let dateForStart = new Date(parseInt(unixDay));
             let dateForEnd = new Date(parseInt(unixDay));
@@ -52,7 +52,7 @@ const arrangeAutomationResult = async (tripId, userId, dayId, startDate, wholeTr
         })
     })
     console.log(values);
-    await query(queryStr.concat(upsert), [values]);
+    await pool.query(queryStr.concat(upsert), [values]);
 }
 
 module.exports = {
