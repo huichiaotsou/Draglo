@@ -155,12 +155,13 @@ window.addEventListener('storage', function() {
       let startDate = new Date(start);
       if (allEvents.length > 0) {
         allEvents.map(e => {
-          let end = new Date(e.end).setHours(0,0,0,0)
+          let end = new Date(e.end)
           if (end > startDate) {
             startDate = new Date (end.setDate(end.getDate() + 1));
           }
         })
       }
+      startDate.setHours(0,0,0,0)
       calculateTrip(cityName, startDate);
       let timerInterval
       Swal.fire({

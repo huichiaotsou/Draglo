@@ -8,7 +8,6 @@ function calculateTrip (cityName, startDate, dayStart) {
     data.googleIds = []
     data.spotsInfo = {}
     let spots = document.getElementsByClassName(cityName);
-    console.log(spots);
     for(let i = 0; i < spots.length; i++){
         let dataset = spots[i].dataset
         data.googleIds.push(dataset.place_id);
@@ -36,7 +35,6 @@ function calculateTrip (cityName, startDate, dayStart) {
     }
     xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
     xhr.setRequestHeader('Content-Type', 'application/json');
-    console.log(data);
     xhr.send(JSON.stringify(data));
 
 }
