@@ -56,6 +56,7 @@ window.addEventListener('storage', function() {
     //   // info.draggedEl.parentNode.removeChild(info.draggedEl);
     // },
     eventReceive: function(info) {
+      console.log('eventReceive triggered');
       //change is_arranged = 1 and record period
       let { spotId } = info.event.extendedProps
       let { start, end } = info.event
@@ -63,6 +64,7 @@ window.addEventListener('storage', function() {
 
     },
     eventDrop: function(info) {
+      console.log('eventDrop triggered');
       //change arrangement period
       let { spotId } = info.event.extendedProps
       let { start, end } = info.event
@@ -70,6 +72,7 @@ window.addEventListener('storage', function() {
 
     },
     eventResize : function(info) {
+      console.log('eventResize triggered');
       //change arrangement period
       let { spotId } = info.event.extendedProps
       let { start, end } = info.event
@@ -152,7 +155,7 @@ window.addEventListener('storage', function() {
       let startDate = new Date(start);
       if (allEvents.length > 0) {
         allEvents.map(e => {
-          let end = new Date(e.end)
+          let end = new Date(e.end).setHours(0,0,0,0)
           if (end > startDate) {
             startDate = new Date (end.setDate(end.getDate() + 1));
           }
