@@ -9,7 +9,7 @@ let directionAPI = async (prevSpotId, nextSpotId, mode) => {
         .then((res) => {
             let data = res.data;
             if (data.available_travel_modes) { //no public transit found
-                console.log('A-2. no public transit found');
+                console.log('A-2. no public transit found ');
                 console.log('A-3. use: '+ data.available_travel_modes[0]);
                 return directionAPI(prevSpotId, nextSpotId, data.available_travel_modes[0])
             }
