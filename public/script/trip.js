@@ -54,6 +54,33 @@ function getTripSettings(accessToken, tripId) {
     xhr.send();
 }
 
+function changeDayStart() {
+    Swal.fire({
+        position: 'top-start',
+        title: '<p>設定每日外出時間</p>',
+        html:`
+        <div><span id="chosen-hour">9</span>點</div>
+        <input id="range-bar" type="range" class="form-range" min="6" max="15" id="customRange2">
+        `,
+        showCloseButton: true,
+        focusConfirm: false,
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: `OK`
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let dayStart = rangeBar.value * 60;
+            document.getElementById('calculateTrip').dataset.dayStart = dayStart;
+        }
+    })
+    
+    let rangeBar = document.getElementById('range-bar')
+      rangeBar.value = 9;
+      rangeBar.addEventListener('change', ()=>{
+        document.getElementById('chosen-hour').innerHTML = rangeBar.value;
+      })
+}
+
+
 function changeTripPeriod() {
     let tripSettingsString = localStorage.getItem('trip_settings');
     let tripSettings = JSON.parse(tripSettingsString);

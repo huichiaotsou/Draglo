@@ -49,6 +49,9 @@ window.addEventListener('storage', function() {
         eventBack.appendChild(eventDetails);
         //change is_arranged back to 0
         updateArrangement(0, spotId, tripId, 'null', 'null'); 
+        setTimeout(()=>{
+          getPendingArrangements(null, tripId);
+        }, 200)
       }
     },
     // drop: function(info) {
@@ -61,7 +64,9 @@ window.addEventListener('storage', function() {
       let { spotId } = info.event.extendedProps
       let { start, end } = info.event
       updateArrangement(1, spotId, tripId, start, end); 
-
+      setTimeout(()=>{
+        getPendingArrangements(null, tripId);
+      }, 200)
     },
     eventDrop: function(info) {
       console.log('eventDrop triggered');
@@ -69,7 +74,6 @@ window.addEventListener('storage', function() {
       let { spotId } = info.event.extendedProps
       let { start, end } = info.event
       updateArrangement(1, spotId, tripId, start, end); 
-
     },
     eventResize : function(info) {
       console.log('eventResize triggered');
@@ -146,53 +150,62 @@ window.addEventListener('storage', function() {
       Swal.fire({
         position: 'top-start',
         icon: 'warning',
-        title: '自動安排行程目前僅限於城市內',
-        text: '請先在城市清單中選擇一個城市',
+        title: '請選擇一個城市',
+        text: '請在城市清單中選擇您想要進行自動安排的城市',
       }) 
     } else {
       let cityName = calculateTripBtn.dataset.city;
+      let dayStart = calculateTripBtn.dataset.dayStart;
       let allEvents = calendar.getEvents();
-      console.log('allEvents');
-      console.log(allEvents);
       let startDate = new Date(new Date(start).setHours(0,0,0,0));
-      console.log('allEvents.length');
-      console.log(allEvents.length);
       if (allEvents.length > 0) {
-        console.log('allEvents.length > 0');
         allEvents.map(e => {
           let end = new Date(e.end)
           if (end > startDate) {
             startDate = new Date(new Date(end.setDate(end.getDate() + 1)).setHours(0,0,0,0))
-            console.log('new StartDate:');
-            console.log(startDate);
           }
         })
       }
       startDate = startDate.toString()
-      calculateTrip(cityName, startDate);
-      let timerInterval
       Swal.fire({
-        title: '行程計算中!',
-        html: '請耐心等候',
-        timer: 12000,
-        timerProgressBar: true,
-        allowOutsideClick: () => !Swal.isLoading(),
-        didOpen: () => {
-          Swal.showLoading()
-        },
-        willClose: () => {
-          clearInterval(timerInterval)
-        }
+        position: 'top-start',
+        title: '目前自動安排的設定為：',
+        html: `
+        <div>城市：${cityName}</div>
+        <div>外出時間：${dayStart / 60}點</div>
+        `,
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: `OK`
       }).then((result) => {
-        /* Read more about handling dismissals below */
-        if (result.dismiss === Swal.DismissReason.timer) {
-          getPendingArrangements(null, JSON.parse(localStorage.getItem('trip_settings')).id);
-          console.log("6");
-
-          getArrangements(calendar, tripId);
-          calendar.render();
+        if (result.isConfirmed) {
+            calculateTrip(cityName, startDate, dayStart);
+            let timerInterval
+            Swal.fire({
+              title: '行程計算中!',
+              html: '請耐心等候',
+              timer: 12000,
+              timerProgressBar: true,
+              allowOutsideClick: () => !Swal.isLoading(),
+              didOpen: () => {
+                Swal.showLoading()
+              },
+              willClose: () => {
+                clearInterval(timerInterval)
+              }
+            }).then((result) => {
+              /* Read more about handling dismissals below */
+              if (result.dismiss === Swal.DismissReason.timer) {
+                getPendingArrangements(null, tripId);
+                console.log("6");
+      
+                getArrangements(calendar, tripId);
+                calendar.render();
+              }
+            })
         }
       })
+
     }
   })
 

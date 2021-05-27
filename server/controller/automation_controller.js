@@ -7,6 +7,7 @@ const { getNextSpotId , arrangeNextActivity, removeSpot, findPoleSpotIds } = req
 const calculateTrips = async (req, res, next) => {
     console.log(req.body);
     let { tripId, dayId, googleIds, spotsInfo, tripDuration, startTime, startDate } = req.body;
+    startTime = parseInt(startTime)
     let startDateDatetime = new Date(startDate.split('GMT')[0])
     let startDateUnix = startDateDatetime.getTime();
     

@@ -31,27 +31,32 @@
         <!-- Single danger button -->
         <div class="btn-group">
           <button id="settings" class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            編輯
+            旅程設定
           </button>
           <div class="dropdown-menu">
-            <a class="dropdown-item" onclick="changeTripPeriod()">設定旅行區間</a>    
-            <!-- <a class="dropdown-item" onclick="shareTrip()" id="share-trip">分享行程</a> -->
+            <a class="dropdown-item" onclick="changeTripPeriod()">設定旅行區間</a>
+            <a class="dropdown-item" onclick="changeDayStart()">設定外出時間</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" onclick="shareTrip()" id="share-trip">分享行程</a>
             <a class="dropdown-item" onclick="archiveTrip(0)" id="recover-trip">回復行程</a>
             <a class="dropdown-item" onclick="archiveTrip(1)" id="archive-trip">封存行程</a>
             <a class="dropdown-item" onclick="archiveTrip(2)" id="delete-trip">刪除行程</a>
           </div>
         </div>
+
+        <button id="calculateTrip" class="btn btn-outline-primary" data-city="null" data-day-start="540" type="button">自動安排行程</button>
         
         <!-- Single danger button -->
-        <div class="btn-group">
+        <!-- <div class="btn-group">
           <button id="automation" class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             自動化
           </button>
           <div class="dropdown-menu">
             <a class="dropdown-item" href="#">計算交通時間</a>
+            <div class="dropdown-divider"></div>
             <a class="dropdown-item" id="calculateTrip" data-city="null">自動安排行程</a>
           </div>
-        </div>
+        </div> -->
       </div> 
       
       

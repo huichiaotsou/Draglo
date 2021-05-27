@@ -105,6 +105,8 @@ let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spots
             startTime = startTime + 60;
             console.log("午餐後的開始時間"); console.log(startTime);
         }
+        console.log(startTime);
+        console.log(transitTime);
         return {
             keepArranging: true,
             arrangement: [
