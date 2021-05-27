@@ -3,9 +3,10 @@ const { checkOwnership } = require('../../utils/utils')
 
 const createTrip = async (req, res, next) => {
     let { id } = req.user;
-    let start = new Date(new Date().setHours(0,0,0,0));
-    let now = new Date(new Date().setHours(0,0,0,0));
-    let end = new Date (now.setDate(now.getDate() + 7));
+    let now1 = new Date(new Date().setHours(0,0,0,0));
+    let start = new Date (now2.setDate(now2.getDate() + 30));
+    let now2 = new Date(new Date().setHours(0,0,0,0));
+    let end = new Date (now2.setDate(now2.getDate() + 37));
     let initTrip = {
         name: '未命名行程',
         trip_start: start,
