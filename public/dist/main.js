@@ -14764,8 +14764,18 @@ window.addEventListener('storage', function() {
         text: '請先在城市清單中選擇一個城市',
       }) 
     } else {
-      let cityName = calculateTripBtn.dataset.city
-      calculateTrip(cityName);
+      let cityName = calculateTripBtn.dataset.city;
+      let allEvents = calendar.getEvents();
+      let startDate = new Date(start);
+      if (allEvents.length > 0) {
+        allEvents.map(e => {
+          let end = new Date(e.end)
+          if (end > startDate) {
+            startDate = new Date (end.setDate(end.getDate() + 1));
+          }
+        })
+      }
+      calculateTrip(cityName, startDate);
       let timerInterval
       Swal.fire({
         title: '行程計算中!',
@@ -14806,6 +14816,15 @@ window.addEventListener('storage', function() {
 
 
   function getArrangements (calendar, tripId) {
+    //clear calendar
+    let allEvents = calendar.getEvents();
+    if (allEvents.length > 0){
+      allEvents.map(e => {
+        e.remove()
+        console.log('e from getArrangements');
+        console.log(e);
+      })
+    }
     //get all arrangements and push in calendar
     let xhr = new XMLHttpRequest();
     xhr.open('GET', `/arrangement?status=arranged&id=${tripId}`);

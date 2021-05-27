@@ -1,10 +1,9 @@
 function switchAutomationCity(cityName) {
     let calculateTripBtn = document.getElementById('calculateTrip');
-    console.log(calculateTripBtn);
     calculateTripBtn.dataset.city = cityName;
 }
 
-function calculateTrip (cityName) {
+function calculateTrip (cityName, startDate, dayStart) {
     let data = {}
     data.googleIds = []
     data.spotsInfo = {}
@@ -21,11 +20,11 @@ function calculateTrip (cityName) {
     }
     data.tripDuration = Math.round(((spots.length * 90) + ((spots.length - 1) * 30))/60/9);
     let tripSettings = JSON.parse(localStorage.getItem('trip_settings'));
-    let tripStart = tripSettings.trip_start;
     data.tripId = tripSettings.id;
-    data.startDate = new Date(tripStart)
-    data.dayId = new Date(tripStart).getDay();
-    data.startTime = 540;
+    // let tripStart = startDate || tripSettings.trip_start;
+    data.startDate = startDate
+    data.dayId = startDate.getDay();
+    data.startTime = dayStart || 540;
     let xhr = new XMLHttpRequest();
     xhr.open('POST', '/automation')
     xhr.onreadystatechange = function () {

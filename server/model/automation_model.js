@@ -37,7 +37,7 @@ const arrangeAutomationResult = async (tripId, userId, dayId, startDate, wholeTr
     let queryStr = 'INSERT INTO arrangements (trip_id, user_id, spot_id, start_time, end_time, is_arranged) VALUES ? '
     let upsert = 'ON DUPLICATE KEY UPDATE start_time = VALUES(start_time), end_time = VALUES(end_time), is_arranged = VALUES(is_arranged), user_id = VALUES(user_id) '
     let values = []; 
-    delete wholeTrip.night_events;
+    delete wholeTrip.other_events;
     let keys = Object.keys(wholeTrip);
     keys.map( unixDay => {
         wholeTrip[unixDay].map(activity => {

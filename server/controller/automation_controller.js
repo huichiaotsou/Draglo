@@ -14,7 +14,9 @@ const calculateTrips = async (req, res, next) => {
     let originalStartTime = startTime;
     
     let wholeTrip = {};
-    let nightEvents = wholeTrip.night_events = []
+    let otherEvents = wholeTrip.other_events = {}
+    let nightEvents = otherEvents.night_events = [];
+    let remainingSpots = otherEvents.remaining_spots = [];
     let pendingArrangement = [];
     let tooEarlyArrangement = [];
     while(googleIds.length > 0) { //while 一直跑到安排完所有景點
@@ -46,7 +48,7 @@ const calculateTrips = async (req, res, next) => {
             // startSpotId = getNextSpotId(startSpotId, clusters.sequence[0], clusters, spotsInfo);;
             continue;
         } else {
-            //檢查起始點是否營業：
+            //起始點當日是否營業：
             let open = false;
             let openDays = spotInfo.openDays.split(',');
             for (let day of openDays) {
@@ -57,12 +59,13 @@ const calculateTrips = async (req, res, next) => {
             console.log('4: 起始點今天是否營業:');
             console.log(open);
             if (open) {
-                if (spotInfo.openHour > startTime) { //起始點還沒開門
+                if (spotInfo.openHour > startTime) { //起始點是否開門
                     console.log('4-1: 此景點今日有營業但太早來了');
                     console.log( "4-2: 將  "+ startSpotId +"  放進tooEarlyArrangement稍待安排");
                     tooEarlyArrangement.push(startSpotId)
                     console.log("4-3: tooEarlyArrangement:"); console.log(tooEarlyArrangement);
                     removeSpot(startSpotId, clusters[clusters.sequence[0]]);
+                    removeSpot(startSpotId, googleIds);
                     if(clusters[clusters.sequence[0]].length == 0) {
                         console.log('4-4: 叢集已沒有景點，刪除叢集編號：');
                         console.log(clusters.sequence[0]);
@@ -148,6 +151,7 @@ const calculateTrips = async (req, res, next) => {
                 console.log("14: current early arrangement: ");
                 console.log(tooEarlyArrangement);
                 clusters[clusters.sequence[0]] = clusters[clusters.sequence[0]].concat(tooEarlyArrangement);
+                googleIds = googleIds.concat(tooEarlyArrangement);
                 tooEarlyArrangement = []; //清空too early
                 console.log(('15: full list with early arrangement added: '));
                 console.log(clusters); 
@@ -177,6 +181,7 @@ const calculateTrips = async (req, res, next) => {
                 console.log("20: tooEarlyArrangement:"); console.log(tooEarlyArrangement);
 
                 removeSpot(nextSpotId, clusters[clusters.sequence[0]]);
+                removeSpot(nextSpotId, googleIds)
                 if(clusters[clusters.sequence[0]].length == 0) {
                     console.log('21: 叢集已沒有景點，刪除叢集編號：');
                     console.log(clusters.sequence[0]);
@@ -236,11 +241,38 @@ const calculateTrips = async (req, res, next) => {
     
     console.log("29: remaining spots before sending wholeTrip response");
     console.log(googleIds);
+    if (googleIds.length > 0 || tooEarlyArrangement.length > 0 || pendingArrangement.length > 0) {
+        if (googleIds.length > 0) {
+            for (let id of googleIds) {
+                let remainingSpotInfo = await Automation.getSpotInfo(id);
+                remainingSpotInfo.activity = spotsInfo[id].name;
+                remainingSpots.push(remainingSpotInfo);
+            }
+        }
+        if (tooEarlyArrangement.length > 0) {
+            for (let id of tooEarlyArrangement) {
+                let remainingSpotInfo = await Automation.getSpotInfo(id);
+                remainingSpotInfo.activity = spotsInfo[id].name;
+                remainingSpots.push(remainingSpotInfo);
+            }
+        }
+        if (pendingArrangement.length > 0) {
+            for (let id of pendingArrangement) {
+                let remainingSpotInfo = await Automation.getSpotInfo(id);
+                remainingSpotInfo.activity = spotsInfo[id].name;
+                remainingSpots.push(remainingSpotInfo);
+            }
+        }
+    }
     console.log('30: wholeTrip');
     console.log(wholeTrip);
+    console.log('night events:');
+    console.log(wholeTrip.other_events.night_events);
+    console.log('remaining spots: ');
+    console.log(wholeTrip.other_events.remaining_spots);
 
     await Automation.arrangeAutomationResult(tripId, req.user.id, dayId, startDate, wholeTrip);
-    res.send(wholeTrip.night_events);
+    res.send(wholeTrip);
 }
 
 module.exports = {
