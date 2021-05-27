@@ -168,6 +168,7 @@ window.addEventListener('storage', function() {
           }
         })
       }
+      startDate = startDate.toString()
       calculateTrip(cityName, startDate);
       let timerInterval
       Swal.fire({

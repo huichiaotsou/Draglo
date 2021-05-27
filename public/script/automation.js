@@ -22,7 +22,7 @@ function calculateTrip (cityName, startDate, dayStart) {
     data.tripId = tripSettings.id;
     // let tripStart = startDate || tripSettings.trip_start;
     data.startDate = startDate
-    data.dayId = startDate.getDay();
+    data.dayId = new Date(startDate).getDay();
     data.startTime = dayStart || 540;
     let xhr = new XMLHttpRequest();
     xhr.open('POST', '/automation')
