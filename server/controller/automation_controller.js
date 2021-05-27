@@ -114,6 +114,10 @@ const calculateTrips = async (req, res, next) => {
             console.log('目前clusters狀況: ');
             console.log(clusters);
             let nextSpotId = getNextSpotId(startSpotId, clusters.sequence[0], clusters, spotsInfo);
+            if (startSpotId == -1) { //已無景點
+                console.log('11-2: startSpotId == -1，已無景點');
+                break;
+            }
             console.log("12: calculated next spot: " + spotsInfo[nextSpotId].name);
             let nextActivity = await arrangeNextActivity(dayId, startTime, startSpotId, nextSpotId, spotsInfo);
             console.log(spotsInfo[startSpotId].name + ' -> ' + spotsInfo[nextSpotId].name + ' : transit and Spot to be added:');

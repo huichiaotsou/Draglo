@@ -17,7 +17,7 @@ const getSpotInfo = async (spotId) => {
         closedHour: closed_hour
     }
 }
-const getTravelingTime = async (prevSpotId, nextSpotId, spotsInfo) => {
+const getTravelingTime = async (prevSpotId, nextSpotId) => {
     let sql = {
         queryStr: 'SELECT transit_time FROM itineraries WHERE start_google_id = ? AND end_google_id = ?',
         condition: [prevSpotId, nextSpotId],
@@ -25,7 +25,7 @@ const getTravelingTime = async (prevSpotId, nextSpotId, spotsInfo) => {
     let result = await pool.query(sql.queryStr, sql.condition);
     if (result[0].length == 0) {
         // get time from google API & store in DB
-        let itinerary = await Google.directionAPI(prevSpotId, nextSpotId)
+        let itinerary = await Google.directionAPI(prevSpotId, nextSpotId, 'transit')
         await pool.query('INSERT INTO itineraries SET ?', itinerary);
         return Math.round(itinerary.transit_time) + 15;
     } else {

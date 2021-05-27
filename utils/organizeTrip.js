@@ -18,6 +18,10 @@ let getNextSpotId = (currentSpotId, sequence, clusters, spotsInfo) => {
         return clusters[sequence][0]
     }
 
+    if (!clusters[sequence]) {
+        return -1;
+    }
+
     let currentClusterVectors = clusters[sequence].map(id => spotsInfo[id].vector);
     
     console.log("------------------------");
@@ -121,6 +125,9 @@ let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spots
 }
 
 const findPoleSpotIds = (spotIds, spotsInfo) => {
+    if (spotIds.length == 1) {
+        return spotIds;
+    }
     let maxDistance = 0;
     let poleSpotIds= [];
     spotIds.map(base => {
