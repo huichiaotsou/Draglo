@@ -14769,16 +14769,22 @@ window.addEventListener('storage', function() {
     } else {
       let cityName = calculateTripBtn.dataset.city;
       let allEvents = calendar.getEvents();
-      let startDate = new Date(start);
+      console.log('allEvents');
+      console.log(allEvents);
+      let startDate = new Date(new Date(start).setHours(0,0,0,0));
+      console.log('allEvents.length');
+      console.log(allEvents.length);
       if (allEvents.length > 0) {
+        console.log('allEvents.length > 0');
         allEvents.map(e => {
           let end = new Date(e.end)
           if (end > startDate) {
-            startDate = new Date (end.setDate(end.getDate() + 1));
+            startDate = new Date(new Date(end.setDate(end.getDate() + 1)).setHours(0,0,0,0))
+            console.log('new StartDate:');
+            console.log(startDate);
           }
         })
       }
-      startDate.setHours(0,0,0,0)
       calculateTrip(cityName, startDate);
       let timerInterval
       Swal.fire({
