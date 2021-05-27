@@ -34,13 +34,14 @@ const calculateTrips = async (req, res, next) => {
         console.log('-------------------------------------------');
 
         let spotInfo = await Automation.getSpotInfo(startSpotId);
+        console.log('3-1: 當前景點資訊：');
+        console.log(spotInfo);
         if (spotInfo.openHour >= 1020) { //after 5 pm
             //紀錄nightEventSpotIds
             spotInfo.activity = spotsInfo[startSpotId].name;
             nightEvents.push(spotInfo);
             //刪除並找下一個startSpotId
             removeSpot(startSpotId, googleIds);  
-            // removeSpot(startSpotId, poleSpotIds); 
             removeSpot(startSpotId, clusters[clusters.sequence[0]]); 
             // startSpotId = getNextSpotId(startSpotId, clusters.sequence[0], clusters, spotsInfo);;
             continue;
@@ -56,25 +57,44 @@ const calculateTrips = async (req, res, next) => {
             console.log('4: 起始點今天是否營業:');
             console.log(open);
             if (open) {
-                wholeTrip[startDateUnix] = [ //initialize the day
-                    {
-                        activity: spotsInfo[startSpotId].name,
-                        spotId: spotsInfo[startSpotId].spotId,
-                        startTime: startTime,
-                        end: startTime + spotInfo.lingerTime
+                if (spotInfo.openHour > startTime) { //起始點還沒開門
+                    console.log('4-1: 此景點今日有營業但太早來了');
+                    console.log( "4-2: 將  "+ startSpotId +"  放進tooEarlyArrangement稍待安排");
+                    tooEarlyArrangement.push(startSpotId)
+                    console.log("4-3: tooEarlyArrangement:"); console.log(tooEarlyArrangement);
+                    removeSpot(startSpotId, clusters[clusters.sequence[0]]);
+                    if(clusters[clusters.sequence[0]].length == 0) {
+                        console.log('4-4: 叢集已沒有景點，刪除叢集編號：');
+                        console.log(clusters.sequence[0]);
+                        delete clusters[clusters.sequence[0]]
+                        clusters.sequence.splice(0,1);
+                        console.log("4-5: 刪除完used up叢集後的sequnce: ");
+                        console.log(clusters.sequence);
                     }
-                ];
-                startTime += spotInfo.lingerTime; 
-                removeSpot(startSpotId, googleIds);  
-                // removeSpot(startSpotId, poleSpotIds); 
-                removeSpot(startSpotId, clusters[clusters.sequence[0]]); 
-                if(clusters[clusters.sequence[0]].length == 0) {
-                    console.log('5: 叢集已沒有景點，刪除叢集編號：');
-                    console.log(clusters.sequence[0]);
-                    delete clusters[clusters.sequence[0]]
-                    clusters.sequence.splice(0,1);
-                    console.log("5-1: 刪除完used up叢集後的sequnce: ");
-                    console.log(clusters.sequence);
+                    continue;
+                } else {
+                    wholeTrip[startDateUnix] = [ //initialize the day
+                        {
+                            activity: spotsInfo[startSpotId].name,
+                            spotId: spotsInfo[startSpotId].spotId,
+                            startTime: startTime,
+                            end: startTime + spotInfo.lingerTime
+                        }
+                    ];
+                    console.log('5: 本日起始行程');
+                    console.log(wholeTrip[startDateUnix]);
+                    startTime += spotInfo.lingerTime; 
+                    removeSpot(startSpotId, googleIds);  
+                    // removeSpot(startSpotId, poleSpotIds); 
+                    removeSpot(startSpotId, clusters[clusters.sequence[0]]); 
+                    if(clusters[clusters.sequence[0]].length == 0) {
+                        console.log('5-1: 叢集已沒有景點，刪除叢集編號：');
+                        console.log(clusters.sequence[0]);
+                        delete clusters[clusters.sequence[0]]
+                        clusters.sequence.splice(0,1);
+                        console.log("5-2: 刪除完used up叢集後的sequnce: ");
+                        console.log(clusters.sequence);
+                    }
                 }
             } else {
                 //-> 從 clusters 去除景點並找下個景點來安排
