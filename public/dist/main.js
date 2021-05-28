@@ -14708,7 +14708,6 @@ window.addEventListener('storage', function() {
         title: info.event.title
       }
       renderSpotsFromCal(spot)
-      info.el.style.borderColor = 'red';
     },
     headerToolbar: {
         start: '',
