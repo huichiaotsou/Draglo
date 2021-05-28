@@ -56,7 +56,7 @@ function getTripSettings(accessToken, tripId) {
 
 function changeDayStart() {
     Swal.fire({
-        position: 'top-start',
+        position: 'top-end',
         title: '<p>設定每日外出時間</p>',
         html:`
         <div><span id="chosen-hour">9</span>點</div>
@@ -74,9 +74,11 @@ function changeDayStart() {
     })
     
     let rangeBar = document.getElementById('range-bar')
-      rangeBar.value = 9;
+      rangeBar.value = document.getElementById('calculateTrip').dataset.dayStart / 60;
+      let chosenHour = document.getElementById('chosen-hour')
+      chosenHour.innerHTML = rangeBar.value
       rangeBar.addEventListener('change', ()=>{
-        document.getElementById('chosen-hour').innerHTML = rangeBar.value;
+        chosenHour.innerHTML = rangeBar.value;
       })
 }
 
@@ -85,7 +87,7 @@ function changeTripPeriod() {
     let tripSettingsString = localStorage.getItem('trip_settings');
     let tripSettings = JSON.parse(tripSettingsString);
     Swal.fire({
-        position: 'top-start',
+        position: 'top-end',
         title: '設定旅行區間',
         showDenyButton: true,
         confirmButtonColor: '#3085d6',
@@ -235,7 +237,7 @@ function archiveTrip(action) {
                     })
                     setTimeout(()=>{
                         location.assign('/dashboard.html');
-                    }, 1000);
+                    }, 700);
                 } else if (action == 2) {
                     Swal.fire({
                         icon: 'success',
@@ -253,6 +255,9 @@ function archiveTrip(action) {
                         showConfirmButton: false,
                         timer: 1000
                     })
+                    setTimeout(()=>{
+                        location.reload();
+                    }, 1000);
                 }
             } else if (xhr.status == 403) {
                 Swal.fire({
@@ -270,7 +275,7 @@ function archiveTrip(action) {
     } else if (action == 2) {
         //確認刪除
         Swal.fire({
-            position: 'top-start',
+            position: 'top-end',
             title: '是否確定刪除行程?',
             text: "刪除的行程將無法復原",
             icon: 'warning',
@@ -303,6 +308,7 @@ window.addEventListener('storage', ()=>{
     if (isArchived == 1) { //archived trip, hide archive button
         let archiveBtn = document.getElementById('archive-trip')
         archiveBtn.style.display = 'none';
+        document.getElementById('archive-banner').style.display = 'block';
     }
 })
 

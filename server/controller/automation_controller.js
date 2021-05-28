@@ -15,9 +15,9 @@ const calculateTrips = async (req, res, next) => {
     let originalStartTime = startTime;
     
     let wholeTrip = {};
-    let otherEvents = wholeTrip.other_events = {}
-    let nightEvents = otherEvents.night_events = [];
-    let remainingSpots = otherEvents.remaining_spots = [];
+    let otherEvents = {}
+    let nightEvents = otherEvents.nightEvents = [];
+    let remainingSpots = otherEvents.remainingSpots = [];
     let pendingArrangement = [];
     let tooEarlyArrangement = [];
     while(googleIds.length > 0) { //while 一直跑到安排完所有景點
@@ -39,7 +39,7 @@ const calculateTrips = async (req, res, next) => {
         let spotInfo = await Automation.getSpotInfo(startSpotId);
         console.log('3-1: 當前景點資訊：');
         console.log(spotInfo);
-        if (spotInfo.openHour >= 1020) { //after 5 pm
+        if (spotInfo.openHour >= 960) { //after 5 pm
             //紀錄nightEventSpotIds
             spotInfo.activity = spotsInfo[startSpotId].name;
             nightEvents.push(spotInfo);
@@ -268,12 +268,12 @@ const calculateTrips = async (req, res, next) => {
     console.log('30: wholeTrip');
     console.log(wholeTrip);
     console.log('night events:');
-    console.log(wholeTrip.other_events.night_events);
+    console.log(otherEvents.nightEvents);
     console.log('remaining spots: ');
-    console.log(wholeTrip.other_events.remaining_spots);
+    console.log(otherEvents.remainingSpots);
 
     await Automation.arrangeAutomationResult(tripId, req.user.id, dayId, startDate, wholeTrip);
-    res.send(wholeTrip);
+    res.send(otherEvents);
 }
 
 module.exports = {

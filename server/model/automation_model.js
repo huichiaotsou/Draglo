@@ -22,6 +22,8 @@ const getTravelingTime = async (prevSpotId, nextSpotId) => {
         queryStr: 'SELECT transit_time FROM itineraries WHERE start_google_id = ? AND end_google_id = ?',
         condition: [prevSpotId, nextSpotId],
     }
+    console.log(`SELECT transit_time FROM itineraries WHERE start_google_id = '${prevSpotId}' AND end_google_id = '${nextSpotId}'`);
+    
     let result = await pool.query(sql.queryStr, sql.condition);
     if (result[0].length == 0) {
         // get time from google API & store in DB
@@ -37,7 +39,6 @@ const arrangeAutomationResult = async (tripId, userId, dayId, startDate, wholeTr
     let queryStr = 'INSERT INTO arrangements (trip_id, user_id, spot_id, start_time, end_time, is_arranged) VALUES ? '
     let upsert = 'ON DUPLICATE KEY UPDATE start_time = VALUES(start_time), end_time = VALUES(end_time), is_arranged = VALUES(is_arranged), user_id = VALUES(user_id) '
     let values = []; 
-    delete wholeTrip.other_events;
     let keys = Object.keys(wholeTrip);
     keys.map( unixDay => {
         wholeTrip[unixDay].map(activity => {

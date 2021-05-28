@@ -52,3 +52,22 @@
   justify-self: auto;
   font-size: 15px;
 }
+
+#calculateTrip {
+  position: absolute;
+  right: 20px;
+}
+
+#settings {
+  position: absolute;
+  right: 148px;
+}
+
+#archive-banner {
+  cursor: pointer;
+  position: fixed;
+  top: 5px;
+  margin-left: 7%;
+  opacity: 0.5;
+  display: none;
+}

@@ -82,7 +82,7 @@ function initMap(spots) {
       });
       marker.setVisible(true);
       infowindowContent.children["place-name"].textContent = place.name;
-      infowindowContent.children["place-address"].textContent = results[0].formatted_address;
+      infowindowContent.children["place-address"].textContent = results[0].formatted_address
       infowindow.open(map, marker);
       infowindow.addListener("click", () => {
         popUpAddSpot(place.name, place.place_id);

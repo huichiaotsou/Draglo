@@ -28,9 +28,11 @@ function calculateTrip (cityName, startDate, dayStart) {
     xhr.open('POST', '/automation')
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            // let response = JSON.parse(xhr.responseText);
-            // console.log(response);
-            
+            let otherEvents = JSON.parse(xhr.responseText);
+            localStorage.removeItem('night_events');
+            localStorage.removeItem('remaining_spots');
+            localStorage.setItem('night_events', JSON.stringify(otherEvents.nightEvents))
+            localStorage.setItem('remaining_spots', JSON.stringify(otherEvents.remainingSpots))
         }
     }
     xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
