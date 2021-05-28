@@ -14865,14 +14865,19 @@ window.addEventListener('storage', function() {
                         `
                   })
                 }
-                Swal.fire({
-                    position: 'top',
-                    title: '<strong>尚有未安排景點</strong>',
-                    icon: 'info',
-                    html: responseContent
-                })
-                localStorage.removeItem('night_events');
-                localStorage.removeItem('remaining_spots');    
+                console.log('length');
+                console.log(nightEvents.length);
+                console.log(remainingSpots.length);
+                if(nightEvents.length > 0 || remainingSpots.length > 0) {
+                  Swal.fire({
+                      position: 'top',
+                      title: '<strong>尚有未安排景點</strong>',
+                      icon: 'info',
+                      html: responseContent
+                  })
+                  localStorage.removeItem('night_events');
+                  localStorage.removeItem('remaining_spots');    
+                }
                 getPendingArrangements(null, tripId);
                 console.log("6");
                 calculateTripBtn.dataset.city = 'null';

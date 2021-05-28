@@ -248,6 +248,9 @@ window.addEventListener('storage', function() {
                         `
                   })
                 }
+                console.log('length');
+                console.log(nightEvents.length);
+                console.log(remainingSpots.length);
                 if(nightEvents.length > 0 || remainingSpots.length > 0) {
                   Swal.fire({
                       position: 'top',
