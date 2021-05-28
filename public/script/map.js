@@ -23,7 +23,7 @@ function initMap(spots) {
       center: { 
         lat: (center[0] /spots.length), 
         lng: (center[1] /spots.length)},
-      zoom: 12,
+      zoom: 13,
       mapTypeControl: false,
       fullscreenControl: false,
     });
@@ -73,7 +73,7 @@ function initMap(spots) {
         window.alert("Search failed due to: " + status);
         return;
       }
-      map.setZoom(14);
+      map.setZoom(15);
       map.setCenter(results[0].geometry.location);
       // Set the position of the marker using the place ID and location.
       marker.setPlace({
@@ -253,6 +253,13 @@ function renderSpots(cityName, placeId) {
     let spot = document.getElementById(placeId).childNodes[0]
     spots.push([parseFloat(spot.dataset.latitude), parseFloat(spot.dataset.longtitude), spot.innerHTML])
   }
+  initMap(spots);
+}
+
+function renderSpotsFromCal(spot) {
+  console.log(spot);
+  let spots = [];
+  spots.push([spot.latitude, spot.longtitude, spot.title])
   initMap(spots);
 }
 

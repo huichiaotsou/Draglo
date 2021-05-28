@@ -14700,6 +14700,16 @@ window.addEventListener('storage', function() {
       updateArrangement(1, spotId, tripId, start, end); 
       
     },
+    eventClick : function(info) {
+      let { extendedProps } = info.event
+      let spot = {
+        latitude: extendedProps.latitude,
+        longtitude: extendedProps.longtitude,
+        title: info.event.title
+      }
+      renderSpotsFromCal(spot)
+      info.el.style.borderColor = 'red';
+    },
     headerToolbar: {
         start: '',
         center: '', 
@@ -14919,18 +14929,15 @@ window.addEventListener('storage', function() {
       if (xhr.readyState == 4 && xhr.status == 200) {
         let arrangements = JSON.parse(xhr.responseText);
         arrangements.map( a => {
-          // let timezoneOffset = (new Date(a.start_time).getTimezoneOffset()) / 60; 
-          // let start = new Date(a.start_time)
-          // let end = new Date(a.end_time)
           calendar.addEvent({
             id: a.google_id,
             title: a.name,
             start: a.start_time,
             end: a.end_time,
-            // start: new Date(start.setHours(start.getHours() - timezoneOffset)),
-            // end: new Date(end.setHours(end.getHours() - timezoneOffset)),
             extendedProps: {
-              spotId: a.spot_id
+              spotId: a.spot_id,
+              latitude: parseFloat(a.latitude),
+              longtitude: parseFloat(a.longtitude)
             }
           });
         })

@@ -22,7 +22,7 @@ const getPendingArrangements = async (tripId, city) => {
 
 const getArrangements = async (tripId) => {
     try {
-        let queryStr = 'SELECT DISTINCT name, city, google_id, spot_id, start_time, end_time FROM spots JOIN arrangements ON spots.id = arrangements.spot_id WHERE is_arranged = 1 AND trip_id = ? ';
+        let queryStr = 'SELECT DISTINCT name, city, google_id, spot_id, start_time, end_time, latitude, longtitude FROM spots JOIN arrangements ON spots.id = arrangements.spot_id WHERE is_arranged = 1 AND trip_id = ? ';
         let result = await pool.query(queryStr, tripId);
         return result[0];
     } catch (error) {

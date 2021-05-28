@@ -58,6 +58,9 @@ const addSpot = async (req, res, next) => {
                     if (parseInt(spotInfo.closed_hour) == 0) {
                         spotInfo.closed_hour = 2400;
                     }
+                    if (parseInt(spotInfo.closed_hour) <= 400) {
+                        spotInfo.closed_hour = 2400 + parseInt(spotInfo.closed_hour);
+                    }
                 }
             }
 

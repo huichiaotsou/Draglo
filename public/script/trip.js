@@ -117,7 +117,7 @@ function changeTripPeriod() {
               })
         } else if (result.isDenied) {
             Swal.fire({
-                position: 'top-start',
+                position: 'top-end',
                 title: '設定結束日期',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -130,7 +130,7 @@ function changeTripPeriod() {
                     let currentTripStart = new Date(tripSettings.trip_start)
                     if (newEndDate < currentTripStart) {
                         Swal.fire({
-                            position: 'top-start',
+                            position: 'top-end',
                             icon: 'error',
                             title: 'Oops...',
                             text: '行程結束日不得早於開始日',
@@ -158,7 +158,7 @@ function modifyTripDuration(tripId, tripStart, tripEnd) {
             if (xhr.status == 200) {
                 getTripSettings(accessToken, tripId);
                 Swal.fire({
-                    position: 'top-start',
+                    position: 'top-end',
                     icon: 'success',
                     title: '修改成功',
                     showConfirmButton: false,
