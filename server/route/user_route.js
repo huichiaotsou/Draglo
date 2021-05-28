@@ -1,16 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const path = require('path')
-const { signIn, signUp, getDashboard } = require('../controller/user_controller');
-const { verifyToken } = require('../../utils/utils');
+const { signIn, signUp } = require('../controller/user_controller');
+const { createTrip } = require('../controller/trip_controller');
+const { getDashboard } = require('../controller/user_controller');
+const { verifyToken } = require('../../utils/utils')
 
 router.route('/signin')
-    .post(signIn)
+    .post( signIn )
 
 router.route('/signup')
-    .post(signUp)
+    .post( signUp )
+
+router.route('/trip')
+    .post( verifyToken, createTrip )
 
 router.route('/dashboard')
-    .get(verifyToken, getDashboard)
+    .get( verifyToken, getDashboard )
 
 module.exports = router;

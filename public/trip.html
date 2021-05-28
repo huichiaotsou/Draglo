@@ -25,7 +25,7 @@
         <div class="dropdown-menu" id="account-setting">
           <a class="dropdown-item" onclick="signOut()">登出</a>
           <div class="dropdown-divider"></div>
-          <a style="margin-left: 10px; font-weight: 800;">我的其他行程：</a>
+          <a style="margin-left: 10px; font-weight: 800;">我的行程：</a>
         </div>
       </div>
         <!-- Single danger button -->
@@ -35,7 +35,7 @@
           </button>
           <div class="dropdown-menu">
             <a class="dropdown-item" onclick="changeTripPeriod()">設定旅行區間</a>
-            <a class="dropdown-item" onclick="changeDayStart()">設定外出時間</a>
+            <a class="dropdown-item" onclick="changeDayStart()">設定出門時間</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" onclick="shareTrip()" id="share-trip">分享行程</a>
             <a class="dropdown-item" onclick="archiveTrip(0)" id="recover-trip">回復行程</a>
@@ -90,7 +90,7 @@
               
               <!-- [START] EXTERNAL EVENT BLOCK -->
               <div class="flex-row">
-                <span id='spots-list-title'>景點清單:</span>
+                <span id='spots-list-title'>景點清單</span>
                 <span id='delete-message'>雙擊以刪除景點</span>
               </div>
               <div id='external-events'>

@@ -1320,7 +1320,7 @@ body {
     margin: 0 0 40px;
     height: 57px;
     position: relative;
-    background-color: #f8f9fa;
+    background-color: #f8fbfe;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   }
 
@@ -1411,7 +1411,7 @@ body {
   }
 
   #scroll-area {
-    margin-bottom: 2%;
+    margin-bottom: 1%;
     height: 37%;
   }
   
@@ -1422,10 +1422,11 @@ body {
     scroll-behavior: smooth;
     padding: 5px;
     overflow-x: hidden;
-    background-color: blanchedalmond;
-    border: 1px solid blanchedalmond;
+    /* background-color: #fafbfe; */
+    background-image: linear-gradient(white, #fafbfe, #c7dddf);
     border-radius: 5px;
     margin-right: 1%;
+    /* border-right: 1px solid #3788d8; */
   }
 
   .scroll-container{
@@ -1457,7 +1458,7 @@ body {
   #google_maps_container {
     width: 100%;
     height: 60%;
-    margin-top: 3%;
+    margin-top: 0.5%;
     border-radius: 5px;
   }
 

@@ -14789,7 +14789,7 @@ window.addEventListener('storage', function() {
         title: '目前自動安排的設定為：',
         html: `
         <div>城市：${cityName}</div>
-        <div>外出時間：${dayStart / 60}點</div>
+        <div出門時間：${dayStart / 60}點</div>
         `,
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -14799,8 +14799,8 @@ window.addEventListener('storage', function() {
             calculateTrip(cityName, startDate, dayStart);
             let timerInterval
             Swal.fire({
-              title: '行程計算中!',
-              html: '請耐心等候',
+              title: '行程計算中，請耐心等候',
+              html: '系統正在根據景點開放時間、景點間之交通，為您計算行程',
               timer: 12000,
               timerProgressBar: true,
               allowOutsideClick: () => !Swal.isLoading(),
