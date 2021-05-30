@@ -14959,6 +14959,8 @@ window.addEventListener('storage', function() {
 });
 
 function checkSameDay (date1, date2) {
+  date1.setHours(date1.getHours() + 8);
+  date2.setHours(date1.getHours() + 8);
   if (
     date1.getFullYear() === date2.getFullYear() &&
     date1.getMonth() === date2.getMonth() &&
