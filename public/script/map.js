@@ -3,7 +3,7 @@ function backToDashboard() {
 }
 
 // Maps API
-function initMap(spots) {
+function initMap(spots, path) {
   restoreSearchBox()
   let map = new google.maps.Map(document.getElementById("map"), {
     center: { 
@@ -46,6 +46,42 @@ function initMap(spots) {
 
     })
   }
+
+  if (path) {
+    map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 12,
+      center: path.center, 
+      mapTypeId: "terrain",
+    });
+
+    path.spots.map(s => {
+      let myLatLng = { lat: s[0] , lng: s[1] };
+      const marker = new google.maps.Marker({
+        position: myLatLng,
+        map,
+      });
+      const infowindow = new google.maps.InfoWindow({
+        content: s[2],
+      });
+      marker.addListener("mouseover", () => {
+        infowindow.open(map, marker);
+      })
+      marker.addListener("mouseout", () => {
+        infowindow.close();
+      })
+
+    })
+
+    const drawPath = new google.maps.Polyline({
+      path: path.coordinates,
+      geodesic: true,
+      strokeColor: "#EA4336",
+      strokeOpacity: 1,
+      strokeWeight: 2,
+    });
+    drawPath.setMap(map);
+  }
+
   const input = document.getElementById("pac-input");
   const autocomplete = new google.maps.places.Autocomplete(input);
   autocomplete.bindTo("bounds", map);
@@ -256,11 +292,12 @@ function renderSpots(cityName, placeId) {
   initMap(spots);
 }
 
-function renderSpotsFromCal(spot) {
-  console.log(spot);
-  let spots = [];
-  spots.push([spot.latitude, spot.longtitude, spot.title])
-  initMap(spots);
+function renderDayPath(path) {
+  console.log('path');
+  console.log(path);
+  // let spots = [];
+  // spots.push([spot.latitude, spot.longtitude, spot.title])
+  initMap(null, path);
 }
 
 function removeEvent(spotId, tripId) {

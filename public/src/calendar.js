@@ -84,13 +84,15 @@ window.addEventListener('storage', function() {
       
     },
     eventClick : function(info) {
-      let { extendedProps } = info.event
-      let spot = {
-        latitude: extendedProps.latitude,
-        longtitude: extendedProps.longtitude,
-        title: info.event.title
-      }
-      renderSpotsFromCal(spot)
+      // let { extendedProps } = info.event
+      // let spot = {
+      //   latitude: extendedProps.latitude,
+      //   longtitude: extendedProps.longtitude,
+      //   title: info.event.title
+      // }
+      let date = info.event.start
+      let path = getPolylinePath(date);
+      renderDayPath(path);
     },
     headerToolbar: {
         start: '',
@@ -283,9 +285,71 @@ window.addEventListener('storage', function() {
     }
   })
 
+  function getPolylinePath(date){ 
+    let allEvents = calendar.getEvents();
+    allEvents.sort(function (a,b) {
+      return new Date(b.start) - new Date(a.start);
+    });
+    
+    let path = {
+      center: {
+        lat: 0, lng: 0
+      },
+      coordinates: [],
+      spots: []
+    }
+    allEvents.map(event => {
+      if (checkSameDay(new Date(date), new Date(event.start))) {
+        path.coordinates.push(
+          {
+            lat: parseFloat(event.extendedProps.latitude), 
+            lng: parseFloat(event.extendedProps.longtitude)
+          }
+        );
+        path.spots.push(
+          [
+            event.extendedProps.latitude,
+            event.extendedProps.longtitude,
+            event.title
+          ]
+        )
+      }
+    })
+
+    let sum = path.coordinates.reduce((acc, cur) => {
+      return {
+        lat: acc.lat + cur.lat,
+        lng: acc.lng + cur.lng
+      }
+    })
+    console.log(sum);
+    path.center.lat = sum.lat/path.coordinates.length;
+    path.center.lng = sum.lng/path.coordinates.length;
+
+    return path;
+  }
+
+  //path.center = { lat: 0, lng: -180 },
+    
+  // path.coordinates = [
+    //   { lat: 37.772, lng: -122.214 },
+    //   { lat: 21.291, lng: -157.821 },
+    //   { lat: -18.142, lng: 178.431 },
+    //   { lat: -27.467, lng: 153.027 },
+    // ];
+
   calendar.render();    
 });
 
+function checkSameDay (date1, date2) {
+  if (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
+  ) {
+    return true;
+  }
+}
 
   function isEventOut (x, y) {
     let calendar = document.getElementById('calendar-container');

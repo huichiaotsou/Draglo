@@ -1,7 +1,6 @@
 const Automation = require('../model/automation_model')
 const Kmeans = require('../../utils/kmeans')
 const { getNextSpotId , arrangeNextActivity, removeSpot, findPolePoints } = require('../../utils/organizeTrip');
-const { calculateCloserPoint } = require('../../utils/geopackage')
 
 //9am = 540, 12pm = 720, 1h30 = 810, 2pm = 840, 7pm = 1140
 
@@ -32,7 +31,7 @@ const calculateTrips = async (req, res, next) => {
 
         let poleSpotIds = findPolePoints(googleIds, spotsInfo);
         //確認起始點
-        let startSpotId = poleSpotIds[Math.floor(Math.random() * 2)];
+        let startSpotId = poleSpotIds[Math.floor(Math.random() * poleSpotIds.length)];
         let clusters = Kmeans.getClusters(googleIds, spotsInfo, tripDuration, startSpotId);
         console.log("3: Day start with spot: "+ spotsInfo[startSpotId].name);
         console.log('-------------------------------------------');
@@ -278,39 +277,17 @@ const calculateTrips = async (req, res, next) => {
 }
 
 let reqBody = {
-    'cities' : ['Paris', 'London', 'Aix-en-Provence'],
     'citiesInfo' : {
-        'Paris' : {
-            name: 'Paris',
-            vector: ['latitude', 'longtitude'], 
-        },
-        'London' : {
-            name: 'Paris',
-            vector: ['latitude', 'longtitude'], 
-        },
-        'Aix-en-Provence' : {
-            name: 'Paris',
-            vector: ['latitude', 'longtitude'], 
-        }
-    }
+        'Paris' : ['latitude', 'longtitude'],
+        'London' : ['latitude', 'longtitude'],
+        'Aix-en-Provence' : ['latitude', 'longtitude'],
+    },
+    'cities' : ['Paris', 'London', 'Aix-en-Provence']
 }
 
 const calculateIntercity = async (req, res, next) => { 
     let { cities, citiesInfo } = req.body;
-    let poleCities = findPolePoints(cities, citiesInfo); //return 2 cities
-    let startCity = poleCities[Math.floor(Math.random() * 2)];
-    let startCityCoordinate = citiesInfo[startCity].vector
-
-    let sequence = [];
-    for (let i in cities) {
-        let citiesCoordinates = cities.map( city => citiesInfo[city].vector);
-        let cityIndex = calculateCloserPoint(citiesCoordinates, startCityCoordinate , 'getClosePoint');
-        let closestCity = cities[cityIndex];
-        sequence.push(closestCity);
-        startCityCoordinate = citiesInfo[closestCity].vector;
-        cities.splice(cityIndex , 1);
-    }
-    return sequence;
+    let polePoints =  findPolePoints(cities, citiesInfo)
 }
 
 module.exports = {

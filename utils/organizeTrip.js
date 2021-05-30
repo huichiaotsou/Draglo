@@ -1,10 +1,10 @@
 const { getSpotInfo, getTravelingTime } = require('../server/model/automation_model');
 const { getGeoDistance, calculateCloserPoint } = require('./geopackage');
 
-let removeSpot = (spotIdToRemove, spotIds) => {
-    for (let i in spotIds) {
-        if (spotIds[i] == spotIdToRemove) {
-            spotIds.splice(i, 1);
+let removeSpot = (removedItem, itemsArray) => {
+    for (let i in itemsArray) {
+        if (itemsArray[i] == removedItem) {
+            itemsArray.splice(i, 1);
         }
     }
 }
@@ -126,28 +126,28 @@ let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spots
     }
 }
 
-const findPoleSpotIds = (spotIds, spotsInfo) => {
-    if (spotIds.length == 1) {
-        return spotIds;
+const findPolePoints = (keys, spotsInfo) => {
+    if (keys.length == 1) {
+        return keys;
     }
     let maxDistance = 0;
-    let poleSpotIds= [];
-    spotIds.map(base => {
-        spotIds.map(comparison => {
+    let polePointsKeys= [];
+    keys.map(base => {
+        keys.map(comparison => {
             let distance = getGeoDistance(spotsInfo[base].vector, spotsInfo[comparison].vector)
             if (distance > maxDistance) {
                 maxDistance = distance;
-                poleSpotIds[0] = base;
-                poleSpotIds[1] = comparison;
+                polePointsKeys[0] = base;
+                polePointsKeys[1] = comparison;
             }
         })
     })
     console.log('pole spots:');
-    poleSpotIds.map(p =>{
+    polePointsKeys.map(p =>{
         console.log(spotsInfo[p].name);
     })
     console.log('------------------');
-    return poleSpotIds;
+    return polePointsKeys;
 }
 
 
@@ -155,5 +155,5 @@ module.exports = {
     getNextSpotId,
     arrangeNextActivity,
     removeSpot,
-    findPoleSpotIds
+    findPolePoints
 }
