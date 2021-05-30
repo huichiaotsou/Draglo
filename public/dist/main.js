@@ -14684,7 +14684,19 @@ window.addEventListener('storage', function() {
       let { start, end } = info.event
       updateArrangement(1, spotId, tripId, start, end); 
       socket.emit('refreshSpots', tripId);
-
+      let event = info.event
+      let eventInfo = {
+        id: event.id,
+        title: event.title,
+        start: start,
+        end: end,
+        extendedProps: {
+          spotId: event.extendedProps.spotId,
+          latitude: event.extendedProps.latitude,
+          longtitude: event.extendedProps.longtitude,
+        }
+      }
+      socket.emit('updateArrangement', eventInfo)
       setTimeout(()=>{
         getPendingArrangements(null, tripId);
       }, 200)
@@ -14806,7 +14818,9 @@ window.addEventListener('storage', function() {
 
   socket.on('updateArrangement', (eventInfo)=>{
     let event = calendar.getEventById(eventInfo.id)
-    event.remove()
+    if (event) {
+      event.remove()
+    }
     console.log('event is removed');
     let { extendedProps } = eventInfo
     calendar.addEvent({
