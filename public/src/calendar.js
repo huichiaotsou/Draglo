@@ -79,8 +79,20 @@ window.addEventListener('storage', function() {
       let { start, end } = info.event
       updateArrangement(1, spotId, tripId, start, end);
       socket.emit('refreshSpots', tripId);
-      // let eventId = info.event.id
-      // socket.emit('updateArrangement', eventId)
+      let event = info.event
+      let eventInfo = {
+        id: event.id,
+        title: event.title,
+        start: start,
+        end: end,
+        extendedProps: {
+          spotId: event.extendedProps.spotId,
+          latitude: event.extendedProps.latitude,
+          longtitude: event.extendedProps.longtitude,
+        }
+      }
+      socket.emit('updateArrangement', eventInfo)
+
     },
     eventResize : function(info) {
       console.log('eventResize triggered');
@@ -100,8 +112,6 @@ window.addEventListener('storage', function() {
           longtitude: event.extendedProps.longtitude,
         }
       }
-      console.log('eventInfo:');
-      console.log(eventInfo);
       socket.emit('updateArrangement', eventInfo)
       
     },
