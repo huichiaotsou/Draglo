@@ -1,14 +1,18 @@
+const { verifyToken, verifyAccess } = require('./utils/utils')
+const { socket } = require('./socket')
+
 const express = require('express');
 const app = express();
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.listen(4000, ()=>{
+app.use(express.static('public'));
+
+const server = app.listen(4000, ()=>{
     console.log('app running on port 4000');
 })
-
-const { verifyToken, verifyAccess } = require('./utils/utils')
-
-app.use(express.static('public'));
+//socket init
+socket.init(server)
 
 //rateLimiter
 app.use('/', require('./server/route/user_route'))

@@ -162,7 +162,6 @@ window.addEventListener('storage', ()=>{
 
 // })
 
-
 function popUpAddSpot(spotName, placeId) {
   Swal.fire({
     position: 'center-end',
@@ -190,6 +189,7 @@ function saveSpotInfo(spotName, placeId) {
       if(xhr.status == 200) {
         getPendingArrangements(null, data.tripId)
         console.log("4");
+        socket.emit('refreshSpots', data.tripId)
 
       } else {
         Swal.fire({
@@ -241,7 +241,6 @@ function getPendingArrangements(city, tripId) {
             spot.appendChild(spotDetails); 
           })
         }
-    
         //append cities
         let citiesContainer = document.getElementById('cities-container');
         citiesContainer.innerHTML = '';
@@ -263,7 +262,7 @@ function getPendingArrangements(city, tripId) {
             switchAutomationCity('${cityName.split(' ')[0]}');`);
             citiesContainer.appendChild(city)
           })
-        }
+        }        
       } else {
         Swal.fire({
           icon: 'error',
@@ -321,6 +320,7 @@ function removeEvent(spotId, tripId) {
       xhr.open('DELETE', '/arrangement');
       xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
+            socket.emit('refreshSpots', tripId)
             getPendingArrangements(null, tripId);
             console.log("5");
 

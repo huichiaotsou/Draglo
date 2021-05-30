@@ -49,6 +49,8 @@ window.addEventListener('storage', function() {
         eventBack.appendChild(eventDetails);
         //change is_arranged back to 0
         updateArrangement(0, spotId, tripId, 'null', 'null'); 
+        socket.emit('refreshSpots', tripId);
+
         setTimeout(()=>{
           getPendingArrangements(null, tripId);
         }, 200)
@@ -64,6 +66,8 @@ window.addEventListener('storage', function() {
       let { spotId } = info.event.extendedProps
       let { start, end } = info.event
       updateArrangement(1, spotId, tripId, start, end); 
+      socket.emit('refreshSpots', tripId);
+
       setTimeout(()=>{
         getPendingArrangements(null, tripId);
       }, 200)
@@ -73,7 +77,10 @@ window.addEventListener('storage', function() {
       //change arrangement period
       let { spotId } = info.event.extendedProps
       let { start, end } = info.event
-      updateArrangement(1, spotId, tripId, start, end); 
+      updateArrangement(1, spotId, tripId, start, end);
+      socket.emit('refreshSpots', tripId);
+      // let eventId = info.event.id
+      // socket.emit('updateArrangement', eventId)
     },
     eventResize : function(info) {
       console.log('eventResize triggered');
@@ -81,6 +88,21 @@ window.addEventListener('storage', function() {
       let { spotId } = info.event.extendedProps
       let { start, end } = info.event
       updateArrangement(1, spotId, tripId, start, end); 
+      let event = info.event
+      let eventInfo = {
+        id: event.id,
+        title: event.title,
+        start: start,
+        end: end,
+        extendedProps: {
+          spotId: event.extendedProps.spotId,
+          latitude: event.extendedProps.latitude,
+          longtitude: event.extendedProps.longtitude,
+        }
+      }
+      console.log('eventInfo:');
+      console.log(eventInfo);
+      socket.emit('updateArrangement', eventInfo)
       
     },
     eventClick : function(info) {
@@ -154,6 +176,26 @@ window.addEventListener('storage', function() {
   });
 
   getArrangements(calendar, tripId); //-> render events -> render calendar
+
+  socket.on('updateArrangement', (eventInfo)=>{
+    let event = calendar.getEventById(eventInfo.id)
+    event.remove()
+    console.log('event is removed');
+    let { extendedProps } = eventInfo
+    calendar.addEvent({
+      id: eventInfo.id,
+      title: eventInfo.title,
+      start: eventInfo.start,
+      end: eventInfo.end,
+      extendedProps: {
+        spotId: extendedProps.spotId,
+        latitude: parseFloat(extendedProps.latitude),
+        longtitude: parseFloat(extendedProps.longtitude)
+      }
+    });
+    calendar.render();
+    console.log('event is re added');
+  })
 
   let calculateTripBtn = document.getElementById('calculateTrip');
   calculateTripBtn.addEventListener('click', ()=>{
@@ -342,12 +384,8 @@ window.addEventListener('storage', function() {
 });
 
 function checkSameDay (date1, date2) {
-  console.log(date1);
-  console.log(date2);
   date1.setHours(date1.getHours() - 8)
   date2.setHours(date2.getHours() - 8)
-  console.log(date1);
-  console.log(date2);
   if (
     date1.getFullYear() === date2.getFullYear() &&
     date1.getMonth() === date2.getMonth() &&
