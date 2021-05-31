@@ -51,7 +51,8 @@ function initMap(spots, path) {
     map = new google.maps.Map(document.getElementById("map"), {
       zoom: 12,
       center: path.center, 
-      mapTypeId: "terrain",
+      mapTypeControl: false,
+      fullscreenControl: false,  
     });
 
     path.spots.map(s => {

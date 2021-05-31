@@ -14620,10 +14620,25 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+let accessToken = document.cookie.split('=')[1];
+const urlParams = new URLSearchParams(window.location.search);
+const tripId = urlParams.get('id');
+
+let socket = io({
+  auth: {
+      token: accessToken
+  }
+});
+
+socket.on('connect', function(){
+  console.log('join trip');
+  socket.emit('joinTrip', tripId)
+});
+
+let calendar;
 window.addEventListener('storage', function() {
   const tripSettingsString = localStorage.getItem('trip_settings');
   const tripSettings = JSON.parse(tripSettingsString);
-  const tripId = tripSettings.id;
   const start = tripSettings.trip_start
   const end = tripSettings.trip_end
   const duration = tripSettings.duration; 
@@ -14631,7 +14646,7 @@ window.addEventListener('storage', function() {
   // initialize the calendar
   // -----------------------------------------------------------------
   const calendarEl = document.getElementById('calendar');
-  const calendar = new _fullcalendar_core__WEBPACK_IMPORTED_MODULE_0__.Calendar(calendarEl, {
+  calendar = new _fullcalendar_core__WEBPACK_IMPORTED_MODULE_0__.Calendar(calendarEl, {
     timeZone: 'UTC',
     plugins: [_fullcalendar_timegrid__WEBPACK_IMPORTED_MODULE_2__.default, _fullcalendar_interaction__WEBPACK_IMPORTED_MODULE_1__.default],
     initialView: 'weekView',
@@ -14691,6 +14706,7 @@ window.addEventListener('storage', function() {
         start: start,
         end: end,
         extendedProps: {
+          tripId: tripId,
           spotId: event.extendedProps.spotId,
           latitude: event.extendedProps.latitude,
           longtitude: event.extendedProps.longtitude,
@@ -14715,6 +14731,7 @@ window.addEventListener('storage', function() {
         start: start,
         end: end,
         extendedProps: {
+          tripId: tripId,
           spotId: event.extendedProps.spotId,
           latitude: event.extendedProps.latitude,
           longtitude: event.extendedProps.longtitude,
@@ -14736,6 +14753,7 @@ window.addEventListener('storage', function() {
         start: start,
         end: end,
         extendedProps: {
+          tripId: tripId,
           spotId: event.extendedProps.spotId,
           latitude: event.extendedProps.latitude,
           longtitude: event.extendedProps.longtitude,
@@ -14745,12 +14763,6 @@ window.addEventListener('storage', function() {
       
     },
     eventClick : function(info) {
-      // let { extendedProps } = info.event
-      // let spot = {
-      //   latitude: extendedProps.latitude,
-      //   longtitude: extendedProps.longtitude,
-      //   title: info.event.title
-      // }
       let date = info.event.start
       let path = getPolylinePath(date);
       renderDayPath(path);
@@ -14816,27 +14828,7 @@ window.addEventListener('storage', function() {
 
   getArrangements(calendar, tripId); //-> render events -> render calendar
 
-  socket.on('updateArrangement', (eventInfo)=>{
-    let event = calendar.getEventById(eventInfo.id)
-    if (event) {
-      event.remove()
-    }
-    console.log('event is removed');
-    let { extendedProps } = eventInfo
-    calendar.addEvent({
-      id: eventInfo.id,
-      title: eventInfo.title,
-      start: eventInfo.start,
-      end: eventInfo.end,
-      extendedProps: {
-        spotId: extendedProps.spotId,
-        latitude: parseFloat(extendedProps.latitude),
-        longtitude: parseFloat(extendedProps.longtitude)
-      }
-    });
-    calendar.render();
-    console.log('event is re added');
-  })
+  
 
   let calculateTripBtn = document.getElementById('calculateTrip');
   calculateTripBtn.addEventListener('click', ()=>{
@@ -15014,16 +15006,6 @@ window.addEventListener('storage', function() {
 
     return path;
   }
-
-  //path.center = { lat: 0, lng: -180 },
-    
-  // path.coordinates = [
-    //   { lat: 37.772, lng: -122.214 },
-    //   { lat: 21.291, lng: -157.821 },
-    //   { lat: -18.142, lng: 178.431 },
-    //   { lat: -27.467, lng: 153.027 },
-    // ];
-
   calendar.render();    
 });
 
@@ -15046,7 +15028,6 @@ function checkSameDay (date1, date2) {
     }
     return false;
   }
-
 
   function getArrangements (calendar, tripId) {
     //clear calendar
@@ -15110,6 +15091,43 @@ function checkSameDay (date1, date2) {
     xhr.send(JSON.stringify(data));
 
   }
+
+
+socket.on('join-trip-message', (msg)=>{
+  console.log(msg);
+})
+
+socket.on('room-brocast', (msg)=>{
+  console.log(msg);
+})
+
+socket.on('refreshPendingArrangements', (tripId)=>{
+    console.log('refresh pending arrangements');
+    getPendingArrangements(null, tripId)
+})
+
+socket.on('updateArrangement', (eventInfo)=>{
+    let event = calendar.getEventById(eventInfo.id)
+    if (event) {
+      event.remove()
+    }
+    console.log('event is removed');
+    let { extendedProps } = eventInfo
+    calendar.addEvent({
+      id: eventInfo.id,
+      title: eventInfo.title,
+      start: eventInfo.start,
+      end: eventInfo.end,
+      extendedProps: {
+        spotId: extendedProps.spotId,
+        latitude: parseFloat(extendedProps.latitude),
+        longtitude: parseFloat(extendedProps.longtitude)
+      }
+    });
+    calendar.render();
+    console.log('event is re added');
+  })
+
 })();
 
 /******/ })()
