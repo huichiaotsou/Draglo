@@ -14911,9 +14911,12 @@ window.addEventListener('storage', function() {
                           if(day == 5) openDays.push(' 週五 ');
                           if(day == 6) openDays.push(' 週六 ');
                         })
+                        let openHour = Math.floor(event.openHour/60);
+                        let closedHour = Math.floor(event.closedHour/60);
+                        if (closedHour > 24) closedHour = closedHour - 24;
                         responseContent += `
                         <div> 行程名稱：${event.activity} </div>
-                        <div> 營業時間：${Math.floor(event.openHour/60)}點 ~ ${Math.floor(event.closedHour/60)}點 </div>
+                        <div> 營業時間：${openHour}點 ~ ${closedHour}點 </div>
                         <div> 營業日：</div>
                         <div> ${openDays.toString()} </div>
                         <div class="dropdown-divider"></div>
