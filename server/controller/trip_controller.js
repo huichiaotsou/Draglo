@@ -26,7 +26,7 @@ const getTripSettings = async (req, res, next) => {
     let userId = req.user.id;
     let tripId = req.query.id;
     let result =  await Trip.getTripSettings(userId, tripId);
-    result.duration = (result.trip_end - result.trip_start) / (1000 * 60 * 60 * 24) + 1;
+    result.duration = (result.trip_end - result.trip_start) / (1000 * 60 * 60 * 24);
     res.status(200).send(result);
 }
 

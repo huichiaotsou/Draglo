@@ -31,8 +31,10 @@ const calculateTrips = async (req, res, next) => {
         console.log('---------------------------');
 
         let poleSpotIds = findPolePoints(googleIds, spotsInfo);
+        console.log('2-1: poleSpotIds');
+        console.log(poleSpotIds);
         //確認起始點
-        let startSpotId = poleSpotIds[Math.floor(Math.random() * 2)];
+        let startSpotId = poleSpotIds[Math.floor(Math.random() * poleSpotIds.length)];
         let clusters = Kmeans.getClusters(googleIds, spotsInfo, tripDuration, startSpotId);
         console.log("3: Day start with spot: "+ spotsInfo[startSpotId].name);
         console.log('-------------------------------------------');

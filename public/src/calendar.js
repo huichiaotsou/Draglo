@@ -508,10 +508,13 @@ socket.on('updateArrangement', (eventInfo)=>{
       }
     });
     calendar.render();
+    // alert(`user ${eventInfo.user} has updated ${eventInfo.title}: stat: ${eventInfo.start}`)
     console.log('event is re added');
   })
 
   socket.on('removeArrangement', (eventId)=>{
     let event = calendar.getEventById(eventId)
-    event.remove();
+    if (event) {
+      event.remove();
+    }
   })
