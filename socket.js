@@ -16,6 +16,7 @@ socket.init = (server) => {
         }
         const url = socket.request.headers.referer;
         console.log("user connected at", url);
+        const tripId = url.split('=')[1]
 
         let userId = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, result) => {
             if (err) {
@@ -38,7 +39,12 @@ socket.init = (server) => {
 
         socket.on('updateArrangement', (eventInfo)=>{
             console.log("updateArrangement --> eventInfo received on backend");
-            io.sockets.to(eventInfo.extendedProps.tripId).emit('updateArrangement', eventInfo)
+            io.sockets.to(tripId).emit('updateArrangement', eventInfo)
+        })
+
+        socket.on('removeArrangement', (eventId)=>{
+            console.log("rrangement --> " + eventId + " eventId received on backend");
+            io.sockets.to(tripId).emit('removeArrangement', eventId)
         })
 
     })

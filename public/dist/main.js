@@ -14682,6 +14682,7 @@ window.addEventListener('storage', function() {
         //change is_arranged back to 0
         updateArrangement(0, spotId, tripId, 'null', 'null'); 
         socket.emit('refreshSpots', tripId);
+        socket.emit('removeArrangement', publicId)
 
         setTimeout(()=>{
           getPendingArrangements(null, tripId);
@@ -15092,7 +15093,6 @@ function checkSameDay (date1, date2) {
 
   }
 
-
 socket.on('join-trip-message', (msg)=>{
   console.log(msg);
 })
@@ -15128,6 +15128,10 @@ socket.on('updateArrangement', (eventInfo)=>{
     console.log('event is re added');
   })
 
+  socket.on('removeArrangement', (eventId)=>{
+    let event = calendar.getEventById(eventId)
+    event.remove();
+  })
 })();
 
 /******/ })()
