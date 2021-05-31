@@ -16,6 +16,7 @@ socket.init(server)
 
 //rateLimiter
 app.use('/', require('./server/route/user_route'))
+app.use('/', verifyToken, require('./server/route/share_route'))
 app.use('/',
     verifyToken, verifyAccess,
     [

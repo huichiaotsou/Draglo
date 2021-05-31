@@ -294,6 +294,46 @@ function archiveTrip(action) {
 }
 
 function shareTrip(){
+    Swal.fire({
+        position: 'top-end',
+        title: '<p>請輸入想要共同編輯旅程的對象</p>',
+        html:`<input id="share-email" type="text" placeholder="電子郵件信箱"
+        style="border-radius: 5px; height: 40px; width: 300px;">`,
+        showCloseButton: true,
+        focusConfirm: false,
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: `OK`
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let tripSettings = JSON.parse(localStorage.getItem('trip_settings'))
+            let data = {
+                tripId: tripId,
+                title: tripSettings.name
+            }
+            let email = document.getElementById('share-email').value
+            data.email = email;
+            let xhr = new XMLHttpRequest()
+            xhr.open('POST', `/share`);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: '邀請函傳送成功，請點擊邀請連結取得權限',
+                        showConfirmButton: false,
+                        timer: 700
+                    })
+                }
+            }
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
+            xhr.send(JSON.stringify(data));
+        }
+    })
+
+
+
+          
 }
 
 //decide if drop down menu visible: 

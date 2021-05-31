@@ -66,10 +66,6 @@ window.addEventListener('storage', function() {
         updateArrangement(0, spotId, tripId, 'null', 'null'); 
         socket.emit('refreshSpots', tripId);
         socket.emit('removeArrangement', publicId)
-
-        setTimeout(()=>{
-          getPendingArrangements(null, tripId);
-        }, 200)
       }
     },
     // drop: function(info) {
@@ -97,9 +93,6 @@ window.addEventListener('storage', function() {
         }
       }
       socket.emit('updateArrangement', eventInfo)
-      setTimeout(()=>{
-        getPendingArrangements(null, tripId);
-      }, 200)
     },
     eventDrop: function(info) {
       console.log('eventDrop triggered');
@@ -478,10 +471,12 @@ function checkSameDay (date1, date2) {
 
 socket.on('join-trip-message', (msg)=>{
   console.log(msg);
+  getPendingArrangements(null, tripId)
 })
 
 socket.on('room-brocast', (msg)=>{
   console.log(msg);
+  getPendingArrangements(null, tripId)
 })
 
 socket.on('refreshPendingArrangements', (tripId)=>{
