@@ -104,3 +104,7 @@
   transform: rotate(45deg);
   opacity: 2;
 }
+
+.fc-event:hover {
+  background-color: #1869bb;
+}
