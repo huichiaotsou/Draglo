@@ -296,7 +296,7 @@ function archiveTrip(action) {
 function shareTrip(){
     Swal.fire({
         position: 'top-end',
-        title: '<p>請輸入想要共同編輯旅程的對象</p>',
+        title: '<p>想要發邀請函給誰呢？</p>',
         html:`<input id="share-email" type="text" placeholder="電子郵件信箱"
         style="border-radius: 5px; height: 40px; width: 300px;">`,
         showCloseButton: true,
