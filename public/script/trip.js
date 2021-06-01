@@ -139,9 +139,9 @@ function changeTripPeriod() {
                     } else {
                         modifyTripDuration(tripId, currentTripStart, newEndDate);
                     }
-                    document.getElementById('end-date').value = tripSettings.trip_end.split('T')[0];
                 }
-              })
+            })
+            document.getElementById('end-date').value = tripSettings.trip_end.split('T')[0];
         }
       })      
 }
