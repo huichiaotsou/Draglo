@@ -14840,6 +14840,8 @@ window.addEventListener('storage', function() {
       if (allEvents.length > 0) {
         allEvents.map(e => {
           let end = new Date(e.end)
+          console.log('each end of event');
+          console.log(end);
           if (end > startDate) {
             end.setHours(0,0,0,0)
             startDate = new Date (end.setDate(end.getDate() +1))
