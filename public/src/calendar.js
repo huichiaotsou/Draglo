@@ -223,6 +223,7 @@ window.addEventListener('storage', function() {
       if (allEvents.length > 0) {
         allEvents.map(e => {
           let end = new Date(e.end)
+          end.setHours(end.getHours() - 8);
           console.log('each end of event');
           console.log(end);
           if (end > startDate) {
