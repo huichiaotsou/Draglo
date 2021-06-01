@@ -13,6 +13,7 @@ function initMap(spots, path) {
     mapTypeControl: false,
     fullscreenControl: false,
   });
+
   if (spots) {
     let center = [0,0] //get the centeroid of all spots
     spots.map(spot => {
@@ -96,7 +97,18 @@ function initMap(spots, path) {
   autocomplete.addListener("place_changed", () => {
     infowindow.close();
     const place = autocomplete.getPlace();
-    const marker = new google.maps.Marker({ map: map });
+    const marker = new google.maps.Marker({ 
+      map: map,
+      animation: google.maps.Animation.DROP,
+      icon: {
+        path: "M10.453 14.016l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM12 2.016q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
+        fillColor: "#EA4336",
+        fillOpacity: 0.7,
+        strokeWeight: 1,
+        scale: 2,
+        anchor: new google.maps.Point(12, 10),
+      }
+    });
     
     marker.addListener("click", () => {
       popUpAddSpot(place.name, place.place_id);
@@ -124,8 +136,38 @@ function initMap(spots, path) {
       infowindow.addListener("click", () => {
         popUpAddSpot(place.name, place.place_id);
       });
+      
     });
   });
+
+  map.addListener('click', (e)=>{
+    const request = {
+      placeId: e.placeId,
+      fields: ["name", "place_id", "geometry"],
+    };
+
+    const service = new google.maps.places.PlacesService(map);
+    service.getDetails(request, (place, status) => {
+      const marker = new google.maps.Marker({
+        position: place.geometry.location,
+        map,
+        animation: google.maps.Animation.DROP,
+        icon: {
+          path: "M10.453 14.016l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM12 2.016q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
+          fillColor: "#EA4336",
+          fillOpacity: 0.7,
+          strokeWeight: 1,
+          scale: 2,
+          anchor: new google.maps.Point(12, 10),
+        }
+      });
+      marker.setVisible(true);
+      marker.addListener("click", () => {
+        popUpAddSpot(place.name, place.place_id);
+      });
+    });
+  })
+  
 }
 
 let socket = io({
@@ -254,7 +296,7 @@ function getPendingArrangements(city, tripId) {
         if (cities) {
           let showAll = document.createElement('div');
           showAll.className = 'city';
-          showAll.innerHTML = '顯示全部';
+          showAll.innerHTML = '顯示全部城市清單';
           showAll.setAttribute('onclick', `
           getPendingArrangements(${null}, ${tripId});
           switchAutomationCity('null');`);
