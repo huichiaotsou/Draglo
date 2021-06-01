@@ -321,6 +321,11 @@ function removeEvent(spotId, tripId) {
       xhr.open('DELETE', '/arrangement');
       xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
+            let socket = io({
+              auth: {
+                  token: accessToken
+              }
+            });          
             socket.emit('refreshSpots', tripId)
             getPendingArrangements(null, tripId);
             console.log("5");

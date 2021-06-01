@@ -14710,8 +14710,6 @@ window.addEventListener('storage', function() {
           longtitude: elementChild.dataset.longtitude,
         }
       }
-      console.log('eventInfo');
-      console.log(eventInfo);
       socket.emit('updateArrangement', eventInfo)
     },
     eventDrop: function(info) {
