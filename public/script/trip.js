@@ -312,17 +312,18 @@ function shareTrip(){
             }
             let email = document.getElementById('share-email').value
             data.email = email;
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: '邀請函傳送成功，請點擊邀請連結取得權限',
+                showConfirmButton: false,
+                timer: 1000
+            })
             let xhr = new XMLHttpRequest()
             xhr.open('POST', `/share`);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == 4 && xhr.status == 200) {
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: '邀請函傳送成功，請點擊邀請連結取得權限',
-                        showConfirmButton: false,
-                        timer: 700
-                    })
+                    console.log('OK');
                 }
             }
             xhr.setRequestHeader('Content-Type', 'application/json');

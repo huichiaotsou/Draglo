@@ -2,50 +2,64 @@ if (document.cookie) {
   location.assign('/dashboard.html')
 }
 
+
 function signIn() {
-    let email = document.getElementById('email').value;
-    let password = document.getElementById('password-field').value;
-    if(!email || !password) {
-        alert('please enter login information')
-        return;
-    }
-    let user = {
-      email: email,
-      password: password,
-    };
+  let email = document.getElementById('email').value;
+  let password = document.getElementById('password-field').value;
+  if(!email || !password) {
+    alert('please enter login information')
+    return;
+  }
+  let user = {
+    email: email,
+    password: password,
+  };
   
-    let userData = JSON.stringify(user);
-    
-    //AJAX
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/signin');
-    xhr.setRequestHeader('Content-Type', 'application/json');
+  let shareToken = localStorage.getItem('share_token');
+  if (shareToken) {
+    user.shareToken = shareToken;
+  }
   
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          Swal.fire({
-            icon: 'success',
-            title: '登入成功',
-            showConfirmButton: false,
-            timer: 700
-        })
-          const serverResponse = JSON.parse(xhr.responseText);
-          document.cookie = `access_token = ${serverResponse.data.access_token}`;
+  let userData = JSON.stringify(user);
+  
+  //AJAX
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', '/signin');
+  xhr.setRequestHeader('Content-Type', 'application/json');
+
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        Swal.fire({
+          icon: 'success',
+          title: '登入成功',
+          showConfirmButton: false,
+          timer: 700
+      })
+        const serverResponse = JSON.parse(xhr.responseText);
+        document.cookie = `access_token = ${serverResponse.data.access_token}`;
+        
+        if (shareToken) {
+          setTimeout(()=>{
+            localStorage.removeItem('share_token');
+            window.location.assign(`/trip.html?id=${serverResponse.tripId}`);
+          }, 1200)
+        } else {
           setTimeout(()=>{
             window.location.assign('/dashboard.html');
           }, 700)
-        } else if (xhr.status === 403) {
-          alert(xhr.responseText);
-        } else if (xhr.status === 400) {
-          alert(xhr.responseText);
-          location.assign('/signup.html');
         }
+      } else if (xhr.status == 403) {
+        alert(xhr.responseText);
+      } else if (xhr.status == 400) {
+        alert(xhr.responseText);
+        location.assign('/signup.html');
       }
-  
-    };
-  
-    //send data
-    xhr.send(userData);
-  }
+    }
+
+  };
+
+  //send data
+  xhr.send(userData);
+}
   

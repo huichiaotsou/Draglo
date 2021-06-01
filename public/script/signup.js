@@ -20,6 +20,11 @@ function signUp() {
       email: email,
       password: password,
     };
+    
+    let shareToken = localStorage.getItem('share_token');
+    if (shareToken) {
+      user.shareToken = shareToken;
+    }
   
     let userData = JSON.stringify(user);
   
@@ -30,8 +35,8 @@ function signUp() {
   
     //status check
     xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
+      if (xhr.readyState == 4) {
+        if (xhr.status == 200) {
           Swal.fire({
             icon: 'success',
             title: '註冊成功',
@@ -40,12 +45,22 @@ function signUp() {
           })
           const serverResponse = JSON.parse(xhr.responseText);
           document.cookie = `access_token = ${serverResponse.data.access_token}`;
-          setTimeout(()=>{
-            window.location.assign('/dashboard.html');
-          }, 700)
-        } else if (xhr.status === 403) {
-          alert('Email已被使用，請登入');
+
+          if (shareToken) {
+            setTimeout(()=>{
+              localStorage.removeItem('share_token');
+              window.location.assign(`/trip.html?id=${serverResponse.tripId}`);
+            }, 700)
+          } else {
+            setTimeout(()=>{
+              window.location.assign('/dashboard.html');
+            }, 700)
+          }
+        } else if (xhr.status == 403) {
+          alert(xhr.responseText);
           location.assign('/index.html');
+        } else {
+          alert(xhr.responseText);
         }
       };
     };

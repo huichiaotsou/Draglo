@@ -14,7 +14,7 @@
                 if (xhr.status == 200) {
                     let response = JSON.parse(xhr.responseText)
                     location.assign(`/trip.html?id=${response.tripId}`);
-                } else if (xhr.status == 403) {
+                } else if (xhr.status != 403) {
                     alert(xhr.responseText)
                 }
             }
@@ -24,11 +24,11 @@
         xhr.send(JSON.stringify({shareToken}));
     } else {
         //save shareToken in localstorage
+        localStorage.setItem('share_token', shareToken);
+        location.assign('/index.html')
         //redirect to /signin.html
             //in /signin.html & /signup.html, check localstorage if there is share_token
             //if yes, get trip id from backend and redirect to that trip
         
-        
     }
-
 </script>

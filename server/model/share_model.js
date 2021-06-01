@@ -23,7 +23,7 @@ const updateShareAccess = async (userId, shareToken) => {
             await pool.query('UPDATE contributors SET user_id = ?, token_used = 1 WHERE share_token = ?', conditions);
             return true
         } else {
-            return {error: 'token is already used'}
+            return {error: 'the token has already been used'}
         }
     } catch(error) {
         return {error}
