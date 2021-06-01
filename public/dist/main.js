@@ -14697,6 +14697,7 @@ window.addEventListener('storage', function() {
       updateArrangement(1, spotId, tripId, start, end); 
       socket.emit('refreshSpots', tripId);
       let event = info.event
+      let elementChild = info.draggedEl.lastElementChild
       let eventInfo = {
         id: event.id,
         title: event.title,
@@ -14705,10 +14706,12 @@ window.addEventListener('storage', function() {
         extendedProps: {
           tripId: tripId,
           spotId: event.extendedProps.spotId,
-          latitude: event.extendedProps.latitude,
-          longtitude: event.extendedProps.longtitude,
+          latitude: elementChild.dataset.latitude,
+          longtitude: elementChild.dataset.longtitude,
         }
       }
+      console.log('eventInfo');
+      console.log(eventInfo);
       socket.emit('updateArrangement', eventInfo)
     },
     eventDrop: function(info) {
@@ -14821,8 +14824,6 @@ window.addEventListener('storage', function() {
   });
 
   getArrangements(calendar, tripId); //-> render events -> render calendar
-
-  
 
   let calculateTripBtn = document.getElementById('calculateTrip');
   calculateTripBtn.addEventListener('click', ()=>{
@@ -14959,6 +14960,8 @@ window.addEventListener('storage', function() {
 
   function getPolylinePath(date){ 
     let allEvents = calendar.getEvents();
+    console.log('getPolylinePath allEvents:');
+    console.log(allEvents);
     allEvents.sort(function (a,b) {
       return new Date(b.start) - new Date(a.start);
     });
