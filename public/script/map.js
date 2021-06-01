@@ -128,6 +128,12 @@ function initMap(spots, path) {
   });
 }
 
+let socket = io({
+  auth: {
+      token: accessToken
+  }
+});          
+
 function restoreSearchBox() {
   const container = document.getElementById('google_maps_container');
   container.innerHTML = `
@@ -188,7 +194,7 @@ function saveSpotInfo(spotName, placeId) {
   xhr.onreadystatechange = function () {
     if(xhr.readyState == 4) {
       if(xhr.status == 200) {
-        getPendingArrangements(null, data.tripId)
+        // getPendingArrangements(null, data.tripId)
         console.log("4");
         socket.emit('refreshSpots', data.tripId)
 
@@ -321,11 +327,6 @@ function removeEvent(spotId, tripId) {
       xhr.open('DELETE', '/arrangement');
       xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            let socket = io({
-              auth: {
-                  token: accessToken
-              }
-            });          
             // getPendingArrangements(null, tripId);
             socket.emit('refreshSpots', tripId)
             console.log("5");
