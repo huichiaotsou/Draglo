@@ -96,7 +96,7 @@ function changeTripPeriod() {
       }).then((result) => {
         if (result.isConfirmed) {
             Swal.fire({
-                position: 'top-start',
+                position: 'top-end',
                 title: '設定開始日期',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
