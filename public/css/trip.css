@@ -76,11 +76,31 @@
 
 #instruction {
   width: auto;
-  padding: 2px 8px;
+  padding: 3px 8px;
   border-radius: 50px;
   position: absolute; 
-  left: 8px;
+  left: 5px;
   bottom: 5px;
   background-color: rgb(250, 250, 250);
-  opacity: 0.92;
+  opacity: 0.95;
+}
+
+#instruction-check-bg {
+  display: inline-block;
+  color:white;
+  background-color: red;
+  opacity: 0.65;
+  border-radius: 50%;
+  padding: 1px 5px;
+  border-bottom-left-radius: 0%;
+  transform: rotate(-45deg);
+  margin-bottom: 3px;
+  border: 1px black solid;
+}
+
+#instruction-check {
+  color: white;
+  display: inline-block;
+  transform: rotate(45deg);
+  opacity: 2;
 }
