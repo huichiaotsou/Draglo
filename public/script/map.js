@@ -326,8 +326,8 @@ function removeEvent(spotId, tripId) {
                   token: accessToken
               }
             });          
+            // getPendingArrangements(null, tripId);
             socket.emit('refreshSpots', tripId)
-            getPendingArrangements(null, tripId);
             console.log("5");
 
         }
