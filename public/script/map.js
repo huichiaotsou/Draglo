@@ -194,7 +194,7 @@ function saveSpotInfo(spotName, placeId) {
   xhr.onreadystatechange = function () {
     if(xhr.readyState == 4) {
       if(xhr.status == 200) {
-        // getPendingArrangements(null, data.tripId)
+        getPendingArrangements(null, data.tripId)
         console.log("4");
         socket.emit('refreshSpots', data.tripId)
 
