@@ -115,6 +115,7 @@ function changeTripPeriod() {
                     }
                 }
               })
+              document.getElementById('start-date').value = tripSettings.trip_start.split('T')[0];
         } else if (result.isDenied) {
             Swal.fire({
                 position: 'top-end',
@@ -138,6 +139,7 @@ function changeTripPeriod() {
                     } else {
                         modifyTripDuration(tripId, currentTripStart, newEndDate);
                     }
+                    document.getElementById('end-date').value = tripSettings.trip_end.split('T')[0];
                 }
               })
         }
