@@ -14841,11 +14841,17 @@ window.addEventListener('storage', function() {
         allEvents.map(e => {
           let end = new Date(e.end)
           if (end > startDate) {
-            startDate = new Date(new Date(end.setDate(end.getDate() + 1)).setHours(0,0,0,0))
+            end.setHours(0,0,0,0)
+            startDate = new Date (end.setDate(end.getDate() +1))
+            // startDate = new Date(new Date(end.setDate(end.getDate() + 1)).setHours(0,0,0,0))
+            console.log('Tuning startDate:');
+            console.log(startDate);
           }
         })
       }
       startDate = startDate.toString()
+      console.log('final start Date:');
+      console.log(startDate);
       Swal.fire({
         position: 'top-end',
         title: '目前自動安排的設定為：',
