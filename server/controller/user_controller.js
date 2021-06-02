@@ -64,7 +64,12 @@ const signUp = async (req, res, next) => {
 const signIn = async (req, res, next) => {
     try {
         const { email, password, shareToken } = req.body;
-        let result = await User.nativeSignIn(email, password);      
+        let result;
+        if (password == 'googleSignInDraglo') {
+          result = await User.googleSignIn(email);
+        } else {
+          result = await User.nativeSignIn(email, password);      
+        }
         if (result.error) {
           res.status(result.statusCode).send(result.error);
         } else {

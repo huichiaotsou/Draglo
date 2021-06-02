@@ -26,6 +26,30 @@ const signUp = async (email, password) => {
     }
 };
 
+const googleSignIn = async (email) => {
+    try {
+        let queryStr = 'SELECT id, email FROM users WHERE email = ?';
+        let checkUser = await pool.query(queryStr, email);
+        let user = checkUser[0][0];
+        if (user.length == 0) {
+            let set = {
+                email: email,
+                password: encryptPassword(email)
+            }
+            let createUser = await pool.query('INSERT INTO users SET ?', set);
+            user.id = createUser[0][0].insertId;
+            user.email = email;
+        } 
+        user.access_token = jwt.sign({
+            id: user.id,
+            email: user.email,
+        }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '28800s' })
+        return user;
+    } catch (error) {
+        return {error}
+    }
+}
+
 const nativeSignIn = async (email, password) => {
     try {
         let queryStr = 'SELECT id, email, password FROM users WHERE email = ?';
@@ -62,5 +86,6 @@ function encryptPassword(password) {
 
 module.exports = {
     nativeSignIn,
-    signUp
+    signUp,
+    googleSignIn
 }

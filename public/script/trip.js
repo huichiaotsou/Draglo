@@ -355,6 +355,14 @@ window.addEventListener('storage', ()=>{
 function signOut() {
     document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     location.assign('/index.html');
+    GoogleSignOut()
+}
+
+function GoogleSignOut() {
+    let auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
 }
 
 //clear local storage

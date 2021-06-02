@@ -8,6 +8,9 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="css/style.css">
 	<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script src="https://apis.google.com/js/platform.js" async defer></script>
+	<meta name="google-signin-client_id" content="83631735915-g6vaaeunnvhaabqgbso5bpj6barl9o9i.apps.googleusercontent.com">
+
 
 	</head>
 	<body class="img " style="background-image: url(images/bg.jpg);">
@@ -44,7 +47,8 @@
 			
 	          			<p class="w-100 text-center">&mdash; 使用Google登入 &mdash;</p>
 	          			<div class="social d-flex text-center">
-	          				<a href="#" class="px-2 py-2 mr-md-1 rounded"><span class="ion-logo-facebook mr-2"></span>Google</a>
+	          				<a href="#" class="px-2 py-2 mr-md-1 rounded" data-onsuccess="onSignIn">Google</a>
+							  <!-- <div class="g-signin2" data-onsuccess="onSignIn"></div> -->
 	          			</div>
 		      		</div>
 				</div>
