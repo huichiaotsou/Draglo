@@ -3,7 +3,7 @@ const { pool } = require('./mysql');
 const getPendingArrangements = async (tripId, city) => {
     try {
         let sql = {
-            queryStr: 'SELECT DISTINCT name, city, google_id, spot_id, latitude, longtitude FROM spots JOIN arrangements ON spots.id = arrangements.spot_id WHERE is_arranged = 0 AND trip_id = ? ',
+            queryStr: 'SELECT DISTINCT name, city, google_id, spot_id, latitude, longtitude, open_hour, closed_hour FROM spots JOIN arrangements ON spots.id = arrangements.spot_id WHERE is_arranged = 0 AND trip_id = ? ',
             conditions: [tripId]
         }
         if (city) {
@@ -22,8 +22,9 @@ const getPendingArrangements = async (tripId, city) => {
 
 const getArrangements = async (tripId) => {
     try {
-        let queryStr = 'SELECT DISTINCT name, city, google_id, spot_id, start_time, end_time, latitude, longtitude FROM spots JOIN arrangements ON spots.id = arrangements.spot_id WHERE is_arranged = 1 AND trip_id = ? ';
-        let result = await pool.query(queryStr, tripId);
+        let queryStr = 'SELECT DISTINCT name, city, google_id, spot_id, start_time, end_time, latitude, longtitude, open_hour, closed_hour FROM spots '
+        let joinTable = 'JOIN arrangements ON spots.id = arrangements.spot_id WHERE is_arranged = 1 AND trip_id = ? ';
+        let result = await pool.query(queryStr.concat(joinTable), tripId);
         return result[0];
     } catch (error) {
         console.log(error);

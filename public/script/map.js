@@ -36,7 +36,7 @@ function initMap(spots, path) {
         map,
       });
       const infowindow = new google.maps.InfoWindow({
-        content: s[2],
+        content: `${s[2]}<br>開放時間:<br>${s[3]}`
       });
       marker.addListener("mouseover", () => {
         infowindow.open(map, marker);
@@ -63,7 +63,7 @@ function initMap(spots, path) {
         map,
       });
       const infowindow = new google.maps.InfoWindow({
-        content: s[2],
+        content: `${s[2]}<br>開放時間:<br>${s[3]}`,
       });
       marker.addListener("mouseover", () => {
         infowindow.open(map, marker);
@@ -78,7 +78,7 @@ function initMap(spots, path) {
       path: path.coordinates,
       geodesic: true,
       strokeColor: "#EA4336",
-      strokeOpacity: 1,
+      strokeOpacity: 0.8,
       strokeWeight: 2,
     });
     drawPath.setMap(map);
@@ -101,12 +101,9 @@ function initMap(spots, path) {
       map: map,
       animation: google.maps.Animation.DROP,
       icon: {
-        path: "M10.453 14.016l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM12 2.016q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
-        fillColor: "#EA4336",
-        fillOpacity: 0.7,
-        strokeWeight: 1,
-        scale: 2,
-        anchor: new google.maps.Point(12, 10),
+        url: 'https://draglo.com/images/mapicon.webp',
+        scaledSize: new google.maps.Size(40, 40),
+        anchor: new google.maps.Point(20, 20),
       }
     });
     
@@ -148,18 +145,16 @@ function initMap(spots, path) {
 
     const service = new google.maps.places.PlacesService(map);
     service.getDetails(request, (place, status) => {
+      // let image = 
       const marker = new google.maps.Marker({
         position: place.geometry.location,
         map,
         animation: google.maps.Animation.DROP,
         icon: {
-          path: "M10.453 14.016l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM12 2.016q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
-          fillColor: "#EA4336",
-          fillOpacity: 0.7,
-          strokeWeight: 1,
-          scale: 2,
-          anchor: new google.maps.Point(12, 10),
-        }
+          url: 'https://draglo.com/images/mapicon.webp',
+          scaledSize: new google.maps.Size(40, 40),
+          anchor: new google.maps.Point(20, 20),
+        },
       });
       marker.setVisible(true);
       marker.addListener("click", () => {
@@ -287,6 +282,8 @@ function getPendingArrangements(city, tripId) {
             spotDetails.dataset.place_id = s.google_id;
             spotDetails.dataset.latitude = s.latitude;
             spotDetails.dataset.longtitude = s.longtitude;
+            spotDetails.dataset.openHour = s.open_hour;
+            spotDetails.dataset.closedHour = s.closed_hour;
             spot.appendChild(spotDetails); 
           })
         }
@@ -330,12 +327,25 @@ function renderSpots(cityName, placeId) {
   if (cityName) {
     let cities = document.getElementsByClassName(cityName);
     for(let i = 0; i < cities.length; i++) {
-      spots.push([parseFloat(cities[i].dataset.latitude), parseFloat(cities[i].dataset.longtitude), cities[i].innerHTML]);
+      console.log(cities[i].dataset.openHour);
+      spots.push(
+        [
+          parseFloat(cities[i].dataset.latitude), 
+          parseFloat(cities[i].dataset.longtitude), 
+          cities[i].innerHTML,
+          `${cities[i].dataset.openHour} ~ ${cities[i].dataset.closedHour}`
+        ]);
     }
   }
   if (placeId){
     let spot = document.getElementById(placeId).childNodes[0]
-    spots.push([parseFloat(spot.dataset.latitude), parseFloat(spot.dataset.longtitude), spot.innerHTML])
+    spots.push(
+      [
+        parseFloat(spot.dataset.latitude), 
+        parseFloat(spot.dataset.longtitude), 
+        spot.innerHTML,
+        `${spot.dataset.openHour} ~ ${spot.dataset.closedHour}`
+      ])
   }
   initMap(spots);
 }

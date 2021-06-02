@@ -373,7 +373,8 @@ window.addEventListener('storage', function() {
           [
             event.extendedProps.latitude,
             event.extendedProps.longtitude,
-            event.title
+            event.title,
+            `${event.extendedProps.openHour} ~ ${event.extendedProps.closedHour}`
           ]
         )
       }
@@ -437,7 +438,9 @@ function checkSameDay (date1, date2) {
             extendedProps: {
               spotId: a.spot_id,
               latitude: parseFloat(a.latitude),
-              longtitude: parseFloat(a.longtitude)
+              longtitude: parseFloat(a.longtitude),
+              openHour: a.open_hour,
+              closedHour: a.closed_hour
             }
           });
         })
