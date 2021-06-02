@@ -14632,7 +14632,6 @@ let socket = io({
 });
 
 socket.on('connect', function(){
-  console.log('join trip');
   socket.emit('joinTrip', tripId)
 });
 
@@ -14717,7 +14716,6 @@ window.addEventListener('storage', function() {
           closedHour: elementChild.dataset.closedHour
         }
       }
-      console.log(eventInfo);
       socket.emit('updateArrangement', eventInfo)
     },
     eventDrop: function(info) {
@@ -14857,8 +14855,6 @@ window.addEventListener('storage', function() {
             end.setHours(0,0,0,0)
             startDate = new Date (end.setDate(end.getDate() +1))
             // startDate = new Date(new Date(end.setDate(end.getDate() + 1)).setHours(0,0,0,0))
-            console.log('Tuning startDate:');
-            console.log(startDate);
           }
         })
       }
@@ -14886,7 +14882,7 @@ window.addEventListener('storage', function() {
             Swal.fire({
               title: '行程計算中，請耐心等候',
               html: '系統正在根據景點開放時間、景點間之交通，為您計算行程',
-              timer: 7000,
+              timer: 20000,
               timerProgressBar: true,
               allowOutsideClick: () => !Swal.isLoading(),
               didOpen: () => {
@@ -14897,76 +14893,7 @@ window.addEventListener('storage', function() {
               }
             }).then((result) => {
               if (result.dismiss === Swal.DismissReason.timer) {
-                let nightEvents = JSON.parse(localStorage.getItem('night_events'))
-                console.log(nightEvents);
-                let remainingSpots = JSON.parse(localStorage.getItem('remaining_spots'))
-                console.log(remainingSpots);
-                let responseContent = '<h5>由於營業時間、營業日等眾多因素</h5><h5>以下景點尚未列入安排：</h5>';
-                if (nightEvents.length > 0) {
-                    responseContent = responseContent + '<strong> 夜晚行程 </strong><div class="dropdown-divider"></div>'
-                    nightEvents.map(event => {
-                        let openDays = []
-                        event.openDays.split(',').map( day => {
-                          if(day == 0) openDays.push(' 週日 ');
-                          if(day == 1) openDays.push(' 週一 ');
-                          if(day == 2) openDays.push(' 週二 ');
-                          if(day == 3) openDays.push(' 週三 ');
-                          if(day == 4) openDays.push(' 週四 ');
-                          if(day == 5) openDays.push(' 週五 ');
-                          if(day == 6) openDays.push(' 週六 ');
-                        })
-                        let openHour = Math.floor(event.openHour/60);
-                        let closedHour = Math.floor(event.closedHour/60);
-                        if (closedHour > 24) closedHour = closedHour - 24;
-                        responseContent += `
-                        <div> 行程名稱：${event.activity} </div>
-                        <div> 營業時間：${openHour}點 ~ ${closedHour}點 </div>
-                        <div> 營業日：</div>
-                        <div> ${openDays.toString()} </div>
-                        <div class="dropdown-divider"></div>
-                        `  
-                    })
-                }
-                if (remainingSpots.length > 0) {
-                  responseContent = responseContent + `<br><strong> 其他未安排行程 </strong><div class="dropdown-divider"></div>`
-                  remainingSpots.map(event => {
-                      let openDays = []
-                      event.openDays.split(',').map( day => {
-                          if(day == 0) openDays.push(' 週日 ');
-                          if(day == 1) openDays.push(' 週一 ');
-                          if(day == 2) openDays.push(' 週二 ');
-                          if(day == 3) openDays.push(' 週三 ');
-                          if(day == 4) openDays.push(' 週四 ');
-                          if(day == 5) openDays.push(' 週五 ');
-                          if(day == 6) openDays.push(' 週六 ');
-                      })
-                      responseContent += `
-                        <div> 行程名稱：${event.activity} </div>
-                        <div> 營業時間：${Math.floor(event.openHour/60)}點 ~ ${Math.floor(event.closedHour/60)}點 </div>
-                        <div> 營業日：</div>
-                        <div> ${openDays.toString()} </div>
-                        <div class="dropdown-divider"></div>
-                        `
-                  })
-                }
-                console.log('length');
-                console.log(nightEvents.length);
-                console.log(remainingSpots.length);
-                if(nightEvents.length > 0 || remainingSpots.length > 0) {
-                  Swal.fire({
-                      position: 'top',
-                      title: '<strong>尚有未安排景點</strong>',
-                      icon: 'info',
-                      html: responseContent
-                  })
-                }
-                localStorage.removeItem('night_events');
-                localStorage.removeItem('remaining_spots');    
-                getPendingArrangements(null, tripId);
-                console.log("6");
-                calculateTripBtn.dataset.city = 'null';
-                getArrangements(calendar, tripId);
-                calendar.render();
+
               }
             })
         }
@@ -14977,8 +14904,6 @@ window.addEventListener('storage', function() {
 
   function getPolylinePath(date){ 
     let allEvents = calendar.getEvents();
-    console.log('getPolylinePath allEvents:');
-    console.log(allEvents);
     allEvents.sort(function (a,b) {
       return new Date(b.start) - new Date(a.start);
     });
@@ -15155,6 +15080,12 @@ socket.on('updateArrangement', (eventInfo)=>{
       event.remove();
     }
   })
+
+  socket.on('renderCalendar', (tripId)=>{
+    console.log('render calendar socket triggered');
+    getArrangements (calendar, tripId);
+  })
+
 
 
 

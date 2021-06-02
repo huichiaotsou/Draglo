@@ -327,7 +327,6 @@ function renderSpots(cityName, placeId) {
   if (cityName) {
     let cities = document.getElementsByClassName(cityName);
     for(let i = 0; i < cities.length; i++) {
-      console.log(cities[i].dataset.openHour);
       spots.push(
         [
           parseFloat(cities[i].dataset.latitude), 

@@ -44,8 +44,13 @@ socket.init = (server) => {
         })
 
         socket.on('removeArrangement', (eventId)=>{
-            console.log("rrangement --> " + eventId + " eventId received on backend");
+            console.log("removeArrangement --> " + eventId + " eventId received on backend");
             io.to(tripId).emit('removeArrangement', eventId)
+        })
+
+        socket.on('renderCalendar', (tripId)=>{
+            console.log("renderCalendar --> tripId received on backend")
+            io.to(tripId).emit('renderCalendar', tripId)
         })
 
     })
