@@ -4,7 +4,6 @@ if ( accessToken ) {
   location.assign('/dashboard.html')
 }
 
-
 function onSignIn(googleUser) {
   let profile = googleUser.getBasicProfile();
   signIn(profile.getEmail())

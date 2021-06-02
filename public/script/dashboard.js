@@ -34,7 +34,7 @@ function createTrip() {
     xhr.send();
 }
 
-function signOut() {
+function nativeSignOut() {
     Swal.fire({
         icon: 'success',
         title: '下次再會 :)',
@@ -43,13 +43,12 @@ function signOut() {
       });
     localStorage.removeItem('access_token')
     // document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    GoogleSignOut()
     setTimeout(()=>{
         location.assign('/index.html');
     }, 700)
 }
 
-function GoogleSignOut() {
+function signOut() {
     console.log('google sign out');
     let auth2 = gapi.auth2.getAuthInstance();
     console.log(auth2);
