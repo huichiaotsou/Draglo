@@ -39,6 +39,8 @@ const googleSignIn = async (email) => {
                 password: encryptPassword(email)
             }
             let createUser = await pool.query('INSERT INTO users SET ?', set);
+            console.log('createUser');
+            console.log(createUser);
             user.id = createUser[0][0].insertId;
             user.email = email;
         } 
