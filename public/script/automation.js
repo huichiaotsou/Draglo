@@ -35,6 +35,10 @@ function calculateTrip (cityName, startDate, dayStart) {
             localStorage.removeItem('remaining_spots');
             localStorage.setItem('night_events', JSON.stringify(otherEvents.nightEvents))
             localStorage.setItem('remaining_spots', JSON.stringify(otherEvents.remainingSpots))
+            Swal.fire({
+                icon: 'success',
+                title: '計算完成',
+              })
             renderUnarrangedResult();
         }
     }
