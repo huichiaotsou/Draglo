@@ -4,6 +4,17 @@ if ( accessToken ) {
   location.assign('/dashboard.html')
 }
 
+GoogleSignOut()
+
+function GoogleSignOut() {
+  console.log('google sign out');
+  let auth2 = gapi.auth2.getAuthInstance();
+  console.log(auth2);
+  auth2.signOut().then(function () {
+    console.log('User signed out.');
+  });
+}
+
 function onSignIn(googleUser) {
   let profile = googleUser.getBasicProfile();
   console.log(profile);

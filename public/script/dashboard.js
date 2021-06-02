@@ -44,18 +44,9 @@ function signOut() {
     localStorage.removeItem('access_token')
     // document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     setTimeout(()=>{
+        // GoogleSignOut()
         location.assign('/index.html');
-        GoogleSignOut()
     }, 700)
-}
-
-function GoogleSignOut() {
-    console.log('google sign out');
-    let auth2 = gapi.auth2.getAuthInstance();
-    console.log(auth2);
-    auth2.signOut().then(function () {
-      console.log('User signed out.');
-    });
 }
 
 function getDashboard(behavior){
