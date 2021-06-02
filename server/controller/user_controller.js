@@ -66,8 +66,6 @@ const signIn = async (req, res, next) => {
         let result;
         if (password == 'googleSignInDraglo') {
           result = await User.googleSignIn(email);
-          console.log('await User.googleSignIn(email):');
-          console.log(result);
         } else {
           result = await User.nativeSignIn(email, password);      
         }
