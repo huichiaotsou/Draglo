@@ -359,6 +359,20 @@ function NativeSignOut() {
     location.assign('/index.html');
 }
 
+function googleSignOut() {
+    console.log('google sign out');
+    let auth2 = gapi.auth2.getAuthInstance();
+    console.log(auth2);
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+  }
+
+  function onLoad() {
+    gapi.load('auth2', function() {
+      gapi.auth2.init();
+    });
+  }
 
 //clear local storage
 window.addEventListener('beforeunload', ()=>{
