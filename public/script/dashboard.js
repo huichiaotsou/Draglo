@@ -48,7 +48,7 @@ function nativeSignOut() {
     }, 700)
 }
 
-function signOut() {
+function googleSignOut() {
     console.log('google sign out');
     let auth2 = gapi.auth2.getAuthInstance();
     console.log(auth2);
