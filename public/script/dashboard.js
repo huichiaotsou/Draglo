@@ -1,5 +1,6 @@
 //veriry identity, if ok, render user's trips / if not, alert: please log in again
-let accessToken = document.cookie.split('=')[1];
+let accessToken = localStorage.getItem('access_token')
+// document.cookie.split('=')[1];
 if (accessToken) {
     getDashboard()
 } else { //if no token, redirect to sign in page
@@ -40,7 +41,8 @@ function signOut() {
         showConfirmButton: false,
         timer: 700
       });
-    document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    localStorage.removeItem('access_token')
+    // document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     setTimeout(()=>{
         location.assign('/index.html');
         GoogleSignOut()

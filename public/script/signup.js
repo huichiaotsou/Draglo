@@ -1,4 +1,6 @@
-if (document.cookie) {
+let accessToken = localStorage.getItem('access_token')
+//document.cookie
+if (accessToken) {
   location.assign('/dashboard.html')
 }
 
@@ -44,7 +46,8 @@ function signUp() {
             timer: 700
           })
           const serverResponse = JSON.parse(xhr.responseText);
-          document.cookie = `access_token = ${serverResponse.data.access_token}`;
+          localStorage.setItem('access_token', serverResponse.data.access_token)
+          // document.cookie = `access_token = ${serverResponse.data.access_token}`;
 
           if (shareToken) {
             setTimeout(()=>{

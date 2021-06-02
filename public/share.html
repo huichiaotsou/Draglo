@@ -1,7 +1,8 @@
 <script>
     const urlParams = new URLSearchParams(window.location.search);
     const shareToken = urlParams.get('code');
-    let accessToken = document.cookie.split('=')[1];
+    let accessToken = localStorage.getItem('access_token')
+    // document.cookie.split('=')[1];
 
     if (accessToken) {
         console.log('accessToken:');

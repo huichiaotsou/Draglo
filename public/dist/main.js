@@ -14620,7 +14620,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-let accessToken = document.cookie.split('=')[1];
+// let accessToken = document.cookie.split('=')[1];
+let accessToken = localStorage.getItem('access_token')
 const urlParams = new URLSearchParams(window.location.search);
 const tripId = urlParams.get('id');
 
