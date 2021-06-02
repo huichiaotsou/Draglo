@@ -61,6 +61,8 @@ window.addEventListener('storage', function() {
         eventDetails.className = 'fc-event-main';
         eventDetails.innerHTML = title;
         eventDetails.dataset.place_id = publicId;
+        eventDetails.dataset.openHour = event.extendedProps.openHour;
+        eventDetails.dataset.closedHour = event.extendedProps.closedHour;
         eventBack.appendChild(eventDetails);
         //change is_arranged back to 0
         updateArrangement(0, spotId, tripId, 'null', 'null'); 
@@ -91,8 +93,11 @@ window.addEventListener('storage', function() {
           spotId: event.extendedProps.spotId,
           latitude: elementChild.dataset.latitude,
           longtitude: elementChild.dataset.longtitude,
+          openHour: elementChild.dataset.openHour,
+          closedHour: elementChild.dataset.closedHour
         }
       }
+      console.log(eventInfo);
       socket.emit('updateArrangement', eventInfo)
     },
     eventDrop: function(info) {
@@ -113,6 +118,8 @@ window.addEventListener('storage', function() {
           spotId: event.extendedProps.spotId,
           latitude: event.extendedProps.latitude,
           longtitude: event.extendedProps.longtitude,
+          openHour: event.extendedProps.openHour,
+          closedHour: event.extendedProps.closedHour
         }
       }
       socket.emit('updateArrangement', eventInfo)
@@ -135,6 +142,8 @@ window.addEventListener('storage', function() {
           spotId: event.extendedProps.spotId,
           latitude: event.extendedProps.latitude,
           longtitude: event.extendedProps.longtitude,
+          openHour: event.extendedProps.openHour,
+          closedHour: event.extendedProps.closedHour
         }
       }
       socket.emit('updateArrangement', eventInfo)
@@ -510,7 +519,9 @@ socket.on('updateArrangement', (eventInfo)=>{
       extendedProps: {
         spotId: extendedProps.spotId,
         latitude: parseFloat(extendedProps.latitude),
-        longtitude: parseFloat(extendedProps.longtitude)
+        longtitude: parseFloat(extendedProps.longtitude),
+        openHour: extendedProps.openHour,
+        closedHour: extendedProps.closedHour
       }
     });
     calendar.render();
