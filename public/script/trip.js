@@ -333,9 +333,6 @@ function shareTrip(){
             xhr.send(JSON.stringify(data));
         }
     })
-
-
-
           
 }
 
@@ -365,3 +362,36 @@ window.addEventListener('beforeunload', ()=>{
     localStorage.removeItem('trip_settings');
 })
 
+function clearTrip() {
+    Swal.fire({
+        position: 'top-end',
+        title: '是否確定清空行事曆?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: '確認清除',
+        cancelButtonText:'取消'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            let xhr = new XMLHttpRequest()
+            xhr.open('PATCH', '/arrangement');
+            xhr.onreadystatechange = function () {
+              if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    location.reload()
+                } else if (xhr.status == 403){
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: '您的權限不足',
+                  })
+                }
+              }
+            };
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
+            xhr.send(JSON.stringify({tripId}));
+        }
+      })
+}

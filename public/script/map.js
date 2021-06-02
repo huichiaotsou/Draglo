@@ -293,7 +293,7 @@ function getPendingArrangements(city, tripId) {
         if (cities) {
           let showAll = document.createElement('div');
           showAll.className = 'city';
-          showAll.innerHTML = '顯示全部城市清單';
+          showAll.innerHTML = '全部城市清單';
           showAll.setAttribute('onclick', `
           getPendingArrangements(${null}, ${tripId});
           switchAutomationCity('null');`);

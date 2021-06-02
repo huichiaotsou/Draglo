@@ -87,7 +87,12 @@ const removeArrangement = async (req, res, next) => {
 
 const updateArrangement = async (req, res, next) => {
     let { isArranged, spotId, tripId, startTime, endTime } = req.body;
-    let result = await Arrangement.updateArrangement(isArranged, spotId, tripId, startTime, endTime);
+    let result;
+    if (spotId) {
+        result = await Arrangement.updateArrangement(isArranged, spotId, tripId, startTime, endTime);
+    } else {
+        result = await Arrangement.clearArrangement(tripId);
+    }
     if (result.error){
         res.sendStatus(500);
     } else {

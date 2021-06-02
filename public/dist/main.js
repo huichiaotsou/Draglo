@@ -14657,9 +14657,11 @@ window.addEventListener('storage', function() {
     nowIndicator: true,
     editable: true,
     droppable: true,
+    slotLabelInterval: "01:00",
+    slotDuration:"00:30:00",
     slotMinTime: "00:00:00",
     slotMaxTime: "24:00:00",
-    scrollTime: "07:30:00",
+    scrollTime: "08:00:00",
     eventDragStop: function(info) {
       let jsEvent = info.jsEvent;
       if (isEventOut(jsEvent.clientX, jsEvent.clientY)) {
@@ -14864,7 +14866,7 @@ window.addEventListener('storage', function() {
       console.log(startDate);
       Swal.fire({
         position: 'top-end',
-        title: '目前自動安排的設定為：',
+        title: '目前行程計算的設定為：',
         html: `
         <div style="color:#007bff; font-size: 20px;">
           城市：${cityName}
@@ -14883,7 +14885,7 @@ window.addEventListener('storage', function() {
             Swal.fire({
               title: '行程計算中，請耐心等候',
               html: '系統正在根據景點開放時間、景點間之交通，為您計算行程',
-              timer: 12000,
+              timer: 7000,
               timerProgressBar: true,
               allowOutsideClick: () => !Swal.isLoading(),
               didOpen: () => {
@@ -14956,9 +14958,9 @@ window.addEventListener('storage', function() {
                       icon: 'info',
                       html: responseContent
                   })
-                  localStorage.removeItem('night_events');
-                  localStorage.removeItem('remaining_spots');    
                 }
+                localStorage.removeItem('night_events');
+                localStorage.removeItem('remaining_spots');    
                 getPendingArrangements(null, tripId);
                 console.log("6");
                 calculateTripBtn.dataset.city = 'null';
@@ -15103,8 +15105,8 @@ function checkSameDay (date1, date2) {
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
     xhr.send(JSON.stringify(data));
-
   }
+
 
 socket.on('join-trip-message', (msg)=>{
   console.log(msg);
@@ -15152,6 +15154,9 @@ socket.on('updateArrangement', (eventInfo)=>{
       event.remove();
     }
   })
+
+
+
 })();
 
 /******/ })()

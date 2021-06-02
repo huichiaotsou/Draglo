@@ -55,10 +55,21 @@ const updateArrangement = async (isArranged, spotId, tripId, startTime, endTime)
     }
 }
 
+const clearArrangement = async (tripId) => {
+    try {
+        let queryStr = 'UPDATE arrangements SET is_arranged = 0 WHERE trip_id = ?';
+        await pool.query(queryStr, tripId);
+        return true;
+    } catch (error) {
+        console.log(error);
+        return {error};
+    }
+}
 
 module.exports = {
     getPendingArrangements,
     removeArrangement,
     updateArrangement,
-    getArrangements
+    getArrangements,
+    clearArrangement
 }
