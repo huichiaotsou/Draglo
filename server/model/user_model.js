@@ -39,8 +39,10 @@ const googleSignIn = async (email) => {
                 password: encryptPassword(email)
             }
             let createUser = await pool.query('INSERT INTO users SET ?', set);
-            user.id = createUser[0].insertId;
-            user.email = email;
+            user = {
+                id : createUser[0].insertId,
+                email : email
+            }
         } 
         user.access_token = jwt.sign({
             id: user.id,
