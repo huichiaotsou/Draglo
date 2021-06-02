@@ -5540,7 +5540,12 @@ button.bg-dark:focus {
 .d-flex {
   display: -webkit-box !important;
   display: -ms-flexbox !important;
-  display: flex !important; }
+  display: flex !important; 
+  justify-content: center;}
+
+  .d-flex:hover {
+    opacity: 0.9;
+  }
 
 .d-inline-flex {
   display: -webkit-inline-box !important;
