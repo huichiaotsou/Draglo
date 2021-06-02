@@ -30,12 +30,10 @@ const googleSignIn = async (email) => {
     try {
         let queryStr = 'SELECT id, email FROM users WHERE email = ?';
         let checkUser = await pool.query(queryStr, email);
-        console.log('checkUser[0]:');
-        console.log(checkUser[0]);
+        console.log('checkUser');
+        console.log(checkUser);
         let user = checkUser[0][0];
-        console.log('user:');
-        console.log(user);
-        if (user.length == 0) {
+        if (!user) {
             let set = {
                 email: email,
                 password: encryptPassword(email)
