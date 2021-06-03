@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const { pool } = require('../server/model/mysql');
 const nodemailer = require("nodemailer");
+const crypto = require('crypto');
+
 
 // TOKEN FORMAT: authorization: Bearer <access_token>
 function verifyToken(req, res, next) {
@@ -87,9 +89,16 @@ const sendEmail = async (title, email, shareToken) => {
     });
 }
 
+function encrypt(password) {
+  const hash = crypto.createHash('sha1');
+  hash.update(password);
+  return hash.digest('hex');
+}
+
   module.exports = {
     verifyToken,
     verifyAccess,
     checkOwnership,
-    sendEmail
+    sendEmail,
+    encrypt
   }

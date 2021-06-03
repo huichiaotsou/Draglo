@@ -1,6 +1,6 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
+const { encrypt } = require('../../utils/utils')
 const { pool } = require('./mysql');
 
 const signUp = async (email, password) => {
@@ -13,7 +13,7 @@ const signUp = async (email, password) => {
             }
         }
         let user = {email};
-        user.password = encryptPassword(password);
+        user.password = encrypt(password);
         let signUpSQL = await pool.query('INSERT INTO users SET ?', user);
         user.id = signUpSQL[0].insertId;
         delete user.password;
@@ -34,7 +34,7 @@ const googleSignIn = async (email) => {
         if (!user) {
             let set = {
                 email: email,
-                password: encryptPassword(email)
+                password: encrypt(email)
             }
             let createUser = await pool.query('INSERT INTO users SET ?', set);
             user = {
@@ -57,7 +57,7 @@ const nativeSignIn = async (email, password) => {
         let queryStr = 'SELECT id, email, password FROM users WHERE email = ?';
         let checkUser = await pool.query(queryStr, email);
         let user = checkUser[0][0];
-        let inputPassword = encryptPassword(password);
+        let inputPassword = encrypt(password);
         if (user.length == 0) {
             return {
                 statusCode: 400,
@@ -80,12 +80,6 @@ const nativeSignIn = async (email, password) => {
     }
 }
  
-function encryptPassword(password) {
-    const hash = crypto.createHash('sha1');
-    hash.update(password);
-    return hash.digest('hex');
-  }
-
 module.exports = {
     nativeSignIn,
     signUp,

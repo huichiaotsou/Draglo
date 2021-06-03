@@ -1,5 +1,3 @@
-
-
 function switchAutomationCity(cityName) {
     let calculateTripBtn = document.getElementById('calculateTrip');
     calculateTripBtn.dataset.city = cityName;

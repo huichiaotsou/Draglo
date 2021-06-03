@@ -6,5 +6,4 @@ router.route('/share')
     .post ( createShareToken )
     .patch ( updateShareAccess )
 
-
 module.exports = router

@@ -14902,6 +14902,28 @@ window.addEventListener('storage', function() {
     }
   })
 
+  let icalBtn = document.getElementById('iCal-feed');
+  icalBtn.addEventListener('click', ()=>{
+    let allEvents = calendar.getEvents()
+    let data = {
+      tripId: tripId,
+      tripName: tripSettings.name,
+      iCalEvents: []
+    }
+    for (let event of allEvents) {
+      data.iCalEvents.push(
+        {
+          title: event.title,
+          start: event.start,
+          end: event.end,
+          description: event.extendedProps.openHour +" ~ "+ event.extendedProps.closedHour,
+          googleId: event.id
+        }
+      )
+    }
+    createiCalFeed(data)
+  })
+
   function getPolylinePath(date){ 
     let allEvents = calendar.getEvents();
     allEvents.sort(function (a,b) {
@@ -15085,7 +15107,6 @@ socket.on('updateArrangement', (eventInfo)=>{
     console.log('render calendar socket triggered');
     getArrangements (calendar, tripId);
   })
-
 
 
 

@@ -1,4 +1,3 @@
-
 // let accessToken = document.cookie.split('=')[1];
 let accessToken = localStorage.getItem('access_token')
 const urlParams = new URLSearchParams(window.location.search);
@@ -412,4 +411,32 @@ function clearTrip() {
             xhr.send(JSON.stringify({tripId}));
         }
       })
+}
+
+function createiCalFeed(data){
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', '/calendar');
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            if (xhr.status == 200) {
+                Swal.fire({
+                    position: 'top-end',
+                    title: 'iCalendar Feed 已建立',
+                    html:`
+                    <div>此旅程的日曆網址為：</div>
+                    <div style="font-size: 17px;">${xhr.responseText}</div> <br>
+                    <a href="https://calendar.google.com/calendar/u/0/r/settings/addbyurl" target="_blank"><div>點擊此處匯入至 Google Calendar</div></a>
+                    <div style="font-size: 12px; margin-top: 7px;">若您先前已匯入，Google Calendar已自動更新</div>
+                    `,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: `OK`
+                })
+            } else if (xhr.status != 200) {
+                alert('update failed, please try again later')
+            }
+        } 
+    }
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
+    xhr.send(JSON.stringify(data));
 }

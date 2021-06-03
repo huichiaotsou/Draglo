@@ -21,6 +21,7 @@
     "axios": "^0.21.1",
     "dotenv": "^9.0.2",
     "express": "^4.17.1",
+    "ical-generator": "^2.2.0",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.2.5",
     "node-fetch": "^2.6.1",
