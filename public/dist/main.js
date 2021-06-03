@@ -14913,10 +14913,10 @@ window.addEventListener('storage', function() {
     for (let event of allEvents) {
       data.iCalEvents.push(
         {
-          title: event.title,
+          summary: event.title,
           start: event.start,
           end: event.end,
-          description: event.extendedProps.openHour +" ~ "+ event.extendedProps.closedHour,
+          description: "開放時間: " + event.extendedProps.openHour +" ~ "+ event.extendedProps.closedHour,
           googleId: event.id
         }
       )
