@@ -55,11 +55,11 @@ function googleSignOut() {
     });
   }
 
-  function onLoad() {
-    gapi.load('auth2', function() {
-      gapi.auth2.init();
-    });
-  }
+  // function onLoad() {
+  //   gapi.load('auth2', function() {
+  //     gapi.auth2.init();
+  //   });
+  // }
 
 function getDashboard(behavior){
     let container = document.getElementById('trips-container');
@@ -81,7 +81,8 @@ function getDashboard(behavior){
       if (xhr.readyState === 4) {
         if (xhr.status != 200) {
           alert('Please sign in again!');
-          document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+          // document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+          localStorage.removeItem('access_token')
           window.location.assign('/index.html');
         } else if (xhr.status == 200) {
           let response = JSON.parse(xhr.responseText);

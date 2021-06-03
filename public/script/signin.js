@@ -45,12 +45,22 @@ function signIn(gmail) {
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4) {
       if (xhr.status === 200) {
-        Swal.fire({
-          icon: 'success',
-          title: '登入成功',
-          showConfirmButton: false,
-          timer: 700
-      })
+
+        if (gmail) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Google 登入成功',
+            showConfirmButton: false,
+            timer: 700
+          })
+        } else {
+          Swal.fire({
+            icon: 'success',
+            title: '登入成功',
+            showConfirmButton: false,
+            timer: 700
+          })
+        }
         const serverResponse = JSON.parse(xhr.responseText);
         localStorage.setItem('access_token', serverResponse.data.access_token)
         // document.cookie = `access_token = ${serverResponse.data.access_token}`;

@@ -1,3 +1,4 @@
+
 // let accessToken = document.cookie.split('=')[1];
 let accessToken = localStorage.getItem('access_token')
 const urlParams = new URLSearchParams(window.location.search);
