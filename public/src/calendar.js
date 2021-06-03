@@ -293,6 +293,7 @@ window.addEventListener('storage', function() {
       tripName: tripSettings.name,
       iCalEvents: []
     }
+    
     for (let event of allEvents) {
       data.iCalEvents.push(
         {
