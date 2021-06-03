@@ -426,7 +426,7 @@ function createiCalFeed(data){
                     <div>此旅程的日曆網址為：</div>
                     <div style="font-size: 17px;">${xhr.responseText}</div> <br>
                     <a href="https://calendar.google.com/calendar/u/0/r/settings/addbyurl" target="_blank"><div>點擊此處匯入至 Google Calendar</div></a>
-                    <div style="font-size: 12px; margin-top: 7px;">若您先前已匯入，Google Calendar已自動更新</div>
+                    <div style="font-size: 12px; margin-top: 7px;">若您先前已匯入，Google Calendar將自動更新（根據Google更新速度）</div>
                     `,
                     confirmButtonColor: '#3085d6',
                     confirmButtonText: `OK`

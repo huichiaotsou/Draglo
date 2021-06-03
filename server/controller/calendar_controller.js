@@ -11,7 +11,6 @@ const iCalendarFeed = async (req, res, next) => {
         for (let event of iCalEvents) {
             event.location = await Calendar.getSpotAddress(event.googleId);
             delete event.googleId
-            console.log(event);
             calendar.createEvent(event);
         }
         let calendarId = await Calendar.generateCalendar(tripId);
