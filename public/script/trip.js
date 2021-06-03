@@ -423,9 +423,13 @@ function createiCalFeed(data){
                     position: 'top-end',
                     title: 'iCalendar Feed 已建立',
                     html:`
+                    
                     <div>此旅程的日曆網址為：</div>
-                    <div style="font-size: 17px;">${xhr.responseText}</div> <br>
-                    <a href="https://calendar.google.com/calendar/u/0/r/settings/addbyurl" target="_blank"><div>點擊此處匯入至 Google Calendar</div></a>
+                    <div style="display: flex; justify-content:space-around; margin-top: 20px;">
+                        <input type="text" style="font-size: 17px; width: 70%;" id="ical-feed" value="${xhr.responseText}">
+                        <button class="btn btn-sm btn-outline-primary" type="button" onclick="copyLink()" id="copy-btn">複製網址</button> <br>
+                    </div>
+                    <br><a href="https://calendar.google.com/calendar/u/0/r/settings/addbyurl" target="_blank"><div>點擊匯入至 Google Calendar</div></a>
                     <div style="font-size: 12px; margin-top: 7px;">若您先前已匯入，Google Calendar將自動更新（根據Google更新速度）</div>
                     `,
                     confirmButtonColor: '#3085d6',
@@ -439,4 +443,13 @@ function createiCalFeed(data){
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
     xhr.send(JSON.stringify(data));
+}
+
+function copyLink() {
+    let link = document.getElementById('ical-feed');
+    link.select();
+    document.execCommand("copy");
+    let copyBtn = document.getElementById('copy-btn')
+    copyBtn.innerHTML = '已複製';
+    copyBtn.className = 'btn btn-sm btn-outline-secondary'
 }
