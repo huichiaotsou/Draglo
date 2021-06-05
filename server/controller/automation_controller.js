@@ -3,12 +3,9 @@ const Kmeans = require('../../utils/kmeans')
 const { getNextSpotId , arrangeNextActivity, removeSpot, findPolePoints } = require('../../utils/organizeTrip');
 const { calculateCloserPoint } = require('../../utils/geopackage')
 
-//9am = 540, 12pm = 720, 1h30 = 810, 2pm = 840, 7pm = 1140
-
 const calculateTrips = async (req, res, next) => {
-    console.log(req.body);
-    let { tripId, dayId, googleIds, spotsInfo, tripDuration, startTime, startDate } = req.body;
-    startTime = parseInt(startTime)
+    let { tripId, dayId, googleIds, spotsInfo, tripDuration, startDate } = req.body;
+    startTime = parseInt(req.body.startTime)
     let startDateDatetime = new Date(startDate.split('GMT')[0])
     let startDateUnix = startDateDatetime.getTime();
     
@@ -24,14 +21,9 @@ const calculateTrips = async (req, res, next) => {
     while(googleIds.length > 0) { //while 一直跑到安排完所有景點
         console.log('  ');
         console.log('1: -------------- New Day Start --------------');
-        console.log("2: 剩下的景點：");
-        googleIds.map(id => {
-            console.log(spotsInfo[id].name);
-        })
-        console.log('---------------------------');
 
         let poleSpotIds = findPolePoints(googleIds, spotsInfo);
-        console.log('2-1: poleSpotIds');
+        console.log('2: poleSpotIds');
         console.log(poleSpotIds);
         //確認起始點
         let startSpotId = poleSpotIds[Math.floor(Math.random() * poleSpotIds.length)];
@@ -108,6 +100,7 @@ const calculateTrips = async (req, res, next) => {
                 console.log('6: 起始點今日沒有營業');
                 console.log( "7: 將  "+ startSpotId +"  加入到pendingArrangements");
                 pendingArrangement.push(startSpotId);
+                
                 console.log('8: Current Pending Arrangement: ');
                 console.log(pendingArrangement);
 
@@ -228,10 +221,9 @@ const calculateTrips = async (req, res, next) => {
             pendingArrangement = []; //清空 pending arrangements
         }
 
-        console.log("27: remaining spots before moving to new day:");
-        googleIds.map(id => {
-            console.log(spotsInfo[id].name);
-        })
+        console.log("27: remaining spots before moving to new day:"); 
+        googleIds.map(id => console.log(spotsInfo[id].name))
+
         dayId ++; //換日
         if (dayId == 7){
             dayId = 0;
@@ -278,6 +270,10 @@ const calculateTrips = async (req, res, next) => {
     await Automation.arrangeAutomationResult(tripId, req.user.id, dayId, startDate, wholeTrip);
     res.send(otherEvents);
 }
+
+
+
+
 
 let reqBody = {
     'cities' : ['Paris', 'London', 'Aix-en-Provence'],

@@ -58,10 +58,11 @@ const nativeSignIn = async (email, password) => {
         let checkUser = await pool.query(queryStr, email);
         let user = checkUser[0][0];
         let inputPassword = encrypt(password);
-        if (user.length == 0) {
+        console.log(user);
+        if (!user) {
             return {
                 statusCode: 400,
-                error: 'User is not registered, redirecting to registration page'
+                error: 'Not registered, redirecting to registration page'
             };
         } else if (inputPassword != user.password){
             return {

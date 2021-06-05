@@ -138,13 +138,16 @@ function initMap(spots, path) {
   });
 
   map.addListener('click', (e)=>{
+    if (!e.placeId) {
+      return;
+    }
     const request = {
       placeId: e.placeId,
       fields: ["name", "place_id", "geometry"],
     };
 
     const service = new google.maps.places.PlacesService(map);
-    service.getDetails(request, (place, status) => {
+    service.getDetails(request, (place) => {
       // let image = 
       const marker = new google.maps.Marker({
         position: place.geometry.location,
