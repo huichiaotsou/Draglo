@@ -10,11 +10,6 @@ let removeSpot = (removedItem, itemsArray) => {
 }
 
 let getNextSpotId = (currentSpotId, sequence, clusters, spotsInfo) => {
-    console.log('getNextSpotId');
-    console.log(currentSpotId, sequence, clusters, spotsInfo);
-    console.log("當前景點（找下一個景點的依據）：");
-    console.log(spotsInfo[currentSpotId].name);
-
     if (Object.keys(clusters).length == 2 && clusters[sequence].length == 1) {
         console.log("one last remaining spot: "+ clusters[sequence][0]);
         return clusters[sequence][0]

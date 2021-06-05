@@ -4,6 +4,7 @@ const { getNextSpotId , arrangeNextActivity, removeSpot, findPolePoints } = requ
 const { calculateCloserPoint } = require('../../utils/geopackage')
 
 const calculateTrips = async (req, res, next) => {
+    console.log(req.body);
     let { tripId, dayId, googleIds, spotsInfo, tripDuration, startDate } = req.body;
     startTime = parseInt(req.body.startTime)
     let startDateDatetime = new Date(startDate.split('GMT')[0])
@@ -55,11 +56,13 @@ const calculateTrips = async (req, res, next) => {
             console.log('4: 起始點今天是否營業:');
             console.log(open);
             if (open) {
-                if (spotInfo.openHour > startTime) { //起始點是否開門
+                if (spotInfo.openHour > 630) { //起始點是否 10:30 前開門
                     console.log('4-1: 此景點今日有營業但太早來了');
                     console.log( "4-2: 將  "+ startSpotId +"  放進tooEarlyArrangement稍待安排");
                     tooEarlyArrangement.push(startSpotId)
-                    console.log("4-3: tooEarlyArrangement:"); console.log(tooEarlyArrangement);
+                    console.log("4-3: tooEarlyArrangement:"); 
+                    console.log(tooEarlyArrangement);
+                    
                     removeSpot(startSpotId, clusters[clusters.sequence[0]]);
                     removeSpot(startSpotId, googleIds);
                     if(clusters[clusters.sequence[0]].length == 0) {
@@ -72,6 +75,7 @@ const calculateTrips = async (req, res, next) => {
                     }
                     continue;
                 } else {
+                    startTime = (spotInfo.openHour >= startTime) ? spotInfo.openHour : startTime;
                     wholeTrip[startDateUnix] = [ //initialize the day
                         {
                             activity: spotsInfo[startSpotId].name,
@@ -80,9 +84,9 @@ const calculateTrips = async (req, res, next) => {
                             end: startTime + spotInfo.lingerTime
                         }
                     ];
+                    startTime += spotInfo.lingerTime;
                     console.log('5: 本日起始行程');
                     console.log(wholeTrip[startDateUnix]);
-                    startTime += spotInfo.lingerTime; 
                     removeSpot(startSpotId, googleIds);  
                     // removeSpot(startSpotId, poleSpotIds); 
                     removeSpot(startSpotId, clusters[clusters.sequence[0]]); 
@@ -234,8 +238,10 @@ const calculateTrips = async (req, res, next) => {
         startTime = originalStartTime;
         tripDuration --;
     }
+    console.log("29: remaining tooEarlyArrangement before sending whole trip response");
+    console.log(tooEarlyArrangement);
     
-    console.log("29: remaining spots before sending wholeTrip response");
+    console.log("29-1: remaining spots before sending wholeTrip response");
     console.log(googleIds);
     if (googleIds.length > 0 || tooEarlyArrangement.length > 0 || pendingArrangement.length > 0) {
         if (googleIds.length > 0) {

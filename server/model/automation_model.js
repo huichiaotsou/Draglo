@@ -8,8 +8,8 @@ const getSpotInfo = async (spotId) => {
     let { linger_time, open_days, open_hour, closed_hour } = result[0][0]
     if (open_hour == null) open_hour = 0;
     if (closed_hour == null) closed_hour = 2400;
-    open_hour = open_hour/100 * 60;
-    closed_hour = closed_hour/100 * 60;
+    open_hour = Math.floor(open_hour/100) * 60 + (open_hour % 100);
+    closed_hour = Math.floor(closed_hour/100) * 60 + (closed_hour % 100);
     return {
         lingerTime: linger_time,
         openDays: open_days,
@@ -54,7 +54,9 @@ const arrangeAutomationResult = async (tripId, userId, dayId, startDate, wholeTr
     })
     console.log("arrangements raw data: ");
     console.log(values);
-    await pool.query(queryStr.concat(upsert), [values]);
+    if(values.length > 0) {
+        await pool.query(queryStr.concat(upsert), [values]);
+    }
 }
 
 module.exports = {
