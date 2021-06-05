@@ -230,6 +230,7 @@ window.addEventListener('storage', function() {
       let dayStart = calculateTripBtn.dataset.dayStart;
       let allEvents = calendar.getEvents();
       let startDate = new Date(new Date(start).setHours(0,0,0,0));
+      let previousCityVector = [];
       if (allEvents.length > 0) {
         allEvents.map(e => {
           let end = new Date(e.end)
@@ -237,7 +238,7 @@ window.addEventListener('storage', function() {
           if (end > startDate) {
             end.setHours(0,0,0,0)
             startDate = new Date (end.setDate(end.getDate() +1))
-            // startDate = new Date(new Date(end.setDate(end.getDate() + 1)).setHours(0,0,0,0))
+            previousCityVector = [e.extendedProps.latitude, e.extendedProps.longtitude]
           }
         })
       }
@@ -260,25 +261,8 @@ window.addEventListener('storage', function() {
         confirmButtonText: `OK`
       }).then((result) => {
         if (result.isConfirmed) {
-            calculateTrip(cityName, startDate, dayStart);
-            let timerInterval
-            Swal.fire({
-              title: '行程計算中，請耐心等候',
-              html: '系統正在根據景點開放時間、景點間之交通，為您計算行程',
-              timer: 20000,
-              timerProgressBar: true,
-              allowOutsideClick: () => !Swal.isLoading(),
-              didOpen: () => {
-                Swal.showLoading()
-              },
-              willClose: () => {
-                clearInterval(timerInterval)
-              }
-            }).then((result) => {
-              if (result.dismiss === Swal.DismissReason.timer) {
-
-              }
-            })
+            calculateTrip(cityName, startDate, dayStart, previousCityVector);
+            
         }
       })
 

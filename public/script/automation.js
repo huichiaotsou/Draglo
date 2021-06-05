@@ -3,7 +3,7 @@ function switchAutomationCity(cityName) {
     calculateTripBtn.dataset.city = cityName;
 }
 
-function calculateTrip (cityName, startDate, dayStart) {
+function calculateTrip (cityName, startDate, dayStart, previousCityVector) {
     let data = {}
     data.googleIds = []
     data.spotsInfo = {}
@@ -24,6 +24,32 @@ function calculateTrip (cityName, startDate, dayStart) {
     data.startDate = startDate
     data.dayId = new Date(startDate).getDay();
     data.startTime = dayStart || 540;
+
+    let checkDistance = getGeoDistance( [parseFloat(spots[0].dataset.latitude),parseFloat(spots[0].dataset.longtitude)] , previousCityVector);
+    let html = '系統正根據景點開放時間、景點間之交通，為您計算行程';
+    if (checkDistance > 60) {
+        html = `<div>系統正根據景點開放時間、景點間之交通，為您計算行程</div>
+        <div style="font-size: 14px;">安排中的城市似乎距離上個城市有點距離，請記得預留足夠的交通時間 </div>`
+    } 
+    
+    if (checkDistance > 300) {
+        html = `<div>系統正根據景點開放時間、景點間之交通，為您計算行程</div>
+        <div style="font-size: 14px;"> 安排中的城市似乎距離上個城市十分遙遠，可能需要坐飛機或火車唷 </div>`
+    }
+    let timerInterval
+    Swal.fire({
+        title: '行程計算中，請耐心等候',
+        html: html,
+        timer: 20000,
+        timerProgressBar: true,
+        allowOutsideClick: () => !Swal.isLoading(),
+        didOpen: () => {
+            Swal.showLoading()
+        },
+        willClose: () => {
+            clearInterval(timerInterval)
+        }
+    })
     let xhr = new XMLHttpRequest();
     xhr.open('POST', '/automation')
     xhr.onreadystatechange = function () {
@@ -118,4 +144,39 @@ function renderUnarrangedResult(){
     socket.emit('refreshSpots', tripId)
     socket.emit('renderCalendar', tripId)
     console.log('socket sent : refreshSpots and renderCalendar ');
+}
+
+//https://www.itread01.com/content/1541853492.html
+function getRad(d){
+    var PI = Math.PI;
+    return d*PI/180.0;
+}
+
+function getGeoDistance([lat1,lng1],[lat2,lng2]){
+    var f = getRad((lat1 + lat2)/2);
+    var g = getRad((lat1 - lat2)/2);
+    var l = getRad((lng1 - lng2)/2);
+    var sg = Math.sin(g);
+    var sl = Math.sin(l);
+    var sf = Math.sin(f);
+    var s,c,w,r,d,h1,h2;
+    var a = 6378137.0;//The Radius of eath in meter.
+    var fl = 1/298.257;
+    sg = sg*sg;
+    sl = sl*sl;
+    sf = sf*sf;
+    s = sg*(1-sl) + (1-sf)*sl;
+    c = (1-sg)*(1-sl) + sf*sl;
+    w = Math.atan(Math.sqrt(s/c));
+    r = Math.sqrt(s*c)/w;
+    d = 2*w*a;
+    h1 = (3*r -1)/2/c;
+    h2 = (3*r +1)/2/s;
+    s = d*(1 + fl*(h1*sf*(1-sg) - h2*(1-sf)*sg));
+    if(isNaN(s)){
+        s = 0;
+    }else if (s >= 0 ){
+        s = Math.round(s);
+    }
+    return s / 1000; //單位= km
 }

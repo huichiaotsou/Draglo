@@ -2,6 +2,8 @@ function backToDashboard() {
   location.assign('/dashboard.html')
 }
 
+// let tripId = JSON.parse(localStorage.getItem('trip_settings')).id
+
 // Maps API
 function initMap(spots, path) {
   restoreSearchBox()
@@ -43,6 +45,9 @@ function initMap(spots, path) {
       })
       marker.addListener("mouseout", () => {
         infowindow.close();
+      })
+      marker.addListener("click", () => {
+        getPendingArrangements(null, tripId, s[4])
       })
 
     })
@@ -189,7 +194,7 @@ function restoreSearchBox() {
 
 //init pending arrangements list
 window.addEventListener('storage', ()=>{
-  getPendingArrangements(null, JSON.parse(localStorage.getItem('trip_settings')).id);
+  getPendingArrangements(null, tripId);
   console.log("1");
 })
 
@@ -227,7 +232,7 @@ function saveSpotInfo(spotName, placeId) {
   let data = {
     spotName,
     placeId,
-    tripId: JSON.parse(localStorage.getItem('trip_settings')).id
+    tripId: tripId
   }
   let xhr = new XMLHttpRequest();
   xhr.open('POST', '/spot');
@@ -253,10 +258,12 @@ function saveSpotInfo(spotName, placeId) {
 }
 
 
-function getPendingArrangements(city, tripId) {
+function getPendingArrangements(city, tripId, placeId) {
   let xhr = new XMLHttpRequest();
   if (city) {
     xhr.open('GET', `/arrangement?status=pending&id=${tripId}&city=${city}`);
+  } if (placeId) {
+    xhr.open('GET', `/arrangement?status=pending&id=${tripId}&placeId=${placeId}`);
   } else {
     xhr.open('GET', `/arrangement?status=pending&id=${tripId}`);
   }
@@ -305,13 +312,16 @@ function getPendingArrangements(city, tripId) {
             let city = document.createElement('div');
             city.className = 'city';
             city.innerHTML = cityName;
+            // renderSpots('${cityName.split(' ')[0]}');
             city.setAttribute('onclick', `
             getPendingArrangements('${cityName}', ${tripId}); 
-            renderSpots('${cityName.split(' ')[0]}');
             switchAutomationCity('${cityName.split(' ')[0]}');`);
             citiesContainer.appendChild(city)
           })
-        }        
+        }
+        if (city) {
+          renderSpots(city)
+        }
       } else {
         Swal.fire({
           icon: 'error',
@@ -328,14 +338,15 @@ function getPendingArrangements(city, tripId) {
 function renderSpots(cityName, placeId) {
   let spots = [];
   if (cityName) {
-    let cities = document.getElementsByClassName(cityName);
-    for(let i = 0; i < cities.length; i++) {
+    let spotsInCity = document.getElementsByClassName(cityName);
+    for(let i = 0; i < spotsInCity.length; i++) {
       spots.push(
         [
-          parseFloat(cities[i].dataset.latitude), 
-          parseFloat(cities[i].dataset.longtitude), 
-          cities[i].innerHTML,
-          `${cities[i].dataset.openHour} ~ ${cities[i].dataset.closedHour}`
+          parseFloat(spotsInCity[i].dataset.latitude), 
+          parseFloat(spotsInCity[i].dataset.longtitude), 
+          spotsInCity[i].innerHTML,
+          `${spotsInCity[i].dataset.openHour} ~ ${spotsInCity[i].dataset.closedHour}`,
+          spotsInCity[i].dataset.place_id
         ]);
     }
   }
@@ -346,17 +357,14 @@ function renderSpots(cityName, placeId) {
         parseFloat(spot.dataset.latitude), 
         parseFloat(spot.dataset.longtitude), 
         spot.innerHTML,
-        `${spot.dataset.openHour} ~ ${spot.dataset.closedHour}`
+        `${spot.dataset.openHour} ~ ${spot.dataset.closedHour}`,
+        spot.dataset.placeId
       ])
   }
   initMap(spots);
 }
 
 function renderDayPath(path) {
-  console.log('path');
-  console.log(path);
-  // let spots = [];
-  // spots.push([spot.latitude, spot.longtitude, spot.title])
   initMap(null, path);
 }
 

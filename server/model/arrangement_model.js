@@ -1,6 +1,6 @@
 const { pool } = require('./mysql');
 
-const getPendingArrangements = async (tripId, city) => {
+const getPendingArrangements = async (tripId, city, placeId) => {
     try {
         let sql = {
             queryStr: 'SELECT DISTINCT name, city, google_id, spot_id, latitude, longtitude, open_hour, closed_hour FROM spots JOIN arrangements ON spots.id = arrangements.spot_id WHERE is_arranged = 0 AND trip_id = ? ',
@@ -9,6 +9,9 @@ const getPendingArrangements = async (tripId, city) => {
         if (city) {
             sql.queryStr = sql.queryStr.concat('AND city = ?');
             sql.conditions.push(city);
+        } else if (placeId) {
+            sql.queryStr = sql.queryStr.concat('AND google_id = ?')
+            sql.conditions.push(placeId);
         } else {
             sql.queryStr = sql.queryStr.concat('ORDER BY city');
         }

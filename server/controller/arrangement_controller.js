@@ -2,13 +2,15 @@ const Arrangement = require('../model/arrangement_model');
 
 const getArrangements = async (req, res, next) => {
     try {
-        let { status, city, id } = req.query;
+        let { status, city, id, placeId } = req.query; //id = tripId
         if (status == 'pending') {
             let pendingArrangements;
             if (city) {
                 pendingArrangements = await Arrangement.getPendingArrangements(id, city);
+            } else if (placeId) {
+                pendingArrangements = await Arrangement.getPendingArrangements(id, null, placeId);
             } else {
-                pendingArrangements = await Arrangement.getPendingArrangements(id, null);
+                pendingArrangements = await Arrangement.getPendingArrangements(id);
             }
 
             for (let arrangement of pendingArrangements) {
