@@ -231,17 +231,52 @@ window.addEventListener('storage', function() {
       let allEvents = calendar.getEvents();
       let startDate = new Date(new Date(start).setHours(0,0,0,0));
       let previousCityVector = [];
-      if (allEvents.length > 0) {
+      let arrangedEvents = {}; //dayId: 開始, 結束, google id
+      if (allEvents.length > 0) { //if 安排中的城市和最後一個不同，則從隔日開始, else 從起始日
+        allEvents.sort(function (a,b) {
+          return new Date(a.start) - new Date(b.start);
+        });
+        //確認新的 startDate
+        let lastEvent = allEvents[allEvents.length - 1];
+        let end = new Date(lastEvent.end)
+        end.setHours(0,0,0,0)
+        startDate = new Date (end.setDate(end.getDate() +1))
+        let lastSpotCity = lastEvent.extendedProps.city
+        if (lastSpotCity == cityName) {
+          startDate = new Date(new Date(start).setHours(0,0,0,0));
+        }
+
+        // arranged events send to backend
         allEvents.map(e => {
-          let end = new Date(e.end)
-          end.setHours(end.getHours() - 8);
-          if (end > startDate) {
-            end.setHours(0,0,0,0)
-            startDate = new Date (end.setDate(end.getDate() +1))
-            previousCityVector = [e.extendedProps.latitude, e.extendedProps.longtitude]
+          if (arrangedEvents[e.start.getDay()]) {
+            arrangedEvents[e.start.getDay()].push(
+              {
+                start: (e.start.getHours() * 60) + e.start.getMinutes(),
+                end: (e.end.getHours() * 60) + e.end.getMinutes(),
+                google_id: e.id,
+              }
+            )
+          } else {
+            arrangedEvents[e.start.getDay()] = [
+              {
+                start: (e.start.getHours() * 60) + e.start.getMinutes(),
+                end: (e.end.getHours() * 60) + e.end.getMinutes(),
+                google_id: e.id,
+              }
+            ]
           }
         })
+        // arrangedEvents = {
+        //     1: [
+        //       {},{}
+        //     ],
+        //     2: [
+        //       {},{},{}
+        //     ]
+        //   }
+        //
       }
+      console.log(arrangedEvents);
       startDate = startDate.toString()
       console.log('final start Date:');
       console.log(startDate);
@@ -253,7 +288,7 @@ window.addEventListener('storage', function() {
           城市：${cityName}
         </div>
         <div style="color:#007bff; margin-top:10px"> 
-          出門時間：${dayStart / 60}點 
+          預計出門時間：${dayStart / 60}點 
         </div>
         `,
         showCancelButton: true,
@@ -261,7 +296,7 @@ window.addEventListener('storage', function() {
         confirmButtonText: `OK`
       }).then((result) => {
         if (result.isConfirmed) {
-            calculateTrip(cityName, startDate, dayStart, previousCityVector);
+            calculateTrip(cityName, startDate, dayStart, previousCityVector, arrangedEvents);
             
         }
       })
@@ -384,7 +419,8 @@ function checkSameDay (date1, date2) {
               latitude: parseFloat(a.latitude),
               longtitude: parseFloat(a.longtitude),
               openHour: a.open_hour,
-              closedHour: a.closed_hour
+              closedHour: a.closed_hour,
+              city: a.city
             }
           });
         })

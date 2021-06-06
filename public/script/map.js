@@ -198,22 +198,6 @@ window.addEventListener('storage', ()=>{
   console.log("1");
 })
 
-//reload pending arrangements upon dragging in & out
-// document.getElementById('calendar-container').addEventListener('mouseup', ()=>{
-//   setTimeout(()=>{
-//     getPendingArrangements(null, JSON.parse(localStorage.getItem('trip_settings')).id);
-//   }, 200)
-//   console.log("2");
-
-// })
-// document.getElementById('calendar-container').addEventListener('mouseout', ()=>{
-//   setTimeout(()=>{
-//     getPendingArrangements(null, JSON.parse(localStorage.getItem('trip_settings')).id);
-//   }, 200)
-//   console.log("3");
-
-// })
-
 function popUpAddSpot(spotName, placeId) {
   Swal.fire({
     position: 'center-end',

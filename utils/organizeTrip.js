@@ -1,3 +1,4 @@
+const { response } = require('express');
 const { getSpotInfo, getTravelingTime } = require('../server/model/automation_model');
 const { getGeoDistance, calculateCloserPoint } = require('./geopackage');
 
@@ -44,10 +45,32 @@ let getNextSpotId = (currentSpotId, sequence, clusters, spotsInfo) => {
     }
 }
 
-let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spotsInfo) => {
-    let transitTime = await getTravelingTime(prevSpotId, nextSpotId, spotsInfo);
+let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spotsInfo, arrangedEvents) => {
+    let transitTime = await getTravelingTime(prevSpotId, nextSpotId, spotsInfo); //prevSpotId, nextSpotId == Google ids
     let spotInfo = await getSpotInfo(nextSpotId); 
     //linger_time, open_days, open_hour, closed_hour
+
+    let eventEndsAt = startTime + transitTime + spotInfo.lingerTime;
+    //if startTime || eventEndsAt 介於 一行程的排程段, 新的start time 就是 卡住行程的結束
+    let arrangedEventsOfDay = arrangedEvents[dayId];
+    console.log('arrangedEventsOfDay: '); 
+    console.log(arrangedEventsOfDay);
+    if (arrangedEventsOfDay) {
+        for (let event of arrangedEventsOfDay) {
+            if (
+                (startTime <= event.end && startTime >= event.start) || 
+                (eventEndsAt <= event.end && eventEndsAt >= event.start)
+            ) {
+                startTime = event.end;
+                console.log('new startTime: ');
+                console.log(startTime);
+                transitTime = await getTravelingTime(event.google_id, nextSpotId, spotsInfo);
+                eventEndsAt = startTime + transitTime + spotInfo.lingerTime;
+                console.log('new eventEndsAt: ');
+                console.log(eventEndsAt);
+            }
+        }
+    }
 
     //檢查是否開門
     let open = false;
@@ -57,14 +80,12 @@ let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spots
             open = true;
         }
     }
-    console.log('今天是否營業:');
-    console.log(open);
-
-    let checkDayFull = startTime + transitTime + spotInfo.lingerTime;
-    if (checkDayFull > 1200 || startTime > spotInfo.closedHour || !open) {
+    
+    if (eventEndsAt > 1200 || startTime > spotInfo.closedHour || !open) {
         console.log("-------------------------------------------");
         console.log("【行程將會超時(8pm)、太晚去、今天沒開】");
-        console.log("當日已使用時間(mins)："); console.log(checkDayFull);
+        console.log('今天是否營業:'); console.log(open);
+        console.log("當日已使用時間(mins)："); console.log(eventEndsAt);
         console.log("此行程開始時間："); console.log(startTime);
         console.log("景點關門時間："); console.log(spotInfo.closedHour);
         return -1;
@@ -75,9 +96,9 @@ let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spots
         console.log("景點開門時間："); console.log(spotInfo.openHour);
         return -2;
 
-    } else if ( checkDayFull > 1110 && checkDayFull <= 1200) { //行程安排後，若會介於 18:30 ~ 20:00 間，call it a day
+    } else if ( eventEndsAt > 1110 && eventEndsAt <= 1200) { //行程安排後，若會介於 18:30 ~ 20:00 間，call it a day
         console.log('【滿日】');
-        console.log("當日已使用時間(mins)："); console.log(checkDayFull);
+        console.log("當日已使用時間(mins)："); console.log(eventEndsAt);
         return {
             keepArranging : false,
             arrangement : [
@@ -102,8 +123,6 @@ let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spots
             startTime = startTime + 60;
             console.log("午餐後的開始時間"); console.log(startTime);
         }
-        console.log(startTime);
-        console.log(transitTime);
         return {
             keepArranging: true,
             arrangement: [

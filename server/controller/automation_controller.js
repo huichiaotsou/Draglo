@@ -5,8 +5,8 @@ const { calculateCloserPoint } = require('../../utils/geopackage')
 
 const calculateTrips = async (req, res, next) => {
     console.log(req.body);
-    let { tripId, dayId, googleIds, spotsInfo, tripDuration, startDate } = req.body;
-    startTime = parseInt(req.body.startTime)
+    let { tripId, dayId, googleIds, spotsInfo, tripDuration, startDate, arrangedEvents } = req.body;
+    let startTime = parseInt(req.body.startTime)
     let startDateDatetime = new Date(startDate.split('GMT')[0])
     let startDateUnix = startDateDatetime.getTime();
     
@@ -56,7 +56,7 @@ const calculateTrips = async (req, res, next) => {
             console.log('4: 起始點今天是否營業:');
             console.log(open);
             if (open) {
-                if (spotInfo.openHour > 630) { //起始點是否 10:30 前開門
+                if (spotInfo.openHour > startTime + 90) { //起始點是否出門1.5小時內已營業
                     console.log('4-1: 此景點今日有營業但太早來了');
                     console.log( "4-2: 將  "+ startSpotId +"  放進tooEarlyArrangement稍待安排");
                     tooEarlyArrangement.push(startSpotId)
@@ -76,6 +76,24 @@ const calculateTrips = async (req, res, next) => {
                     continue;
                 } else {
                     startTime = (spotInfo.openHour >= startTime) ? spotInfo.openHour : startTime;
+                    
+                    //if startTime || eventEndsAt 介於 一行程的排程段, 新的start time 就是 卡住行程的結束
+                    let arrangedEventsOfDay = arrangedEvents[dayId];
+                    if (arrangedEventsOfDay) {
+                        console.log('arrangedEventsOfDay: '); 
+                        console.log(arrangedEventsOfDay);
+                        for (let event of arrangedEventsOfDay) {
+                            if ((startTime <= event.end && startTime >= event.start) ||
+                                (startTime + 90 <= event.end && startTime + 90 >= event.start)
+                            ) {
+                                let transitTime = await Automation.getTravelingTime(event.google_id, startSpotId, spotsInfo);
+                                startTime = event.end + transitTime;
+                                console.log('new startTime: ');
+                                console.log(startTime);
+                            }
+                        }
+                    }
+
                     wholeTrip[startDateUnix] = [ //initialize the day
                         {
                             activity: spotsInfo[startSpotId].name,
@@ -143,7 +161,7 @@ const calculateTrips = async (req, res, next) => {
                 break;
             }
             console.log("12: calculated next spot: " + spotsInfo[nextSpotId].name);
-            let nextActivity = await arrangeNextActivity(dayId, startTime, startSpotId, nextSpotId, spotsInfo);
+            let nextActivity = await arrangeNextActivity(dayId, startTime, startSpotId, nextSpotId, spotsInfo, arrangedEvents);
             console.log(spotsInfo[startSpotId].name + ' -> ' + spotsInfo[nextSpotId].name + ' : transit and Spot to be added:');
             console.log(nextActivity);
 

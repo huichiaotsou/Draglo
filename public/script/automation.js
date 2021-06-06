@@ -3,7 +3,7 @@ function switchAutomationCity(cityName) {
     calculateTripBtn.dataset.city = cityName;
 }
 
-function calculateTrip (cityName, startDate, dayStart, previousCityVector) {
+function calculateTrip (cityName, startDate, dayStart, previousCityVector, arrangedEvents) {
     let data = {}
     data.googleIds = []
     data.spotsInfo = {}
@@ -24,6 +24,7 @@ function calculateTrip (cityName, startDate, dayStart, previousCityVector) {
     data.startDate = startDate
     data.dayId = new Date(startDate).getDay();
     data.startTime = dayStart || 540;
+    data.arrangedEvents = arrangedEvents
 
     let checkDistance = getGeoDistance( [parseFloat(spots[0].dataset.latitude),parseFloat(spots[0].dataset.longtitude)] , previousCityVector);
     let html = '系統正根據景點開放時間、景點間之交通，為您計算行程';
