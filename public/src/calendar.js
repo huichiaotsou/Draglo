@@ -248,22 +248,23 @@ window.addEventListener('storage', function() {
 
         // arranged events send to backend
         allEvents.map(e => {
-          let eStart = new Date(e.start.toUTCString());
-          let eEnd = new Date(e.end.toUTCString());
-          if (arrangedEvents[eStart.getDay()]) {
-            arrangedEvents[eStart.getDay()].push(
+          let eStart = new Date(e.start)
+          let eEnd = new Date(e.end);
+
+          if (arrangedEvents[eStart.getUTCDay()]) {
+            arrangedEvents[eStart.getUTCDay()].push(
               {
-                start: (eStart.getHours() * 60) + eStart.getMinutes(),
-                end: (eEnd.getHours() * 60) + eEnd.getMinutes(),
+                start: (eStart.getUTCHours() * 60) + eStart.getUTCMinutes(),
+                end: (eEnd.getUTCHours() * 60) + eEnd.getUTCMinutes(),
                 google_id: e.id,
               }
             )
 
           } else {
-            arrangedEvents[e.start.getDay()] = [
+            arrangedEvents[e.start.getUTCDay()] = [
               {
-                start: (e.start.getHours() * 60) + e.start.getMinutes(),
-                end: (e.end.getHours() * 60) + e.end.getMinutes(),
+                start: (e.start.getUTCHours() * 60) + e.start.getUTCMinutes(),
+                end: (e.end.getUTCHours() * 60) + e.end.getUTCMinutes(),
                 google_id: e.id,
               }
             ]
