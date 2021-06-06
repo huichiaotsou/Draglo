@@ -77,7 +77,7 @@ const calculateTrips = async (req, res, next) => {
                 } else {
                     startTime = (spotInfo.openHour >= startTime) ? spotInfo.openHour : startTime;
                     
-                    //if startTime || eventEndsAt 介於 一行程的排程段, 新的start time 就是 卡住行程的結束
+                    //if startTime 介於 一行程的排程段, 新的start time 就是 卡住行程的結束
                     let arrangedEventsOfDay = arrangedEvents[dayId];
                     if (arrangedEventsOfDay) {
                         console.log('arrangedEventsOfDay: '); 

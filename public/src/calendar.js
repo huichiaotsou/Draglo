@@ -248,15 +248,17 @@ window.addEventListener('storage', function() {
 
         // arranged events send to backend
         allEvents.map(e => {
-          if (arrangedEvents[e.start.getDay()]) {
-            arrangedEvents[e.start.getDay()].push(
+          let eStart = new Date(e.start.toUTCString());
+          let eEnd = new Date(e.end.toUTCString());
+          if (arrangedEvents[eStart.getDay()]) {
+            arrangedEvents[eStart.getDay()].push(
               {
-                start: (e.start.getHours() * 60) + e.start.getMinutes(),
-                end: (e.end.getHours() * 60) + e.end.getMinutes(),
+                start: (eStart.getHours() * 60) + eStart.getMinutes(),
+                end: (eEnd.getHours() * 60) + eEnd.getMinutes(),
                 google_id: e.id,
               }
             )
-            
+
           } else {
             arrangedEvents[e.start.getDay()] = [
               {
