@@ -256,6 +256,7 @@ window.addEventListener('storage', function() {
                 google_id: e.id,
               }
             )
+            
           } else {
             arrangedEvents[e.start.getDay()] = [
               {
