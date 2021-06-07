@@ -95,10 +95,10 @@ const removeArrangement = async (req, res, next) => {
 }
 
 const updateArrangement = async (req, res, next) => {
-    let { isArranged, spotId, tripId, startTime, endTime } = req.body;
+    let { isArranged, spotId, tripId, startTime, endTime, autoArranged } = req.body;
     let result;
     if (spotId) {
-        result = await Arrangement.updateArrangement(isArranged, spotId, tripId, startTime, endTime);
+        result = await Arrangement.updateArrangement(isArranged, spotId, tripId, startTime, endTime, autoArranged);
     } else {
         result = await Arrangement.clearArrangement(tripId);
     }

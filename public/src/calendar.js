@@ -69,7 +69,7 @@ window.addEventListener('storage', function() {
         eventDetails.dataset.city = event.extendedProps.city;
         eventBack.appendChild(eventDetails);
         //change is_arranged back to 0
-        updateArrangement(0, spotId, tripId, 'null', 'null'); 
+        updateArrangement(0, spotId, tripId, 'null', 'null', 0); 
         socket.emit('refreshSpots', tripId);
         socket.emit('removeArrangement', publicId)
       }
@@ -83,7 +83,7 @@ window.addEventListener('storage', function() {
       //change is_arranged = 1 and record period
       let { spotId } = info.event.extendedProps
       let { start, end } = info.event
-      updateArrangement(1, spotId, tripId, start, end); 
+      updateArrangement(1, spotId, tripId, start, end, 0); 
       socket.emit('refreshSpots', tripId);
       let event = info.event
       let elementChild = info.draggedEl.lastElementChild
@@ -92,6 +92,7 @@ window.addEventListener('storage', function() {
         title: event.title,
         start: start,
         end: end,
+        color: '#3788d8',
         extendedProps: {
           tripId: tripId,
           spotId: event.extendedProps.spotId,
@@ -109,7 +110,7 @@ window.addEventListener('storage', function() {
       //change arrangement period
       let { spotId } = info.event.extendedProps
       let { start, end } = info.event
-      updateArrangement(1, spotId, tripId, start, end);
+      updateArrangement(1, spotId, tripId, start, end, 0);
       socket.emit('refreshSpots', tripId);
       let event = info.event
       let eventInfo = {
@@ -117,6 +118,7 @@ window.addEventListener('storage', function() {
         title: event.title,
         start: start,
         end: end,
+        color: '#3788d8',
         extendedProps: {
           tripId: tripId,
           spotId: event.extendedProps.spotId,
@@ -136,13 +138,14 @@ window.addEventListener('storage', function() {
       //change arrangement period
       let { spotId } = info.event.extendedProps
       let { start, end } = info.event
-      updateArrangement(1, spotId, tripId, start, end); 
+      updateArrangement(1, spotId, tripId, start, end, 0); 
       let event = info.event
       let eventInfo = {
         id: event.id,
         title: event.title,
         start: start,
         end: end,
+        color: '#3788d8',
         extendedProps: {
           tripId: tripId,
           spotId: event.extendedProps.spotId,
@@ -284,7 +287,6 @@ window.addEventListener('storage', function() {
           }
         })
       }
-      console.log(arrangedEvents);
       startDate = startDate.toString()
       console.log('final start Date:');
       console.log(startDate);
@@ -416,7 +418,7 @@ function checkSameDay (date1, date2) {
       if (xhr.readyState == 4 && xhr.status == 200) {
         let arrangements = JSON.parse(xhr.responseText);
         arrangements.map( a => {
-          calendar.addEvent({
+          let event = {
             id: a.google_id,
             title: a.name,
             start: a.start_time,
@@ -429,7 +431,12 @@ function checkSameDay (date1, date2) {
               closedHour: a.closed_hour,
               city: a.city
             }
-          });
+          }
+          console.log(a.auto_arranged);
+          if (a.auto_arranged == 1) {
+            event.color = '#145DA0'
+          }
+          calendar.addEvent(event);
         })
         calendar.render();
       }
@@ -438,13 +445,14 @@ function checkSameDay (date1, date2) {
     xhr.send();
   }
 
-  function updateArrangement (isArranged, spotId, tripId, startTime, endTime) {
+  function updateArrangement (isArranged, spotId, tripId, startTime, endTime, autoArranged) {
     let data = { 
       isArranged, 
       spotId, 
       tripId, 
       startTime, 
-      endTime
+      endTime,
+      autoArranged
     };
     let xhr = new XMLHttpRequest();
     xhr.open('PATCH', '/arrangement');
@@ -494,6 +502,7 @@ socket.on('updateArrangement', (eventInfo)=>{
       title: eventInfo.title,
       start: eventInfo.start,
       end: eventInfo.end,
+      color: '#3788d8',
       extendedProps: {
         spotId: extendedProps.spotId,
         latitude: parseFloat(extendedProps.latitude),
@@ -517,6 +526,6 @@ socket.on('updateArrangement', (eventInfo)=>{
 
   socket.on('renderCalendar', (tripId)=>{
     console.log('render calendar socket triggered');
-    getArrangements (calendar, tripId);
+    getArrangements(calendar, tripId);
   })
 

@@ -36,8 +36,8 @@ const getTravelingTime = async (prevSpotId, nextSpotId) => {
 }
 
 const arrangeAutomationResult = async (tripId, userId, dayId, startDate, wholeTrip) => {
-    let queryStr = 'INSERT INTO arrangements (trip_id, user_id, spot_id, start_time, end_time, is_arranged) VALUES ? '
-    let upsert = 'ON DUPLICATE KEY UPDATE start_time = VALUES(start_time), end_time = VALUES(end_time), is_arranged = VALUES(is_arranged), user_id = VALUES(user_id) '
+    let queryStr = 'INSERT INTO arrangements (trip_id, user_id, spot_id, start_time, end_time, is_arranged, auto_arranged) VALUES ? '
+    let upsert = 'ON DUPLICATE KEY UPDATE start_time = VALUES(start_time), end_time = VALUES(end_time), is_arranged = VALUES(is_arranged), user_id = VALUES(user_id), auto_arranged = VALUES(auto_arranged) '
     let values = []; 
     let keys = Object.keys(wholeTrip);
     keys.map( unixDay => {
@@ -48,7 +48,7 @@ const arrangeAutomationResult = async (tripId, userId, dayId, startDate, wholeTr
             let timeStart = dateForStart.setMinutes(dateForStart.getMinutes() + activity.startTime) //).setHours(dateForStart.getHours() + (timezoneOffset * 2))
             let timeEnd = dateForEnd.setMinutes(dateForEnd.getMinutes() + activity.end) //).setHours(dateForEnd.getHours() + (timezoneOffset * 2))
             if (activity.activity != 'transit') {
-                values.push([tripId, userId, activity.spotId, new Date(timeStart), new Date(timeEnd), 1])
+                values.push([tripId, userId, activity.spotId, new Date(timeStart), new Date(timeEnd), 1, 1])
             }
         })
     })

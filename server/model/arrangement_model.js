@@ -29,7 +29,7 @@ const getArrangements = async (tripId, placeId) => {
             query: '',
             conditions: [tripId]
         }
-        let select = 'SELECT DISTINCT name, city, google_id, spot_id, start_time, end_time, latitude, longtitude, open_hour, closed_hour FROM spots '
+        let select = 'SELECT DISTINCT name, city, google_id, spot_id, start_time, end_time, latitude, longtitude, open_hour, closed_hour, auto_arranged FROM spots '
         let joinTable = 'JOIN arrangements ON spots.id = arrangements.spot_id WHERE is_arranged = 1 AND trip_id = ? ';
         sql.query = select.concat(joinTable);
         if (placeId) {
@@ -55,10 +55,10 @@ const removeArrangement = async (spotId, tripId) => {
     }
 }
 
-const updateArrangement = async (isArranged, spotId, tripId, startTime, endTime) => {
+const updateArrangement = async (isArranged, spotId, tripId, startTime, endTime, autoArranged) => {
     try {
-        let queryStr = 'UPDATE arrangements SET is_arranged = ?, start_time = ?, end_time = ? WHERE spot_id = ? AND trip_id = ?';
-        let conditions = [isArranged, startTime, endTime, spotId, tripId];
+        let queryStr = 'UPDATE arrangements SET is_arranged = ?, start_time = ?, end_time = ?, auto_arranged = ? WHERE spot_id = ? AND trip_id = ? ';
+        let conditions = [isArranged, startTime, endTime, autoArranged, spotId, tripId];
         await pool.query(queryStr, conditions);
         return true;
     } catch (error) {
