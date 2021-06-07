@@ -195,6 +195,7 @@ function changeTripPeriod() {
                             text: '行程結束日不得早於開始日',
                           })
                     } else {
+                        newEndDate.setDate(newEndDate.getDate() + 1)
                         modifyTripDuration(tripId, currentTripStart, newEndDate);
                     }
                 }
