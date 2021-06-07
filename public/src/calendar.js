@@ -53,6 +53,8 @@ window.addEventListener('storage', function() {
         let publicId = event.id
         let { title } = event
         let { spotId } = event.extendedProps
+        //change is_arranged back to 0
+        updateArrangement(0, spotId, tripId, 'null', 'null', 0); 
         calendar.getEventById(publicId).remove()
         let eventContainer = document.getElementById('external-events');
         let eventBack = document.createElement('div');
@@ -68,8 +70,6 @@ window.addEventListener('storage', function() {
         eventDetails.dataset.closedHour = event.extendedProps.closedHour;
         eventDetails.dataset.city = event.extendedProps.city;
         eventBack.appendChild(eventDetails);
-        //change is_arranged back to 0
-        updateArrangement(0, spotId, tripId, 'null', 'null', 0); 
         socket.emit('refreshSpots', tripId);
         socket.emit('removeArrangement', publicId)
       }

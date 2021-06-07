@@ -306,8 +306,15 @@ function getPendingArrangements(city, tripId, placeId) {
         if (city) {
           renderSpots(city.split(' ')[0])
         }
+        let spotList = document.getElementById('external-events')
         if (isArranged) {
-          document.getElementById('external-events').innerHTML = '此景點已安排至行程中'
+          spotList.innerHTML = `
+          <div style='color: grey; padding-top: 10%;'>此景點已安排至行程中</div>`
+        }
+        if (!city && spots.length == 0) {
+          spotList.innerHTML = `
+          <div style='color: grey; padding-top: 10%;'>目前清單中沒有景點
+          <br>請在地圖搜尋後點擊加入</div>`
         }
       } else {
         Swal.fire({
