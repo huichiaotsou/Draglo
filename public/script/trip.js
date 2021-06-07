@@ -9,6 +9,62 @@ if (accessToken) {
     location.assign('/index.html');
 }
 
+window.addEventListener('load', ()=>{
+    let status = urlParams.get('status');
+    if (status == 'new') {
+        initTripPeriod()
+    }
+})
+
+function initTripPeriod() {
+    Swal.fire({
+        position: 'top',
+        title: '設定旅行區間',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: `確認`,
+        showDenyButton: true,
+        denyButtonText: `取消`,
+        denyButtonColor: '#d33',
+        html: `
+            <div style="margin-bottom: 20px;">您可以隨時在旅程設定中更改</div>
+            <label>開始日期：</label><input id="start-date" type="date" name="start-date" placeholder="YYYY-MM-DD"><br>
+            <label>結束日期：</label><input id="end-date" type="date" name="end-date" placeholder="YYYY-MM-DD">
+            `,
+      }).then((result) => {
+        if (result.isConfirmed) {
+            let startDate = document.getElementById('start-date').value
+            let endDate = document.getElementById('end-date').value
+            if (startDate < endDate) {
+                startDate = new Date(startDate + 'T00:00:00.000Z')
+                endDate = new Date(endDate + 'T00:00:00.000Z')
+                modifyTripDuration(tripId, startDate, endDate) 
+                location.assign(`/trip.html?id=${tripId}`)
+            } else {
+                Swal.fire({
+                    position: 'top',
+                    title: '日期錯誤',
+                    text: "結束日期早於開始日期",
+                    icon: 'warning',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: '重新設定',
+                    showDenyButton: true,
+                    denyButtonText: `取消`,
+                    denyButtonColor: '#d33',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                       return initTripPeriod()
+                    } else if (result.isDenied) {
+                        location.assign(`/trip.html?id=${tripId}`)
+                    }
+                  })
+            }
+        } else if (result.isDenied) {
+            location.assign(`/trip.html?id=${tripId}`)
+        }
+
+    })
+}
+
 function getTripSettings(accessToken, tripId) {
     let xhr = new XMLHttpRequest();
     xhr.open('GET', `/trip?id=${tripId}`);

@@ -26,7 +26,7 @@ function createTrip() {
                 confirmButtonColor: '#3085d6'
               });
               setTimeout(()=>{
-                  location.assign(`/trip.html?id=${response.tripId}`);
+                  location.assign(`/trip.html?id=${response.tripId}&status=new`);
               }, 1100)
           }
         }
