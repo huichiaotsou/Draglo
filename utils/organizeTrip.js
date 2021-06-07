@@ -96,7 +96,7 @@ let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spots
         console.log("景點開門時間："); console.log(spotInfo.openHour);
         return -2;
 
-    } else if ( eventEndsAt > 1110 && eventEndsAt <= 1200) { //行程安排後，若會介於 18:30 ~ 20:00 間，call it a day
+    } else if ( eventEndsAt > 1110) { //行程安排後，若會晚於 18:30， call it a day
         console.log('【滿日】');
         console.log("當日已使用時間(mins)："); console.log(eventEndsAt);
         return {

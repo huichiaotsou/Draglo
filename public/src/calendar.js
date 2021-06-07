@@ -251,12 +251,13 @@ window.addEventListener('storage', function() {
         console.log('end after setUTCHours 0000:');
         console.log(end);
         startDate = new Date (end.setUTCDate(end.getUTCDate() +1))
+        startDate.setHours(0,0,0,0)
         let lastSpotCity = lastEvent.extendedProps.city
         console.log(lastSpotCity);
         console.log(lastEvent.extendedProps);
         if (lastSpotCity == cityName) {
           console.log('last city and arranging city matched');
-          startDate = new Date(new Date(start).setUTCHours(0,0,0,0));
+          startDate = new Date(new Date(start).setHours(0,0,0,0));
         }
 
         // arranged events send to backend
