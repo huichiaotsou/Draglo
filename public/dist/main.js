@@ -14691,17 +14691,16 @@ window.addEventListener('storage', function() {
         socket.emit('removeArrangement', publicId)
       }
     },
-    // drop: function(info) {
-    //   console.log(info.draggedEl);
-    //   // info.draggedEl.parentNode.removeChild(info.draggedEl);
-    // },
+    drop: function(info) {
+      console.log(info.draggedEl);
+      info.draggedEl.parentNode.removeChild(info.draggedEl);
+    },
     eventReceive: function(info) {
       console.log('eventReceive triggered');
       //change is_arranged = 1 and record period
       let { spotId } = info.event.extendedProps
       let { start, end } = info.event
       updateArrangement(1, spotId, tripId, start, end, 0); 
-      socket.emit('refreshSpots', tripId);
       let event = info.event
       let elementChild = info.draggedEl.lastElementChild
       let eventInfo = {
@@ -14721,6 +14720,7 @@ window.addEventListener('storage', function() {
         }
       }
       socket.emit('updateArrangement', eventInfo)
+      socket.emit('refreshSpots', tripId);
     },
     eventDrop: function(info) {
       console.log('eventDrop triggered');
@@ -14747,8 +14747,6 @@ window.addEventListener('storage', function() {
         }
       }
       socket.emit('updateArrangement', eventInfo)
-      
-
     },
     eventResize : function(info) {
       console.log('eventResize triggered');
@@ -14856,14 +14854,15 @@ window.addEventListener('storage', function() {
       let dayStart = calculateTripBtn.dataset.dayStart;
       let allEvents = calendar.getEvents();
       let startDate = new Date(new Date(start).setHours(0,0,0,0));
-      let previousCityVector = [];
       let arrangedEvents = {}; //dayId: 開始, 結束, google id, lat lng
+      let previousCityVector = []
       if (allEvents.length > 0) { //if 安排中的城市和最後一個不同，則從隔日開始, else 從起始日
         allEvents.sort(function (a,b) {
           return new Date(a.start) - new Date(b.start);
         });
         //確認新的 startDate
         let lastEvent = allEvents[allEvents.length - 1];
+        previousCityVector = [lastEvent.extendedProps.latitude, lastEvent.extendedProps.longtitude] 
         let end = new Date(lastEvent.end)
         end.setHours(0,0,0,0)
         startDate = new Date (end.setDate(end.getDate() +1))
@@ -14923,7 +14922,7 @@ window.addEventListener('storage', function() {
         confirmButtonText: `OK`
       }).then((result) => {
         if (result.isConfirmed) {
-            calculateTrip(cityName, startDate, dayStart, previousCityVector, arrangedEvents);
+          calculateTrip(cityName, startDate, dayStart, previousCityVector, arrangedEvents);
         }
       })
 
@@ -15108,30 +15107,31 @@ socket.on('refreshPendingArrangements', (tripId)=>{
 })
 
 socket.on('updateArrangement', (eventInfo)=>{
-    let event = calendar.getEventById(eventInfo.id)
-    if (event) {
-      event.remove()
+  let event = calendar.getEventById(eventInfo.id)
+  if (event) {
+    event.remove()
+  }
+  console.log('event is removed');
+  let { extendedProps } = eventInfo
+  calendar.addEvent({
+    id: eventInfo.id,
+    title: eventInfo.title,
+    start: eventInfo.start,
+    end: eventInfo.end,
+    color: '#3788d8',
+    extendedProps: {
+      spotId: extendedProps.spotId,
+      latitude: parseFloat(extendedProps.latitude),
+      longtitude: parseFloat(extendedProps.longtitude),
+      openHour: extendedProps.openHour,
+      closedHour: extendedProps.closedHour,
+      city: extendedProps.city
     }
-    console.log('event is removed');
-    let { extendedProps } = eventInfo
-    calendar.addEvent({
-      id: eventInfo.id,
-      title: eventInfo.title,
-      start: eventInfo.start,
-      end: eventInfo.end,
-      color: '#3788d8',
-      extendedProps: {
-        spotId: extendedProps.spotId,
-        latitude: parseFloat(extendedProps.latitude),
-        longtitude: parseFloat(extendedProps.longtitude),
-        openHour: extendedProps.openHour,
-        closedHour: extendedProps.closedHour,
-        city: extendedProps.city
-      }
-    });
-    calendar.render();
-    // alert(`user ${eventInfo.user} has updated ${eventInfo.title}: stat: ${eventInfo.start}`)
-    console.log('event is re added');
+  });
+  calendar.render();
+  // alert(`user ${eventInfo.user} has updated ${eventInfo.title}: stat: ${eventInfo.start}`)
+  console.log('event is re added');
+  // getPendingArrangements(eventInfo.extendedProps.city, tripId)
   })
 
   socket.on('removeArrangement', (eventId)=>{

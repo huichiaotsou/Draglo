@@ -22,7 +22,8 @@ function createTrip() {
                 icon: 'success',
                 title: '建立新旅程',
                 showConfirmButton: false,
-                timer: 1100
+                timer: 1100,
+                confirmButtonColor: '#3085d6'
               });
               setTimeout(()=>{
                   location.assign(`/trip.html?id=${response.tripId}`);
@@ -39,7 +40,7 @@ function nativeSignOut() {
         icon: 'success',
         title: '下次再會 :)',
         showConfirmButton: false,
-        timer: 700
+        timer: 700,
       });
     localStorage.removeItem('access_token')
     // document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";

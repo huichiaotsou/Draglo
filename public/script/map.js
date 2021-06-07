@@ -241,7 +241,6 @@ function saveSpotInfo(spotName, placeId) {
   xhr.send(JSON.stringify(data));
 }
 
-
 function getPendingArrangements(city, tripId, placeId) {
   let xhr = new XMLHttpRequest();
   if (city) {

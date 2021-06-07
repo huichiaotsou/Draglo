@@ -28,14 +28,17 @@ function calculateTrip (cityName, startDate, dayStart, previousCityVector, arran
 
     let checkDistance = getGeoDistance( [parseFloat(spots[0].dataset.latitude),parseFloat(spots[0].dataset.longtitude)] , previousCityVector);
     let html = '系統正根據景點開放時間、景點間之交通，為您計算行程';
+    console.log('check distance');
+    console.log([parseFloat(spots[0].dataset.latitude),parseFloat(spots[0].dataset.longtitude)] , previousCityVector);
+    console.log(checkDistance);
     if (checkDistance > 60) {
         html = `<div>系統正根據景點開放時間、景點間之交通，為您計算行程</div>
-        <div style="font-size: 14px;">安排中的城市似乎距離上個城市有點距離，請記得預留足夠的交通時間 </div>`
+        <div style="font-size: 14px; margin-top:10px; font-weight: 700;">安排中的城市似乎距離上個城市有點距離，請記得預留足夠的交通時間 </div>`
     } 
     
     if (checkDistance > 300) {
         html = `<div>系統正根據景點開放時間、景點間之交通，為您計算行程</div>
-        <div style="font-size: 14px;"> 安排中的城市似乎距離上個城市十分遙遠，可能需要坐飛機或火車唷 </div>`
+        <div style="font-size: 14px; margin-top:10px; font-weight: 700;">安排中的城市距離上個城市十分遙遠，可能需要坐飛機或火車唷 </div>`
     }
     let timerInterval
     Swal.fire({
@@ -63,6 +66,7 @@ function calculateTrip (cityName, startDate, dayStart, previousCityVector, arran
             Swal.fire({
                 icon: 'success',
                 title: '計算完成',
+                confirmButtonColor: '#3085d6'
               })
             renderUnarrangedResult();
         }
@@ -128,7 +132,8 @@ function renderUnarrangedResult(){
           position: 'top',
           title: '<strong>尚有未安排景點</strong>',
           icon: 'info',
-          html: responseContent
+          html: responseContent,
+          confirmButtonColor: '#3085d6'
       })
     }
     localStorage.removeItem('night_events');
