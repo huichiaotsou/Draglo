@@ -13,7 +13,8 @@ const addSpot = async (req, res, next) => {
             let { result } = json;
             //find city: either in locality or in admin level 1
             let city;
-            for (let component of result.address_components) {
+            let components = result.address_components
+            for (let component of components) {
                 if( component.types[0] == 'postal_town'){
                     city = component.short_name;
                     break
@@ -24,6 +25,14 @@ const addSpot = async (req, res, next) => {
                 }
                 if (component.types[0] == 'administrative_area_level_1') {
                     city = component.short_name;
+                    break;
+                }
+            }
+
+            //handle Tokyo
+            for (let i in components) {
+                if (components[i].types[0] == 'administrative_area_level_1' && components[i]['short_name'] == 'Tokyo') {
+                    city = 'Tokyo';
                     break;
                 }
             }
