@@ -304,7 +304,7 @@ function getPendingArrangements(city, tripId, placeId) {
           })
         }
         if (city) {
-          renderSpots(city)
+          renderSpots(city.split(' ')[0])
         }
         if (isArranged) {
           document.getElementById('external-events').innerHTML = '此景點已安排至行程中'
