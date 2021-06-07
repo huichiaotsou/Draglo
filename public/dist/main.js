@@ -14636,6 +14636,7 @@ socket.on('connect', function(){
 });
 
 let calendar;
+
 window.addEventListener('storage', function() {
   const tripSettingsString = localStorage.getItem('trip_settings');
   const tripSettings = JSON.parse(tripSettingsString);
@@ -14682,6 +14683,7 @@ window.addEventListener('storage', function() {
         eventDetails.dataset.place_id = publicId;
         eventDetails.dataset.openHour = event.extendedProps.openHour;
         eventDetails.dataset.closedHour = event.extendedProps.closedHour;
+        eventDetails.dataset.city = event.extendedProps.city;
         eventBack.appendChild(eventDetails);
         //change is_arranged back to 0
         updateArrangement(0, spotId, tripId, 'null', 'null'); 
@@ -14738,10 +14740,12 @@ window.addEventListener('storage', function() {
           latitude: event.extendedProps.latitude,
           longtitude: event.extendedProps.longtitude,
           openHour: event.extendedProps.openHour,
-          closedHour: event.extendedProps.closedHour
+          closedHour: event.extendedProps.closedHour,
+          city: event.extendedProps.city
         }
       }
       socket.emit('updateArrangement', eventInfo)
+      
 
     },
     eventResize : function(info) {
@@ -14762,7 +14766,8 @@ window.addEventListener('storage', function() {
           latitude: event.extendedProps.latitude,
           longtitude: event.extendedProps.longtitude,
           openHour: event.extendedProps.openHour,
-          closedHour: event.extendedProps.closedHour
+          closedHour: event.extendedProps.closedHour,
+          city: event.extendedProps.city
         }
       }
       socket.emit('updateArrangement', eventInfo)
@@ -14849,7 +14854,7 @@ window.addEventListener('storage', function() {
       let allEvents = calendar.getEvents();
       let startDate = new Date(new Date(start).setHours(0,0,0,0));
       let previousCityVector = [];
-      let arrangedEvents = {}; //dayId: 開始, 結束, google id
+      let arrangedEvents = {}; //dayId: 開始, 結束, google id, lat lng
       if (allEvents.length > 0) { //if 安排中的城市和最後一個不同，則從隔日開始, else 從起始日
         allEvents.sort(function (a,b) {
           return new Date(a.start) - new Date(b.start);
@@ -14917,7 +14922,6 @@ window.addEventListener('storage', function() {
       }).then((result) => {
         if (result.isConfirmed) {
             calculateTrip(cityName, startDate, dayStart, previousCityVector, arrangedEvents);
-            
         }
       })
 
@@ -15132,7 +15136,6 @@ socket.on('updateArrangement', (eventInfo)=>{
     console.log('render calendar socket triggered');
     getArrangements (calendar, tripId);
   })
-
 
 
 })();

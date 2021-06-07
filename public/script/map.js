@@ -246,7 +246,7 @@ function getPendingArrangements(city, tripId, placeId) {
   let xhr = new XMLHttpRequest();
   if (city) {
     xhr.open('GET', `/arrangement?status=pending&id=${tripId}&city=${city}`);
-  } if (placeId) {
+  } else if (placeId) {
     xhr.open('GET', `/arrangement?status=pending&id=${tripId}&placeId=${placeId}`);
   } else {
     xhr.open('GET', `/arrangement?status=pending&id=${tripId}`);
@@ -255,7 +255,7 @@ function getPendingArrangements(city, tripId, placeId) {
     if (xhr.readyState == 4) {
       if (xhr.status == 200) {
         let response = JSON.parse(xhr.responseText);
-        let { cities, spots } = response;
+        let { cities, spots, isArranged } = response;
     
         //append spots
         let spotsContainer = document.getElementById('external-events');
@@ -306,6 +306,9 @@ function getPendingArrangements(city, tripId, placeId) {
         }
         if (city) {
           renderSpots(city)
+        }
+        if (isArranged) {
+          document.getElementById('external-events').innerHTML = '此景點已安排至行程中'
         }
       } else {
         Swal.fire({

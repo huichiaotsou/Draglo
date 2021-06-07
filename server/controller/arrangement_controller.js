@@ -44,6 +44,13 @@ const getArrangements = async (req, res, next) => {
                         response.cities.push(pendingArrangements[i].city);
                     }
                 }
+            } else if (placeId) {
+                let checkArranged = await Arrangement.getArrangements(id, placeId);
+                console.log('checkArranged');
+                console.log(checkArranged);
+                if (checkArranged.length > 0) {
+                    response.isArranged = true;
+                }
             }
             res.send(response)
         } else if (status == 'arranged') {

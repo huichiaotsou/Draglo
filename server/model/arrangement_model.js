@@ -23,11 +23,20 @@ const getPendingArrangements = async (tripId, city, placeId) => {
     }
 }
 
-const getArrangements = async (tripId) => {
+const getArrangements = async (tripId, placeId) => {
     try {
-        let queryStr = 'SELECT DISTINCT name, city, google_id, spot_id, start_time, end_time, latitude, longtitude, open_hour, closed_hour FROM spots '
+        let sql = {
+            query: '',
+            conditions: [tripId]
+        }
+        let select = 'SELECT DISTINCT name, city, google_id, spot_id, start_time, end_time, latitude, longtitude, open_hour, closed_hour FROM spots '
         let joinTable = 'JOIN arrangements ON spots.id = arrangements.spot_id WHERE is_arranged = 1 AND trip_id = ? ';
-        let result = await pool.query(queryStr.concat(joinTable), tripId);
+        sql.query = select.concat(joinTable);
+        if (placeId) {
+            sql.query = sql.query.concat('AND google_id = ?')
+            sql.conditions.push(placeId)
+        }
+        let result = await pool.query(sql.query, sql.conditions);
         return result[0];
     } catch (error) {
         console.log(error);
