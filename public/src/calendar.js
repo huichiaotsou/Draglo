@@ -247,14 +247,16 @@ window.addEventListener('storage', function() {
         let lastEvent = allEvents[allEvents.length - 1];
         previousCityVector = [lastEvent.extendedProps.latitude, lastEvent.extendedProps.longtitude] 
         let end = new Date(lastEvent.end)
-        end.setHours(0,0,0,0)
-        startDate = new Date (end.setDate(end.getDate() +1))
+        end.setUTCHours(0,0,0,0)
+        console.log('end after setUTCHours 0000:');
+        console.log(end);
+        startDate = new Date (end.setUTCDate(end.getUTCDate() +1))
         let lastSpotCity = lastEvent.extendedProps.city
         console.log(lastSpotCity);
         console.log(lastEvent.extendedProps);
         if (lastSpotCity == cityName) {
           console.log('last city and arranging city matched');
-          startDate = new Date(new Date(start).setHours(0,0,0,0));
+          startDate = new Date(new Date(start).setUTCHours(0,0,0,0));
         }
 
         // arranged events send to backend
