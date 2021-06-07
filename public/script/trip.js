@@ -37,6 +37,7 @@ function initTripPeriod() {
             if (startDate < endDate) {
                 startDate = new Date(startDate + 'T00:00:00.000Z')
                 endDate = new Date(endDate + 'T00:00:00.000Z')
+                endDate.setDate(endDate.getDate() + 1)
                 modifyTripDuration(tripId, startDate, endDate) 
                 location.assign(`/trip.html?id=${tripId}`)
             } else {
