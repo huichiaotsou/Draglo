@@ -6,6 +6,8 @@ const { calculateCloserPoint } = require('../../utils/geopackage')
 const calculateTrips = async (req, res, next) => {
     console.log(req.body);
     let { tripId, dayId, googleIds, spotsInfo, tripDuration, startDate, arrangedEvents } = req.body;
+    console.log('arrangedEvents');
+    console.log(arrangedEvents);
     let startTime = parseInt(req.body.startTime)
     let startDateDatetime = new Date(startDate.split('GMT')[0])
     let startDateUnix = startDateDatetime.getTime();
@@ -28,6 +30,26 @@ const calculateTrips = async (req, res, next) => {
         console.log(poleSpotIds);
         //確認起始點
         let startSpotId = poleSpotIds[Math.floor(Math.random() * poleSpotIds.length)];
+
+        //若usser當日已安排景點，以景點作為出發點計算kmeans結果
+        let daysWithArrangedEvents = Object.keys(arrangedEvents)
+        if (daysWithArrangedEvents) {
+            for (let day of daysWithArrangedEvents) {
+                if (day == dayId) {
+                    console.log('2-1: day and dayId match');
+                    let arrangedEvent = arrangedEvents[day][Math.floor(Math.random() * arrangedEvents[day].length)]
+                    let vectors = [];
+                    for( let id of googleIds ) {
+                        vectors.push(spotsInfo[id].vector)
+                    }
+                    let spotClosestToArrangedEventIndex = calculateCloserPoint(vectors, [arrangedEvent.latitude, arrangedEvent.longtitude], 'getClosePoint')
+                    startSpotId = googleIds[spotClosestToArrangedEventIndex]
+                    console.log('2-2: new start spot id: ');
+                    console.log(startSpotId);
+                }
+            }
+        }
+
         let clusters = Kmeans.getClusters(googleIds, spotsInfo, tripDuration, startSpotId);
         console.log("3: Day start with spot: "+ spotsInfo[startSpotId].name);
         console.log('-------------------------------------------');

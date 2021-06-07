@@ -96,7 +96,8 @@ window.addEventListener('storage', function() {
           latitude: elementChild.dataset.latitude,
           longtitude: elementChild.dataset.longtitude,
           openHour: elementChild.dataset.openHour,
-          closedHour: elementChild.dataset.closedHour
+          closedHour: elementChild.dataset.closedHour,
+          city: elementChild.dataset.city
         }
       }
       socket.emit('updateArrangement', eventInfo)
@@ -242,7 +243,10 @@ window.addEventListener('storage', function() {
         end.setHours(0,0,0,0)
         startDate = new Date (end.setDate(end.getDate() +1))
         let lastSpotCity = lastEvent.extendedProps.city
+        console.log(lastSpotCity);
+        console.log(lastEvent.extendedProps);
         if (lastSpotCity == cityName) {
+          console.log('last city and arranging city matched');
           startDate = new Date(new Date(start).setHours(0,0,0,0));
         }
 
@@ -257,6 +261,8 @@ window.addEventListener('storage', function() {
                 start: (eStart.getUTCHours() * 60) + eStart.getUTCMinutes(),
                 end: (eEnd.getUTCHours() * 60) + eEnd.getUTCMinutes(),
                 google_id: e.id,
+                latitude: e.extendedProps.latitude,
+                longtitude: e.extendedProps.longtitude
               }
             )
 
@@ -266,19 +272,12 @@ window.addEventListener('storage', function() {
                 start: (e.start.getUTCHours() * 60) + e.start.getUTCMinutes(),
                 end: (e.end.getUTCHours() * 60) + e.end.getUTCMinutes(),
                 google_id: e.id,
+                latitude: e.extendedProps.latitude,
+                longtitude: e.extendedProps.longtitude
               }
             ]
           }
         })
-        // arrangedEvents = {
-        //     1: [
-        //       {},{}
-        //     ],
-        //     2: [
-        //       {},{},{}
-        //     ]
-        //   }
-        //
       }
       console.log(arrangedEvents);
       startDate = startDate.toString()
@@ -496,7 +495,8 @@ socket.on('updateArrangement', (eventInfo)=>{
         latitude: parseFloat(extendedProps.latitude),
         longtitude: parseFloat(extendedProps.longtitude),
         openHour: extendedProps.openHour,
-        closedHour: extendedProps.closedHour
+        closedHour: extendedProps.closedHour,
+        city: extendedProps.city
       }
     });
     calendar.render();

@@ -278,6 +278,7 @@ function getPendingArrangements(city, tripId, placeId) {
             spotDetails.dataset.longtitude = s.longtitude;
             spotDetails.dataset.openHour = s.open_hour;
             spotDetails.dataset.closedHour = s.closed_hour;
+            spotDetails.dataset.city = city[0];
             spot.appendChild(spotDetails); 
           })
         }
