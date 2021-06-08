@@ -14692,7 +14692,6 @@ window.addEventListener('storage', function() {
       }
     },
     drop: function(info) {
-      console.log(info.draggedEl);
       info.draggedEl.parentNode.removeChild(info.draggedEl);
     },
     eventReceive: function(info) {
@@ -15111,6 +15110,7 @@ socket.on('refreshPendingArrangements', (tripId)=>{
 
 socket.on('updateArrangement', (eventInfo)=>{
   let event = calendar.getEventById(eventInfo.id)
+  console.log(event);
   if (event) {
     event.remove()
   }
