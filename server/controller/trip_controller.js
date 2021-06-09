@@ -34,6 +34,9 @@ const modifyTripSettings = async (req, res, next) => {
     let { tripId, tripStart, tripEnd, modify, tripName, archived } = req.body;
     tripStart = new Date(tripStart);
     tripEnd = new Date(tripEnd);
+    if ((tripEnd - tripStart)/(1000*60*60*24) > 20) {
+        res.sendStatus(500)
+    }
     if(modify == 'duration') {
         let result = await Trip.updateDuration(tripId, tripStart, tripEnd);
         if (result.error) {

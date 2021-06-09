@@ -12,13 +12,15 @@ if (accessToken) {
 window.addEventListener('load', ()=>{
     let status = urlParams.get('status');
     if (status == 'new') {
-        initTripPeriod()
+        window.addEventListener('storage', ()=> {
+            setTripPeriod('top')
+        })
     }
 })
 
-function initTripPeriod() {
+function setTripPeriod(position) {
     Swal.fire({
-        position: 'top',
+        position: position,
         title: '設定旅行區間',
         confirmButtonColor: '#3085d6',
         confirmButtonText: `確認`,
@@ -35,17 +37,11 @@ function initTripPeriod() {
         if (result.isConfirmed) {
             let startDate = document.getElementById('start-date').value
             let endDate = document.getElementById('end-date').value
-            if (startDate < endDate) {
-                startDate = new Date(startDate + 'T00:00:00.000Z')
-                endDate = new Date(endDate + 'T00:00:00.000Z')
-                endDate.setDate(endDate.getDate() + 1)
-                modifyTripDuration(tripId, startDate, endDate) 
-                location.assign(`/trip.html?id=${tripId}`)
-            } else {
+            if ((new Date(endDate) - new Date(startDate))/(1000*60*60*24) > 20) {
                 Swal.fire({
-                    position: 'top',
-                    title: '日期錯誤',
-                    text: "結束日期早於開始日期",
+                    position: position,
+                    title: '行程過長',
+                    text: '行程區間最多僅接受20天',
                     icon: 'warning',
                     confirmButtonColor: '#3085d6',
                     confirmButtonText: '重新設定',
@@ -55,19 +51,44 @@ function initTripPeriod() {
                     allowOutsideClick: false,
                   }).then((result) => {
                     if (result.isConfirmed) {
-                       return initTripPeriod()
+                       return setTripPeriod('top')
                     } else if (result.isDenied) {
                         location.assign(`/trip.html?id=${tripId}`)
                     }
                   })
+                } else if (startDate > endDate){
+                    Swal.fire({
+                        position: position,
+                        title: '日期錯誤',
+                        text: "結束日期早於開始日期",
+                        icon: 'warning',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: '重新設定',
+                        showDenyButton: true,
+                        denyButtonText: `取消`,
+                        denyButtonColor: '#d33',
+                        allowOutsideClick: false,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            return setTripPeriod('top')
+                        } else if (result.isDenied) {
+                            location.assign(`/trip.html?id=${tripId}`)
+                        }
+                    })
+                } else {
+                    startDate = new Date(startDate + 'T00:00:00.000Z')
+                    endDate = new Date(endDate + 'T00:00:00.000Z')
+                    endDate.setDate(endDate.getDate() + 1)
+                    modifyTripDuration(tripId, startDate, endDate) 
+                    location.assign(`/trip.html?id=${tripId}`)
+                }
+            } else if (result.isDenied) {
+                location.assign(`/trip.html?id=${tripId}`)
             }
-        } else if (result.isDenied) {
-            location.assign(`/trip.html?id=${tripId}`)
-        }
-    })
-    let settings = JSON.parse(localStorage.getItem('trip_settings'));
-    console.log(settings);
-    let initStartDate = document.getElementById('start-date');
+        })
+        let settings = JSON.parse(localStorage.getItem('trip_settings'));
+        console.log(settings);
+        let initStartDate = document.getElementById('start-date');
     initStartDate.value = settings['trip_start'].split('T')[0]
     let initEndDate = document.getElementById('end-date');
     initEndDate.value = settings['trip_end'].split('T')[0]
@@ -145,71 +166,6 @@ function changeDayStart() {
       rangeBar.addEventListener('change', ()=>{
         chosenHour.innerHTML = rangeBar.value;
       })
-}
-
-
-function changeTripPeriod() {
-    let tripSettingsString = localStorage.getItem('trip_settings');
-    let tripSettings = JSON.parse(tripSettingsString);
-    Swal.fire({
-        position: 'top-end',
-        title: '設定旅行區間',
-        showDenyButton: true,
-        confirmButtonColor: '#3085d6',
-        confirmButtonText: `開始日期`,
-        denyButtonText: `結束日期`,
-      }).then((result) => {
-        if (result.isConfirmed) {
-            Swal.fire({
-                position: 'top-end',
-                title: '設定開始日期',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: `OK`,
-                html: `<input id="start-date" type="date" name="start-date" placeholder="YYYY-MM-DD">
-                <h5 style="padding-top:20px;">（目前： ${tripSettings.trip_start.split('T')[0]}）</h5>`,
-              }).then((result) => {
-                if (result.isConfirmed) {
-                    let newStartDate = new Date(document.getElementById('start-date').value + 'T00:00:00.000Z');
-                    let currentTripEnd = new Date(tripSettings.trip_end) //format: 2021-09-17T16:00:00.000Z
-                    if (newStartDate > currentTripEnd) {
-                        let newStartDatePushBack = new Date(newStartDate.getTime()); //clone Date object
-                        modifyTripDuration(tripId, newStartDate, new Date(newStartDatePushBack.setDate(newStartDatePushBack.getDate() + 7)));
-                    } else {
-                        modifyTripDuration(tripId, newStartDate, currentTripEnd);
-                    }
-                }
-              })
-              document.getElementById('start-date').value = tripSettings.trip_start.split('T')[0];
-        } else if (result.isDenied) {
-            Swal.fire({
-                position: 'top-end',
-                title: '設定結束日期',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: `OK`,
-                html: `<input id="end-date" type="date" placeholder="YYYY-MM-DD">
-                <h5 style="padding-top:20px;">（目前： ${tripSettings.trip_end.split('T')[0]}）</h5>`,
-              }).then((result) => {
-                if (result.isConfirmed) {
-                    let newEndDate = new Date(document.getElementById('end-date').value + 'T00:00:00.000Z');
-                    let currentTripStart = new Date(tripSettings.trip_start)
-                    if (newEndDate < currentTripStart) {
-                        Swal.fire({
-                            position: 'top-end',
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: '行程結束日不得早於開始日',
-                          })
-                    } else {
-                        newEndDate.setDate(newEndDate.getDate() + 1)
-                        modifyTripDuration(tripId, currentTripStart, newEndDate);
-                    }
-                }
-            })
-            document.getElementById('end-date').value = tripSettings.trip_end.split('T')[0];
-        }
-      })      
 }
 
 function modifyTripDuration(tripId, tripStart, tripEnd) {
