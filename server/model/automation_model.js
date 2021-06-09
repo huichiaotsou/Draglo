@@ -17,6 +17,7 @@ const getSpotInfo = async (spotId) => {
         closedHour: closed_hour
     }
 }
+
 const getTravelingTime = async (prevSpotId, nextSpotId) => {
     let sql = {
         queryStr: 'SELECT transit_time FROM itineraries WHERE start_google_id = ? AND end_google_id = ?',

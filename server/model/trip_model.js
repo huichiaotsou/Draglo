@@ -18,7 +18,21 @@ const getDashboard = async (userId, behavior, keyword) => {
             sql.query = sql.query.concat('WHERE is_archived = ? AND user_id = ?');
         }
         let result = await pool.query(sql.query, sql.conditions);
-        return {data: result[0]};
+        let trips = result[0]
+        trips = trips.map(trip => {
+            if (trip.name.length > 20) {
+                return {
+                    trip_id: trip.trip_id,
+                    name: trip.name.slice(0,20) + ' . . .',
+                    image: trip.image, 
+                    trip_start: trip.trip_start, 
+                    trip_end: trip.trip_end
+                }
+            } else {
+                return trip
+            }
+        })
+        return {data: trips};
     } catch (error) {
         console.log(error);
     }
@@ -39,6 +53,17 @@ const getTripSettings = async (userId, tripId) => {
         let tripSettings = await pool.query('SELECT * FROM trips WHERE id = ?', tripId);
         let response = tripSettings[0][0];
         response.otherTrips = tripsOfUser[0];
+        //slice too long name for rendering to Front End
+        response.otherTrips = response.otherTrips.map(trip => {
+            if (trip.name.length > 20) {
+                return {
+                    id: trip.id,
+                    name: trip.name.slice(0,20) + ' . . .'
+                }
+            } else {
+                return trip
+            }
+        })
         return response;
     } catch (error) {
         console.log(error);
