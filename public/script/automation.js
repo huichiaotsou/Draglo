@@ -83,6 +83,8 @@ function renderUnarrangedResult(){
     if (nightEvents.length > 0) {
         responseContent = responseContent + '<strong> 夜晚行程 </strong><div class="dropdown-divider"></div>'
         nightEvents.map(event => {
+            console.log('each night event');
+            console.log(event);
             let openDays = []
             event.openDays.split(',').map( day => {
               if(day == 0) openDays.push(' 週日 ');
@@ -108,23 +110,25 @@ function renderUnarrangedResult(){
     if (remainingSpots.length > 0) {
       responseContent = responseContent + `<br><strong> 其他未安排行程 </strong><div class="dropdown-divider"></div>`
       remainingSpots.map(event => {
-          let openDays = []
-          event.openDays.split(',').map( day => {
-              if(day == 0) openDays.push(' 週日 ');
-              if(day == 1) openDays.push(' 週一 ');
-              if(day == 2) openDays.push(' 週二 ');
-              if(day == 3) openDays.push(' 週三 ');
-              if(day == 4) openDays.push(' 週四 ');
-              if(day == 5) openDays.push(' 週五 ');
-              if(day == 6) openDays.push(' 週六 ');
-          })
-          responseContent += `
-            <div> 行程名稱：${event.activity} </div>
-            <div> 營業時間：${Math.floor(event.openHour/60)}點 ~ ${Math.floor(event.closedHour/60)}點 </div>
-            <div> 營業日：</div>
-            <div> ${openDays.toString()} </div>
-            <div class="dropdown-divider"></div>
-            `
+        console.log('each remaining spot');
+        console.log(event);
+        let openDays = []
+        event.openDays.split(',').map( day => {
+            if(day == 0) openDays.push(' 週日 ');
+            if(day == 1) openDays.push(' 週一 ');
+            if(day == 2) openDays.push(' 週二 ');
+            if(day == 3) openDays.push(' 週三 ');
+            if(day == 4) openDays.push(' 週四 ');
+            if(day == 5) openDays.push(' 週五 ');
+            if(day == 6) openDays.push(' 週六 ');
+        })
+        responseContent += `
+        <div> 行程名稱：${event.activity} </div>
+        <div> 營業時間：${Math.floor(event.openHour/60)}點 ~ ${Math.floor(event.closedHour/60)}點 </div>
+        <div> 營業日：</div>
+        <div> ${openDays.toString()} </div>
+        <div class="dropdown-divider"></div>
+        `
       })
     }
     if(nightEvents.length > 0 || remainingSpots.length > 0) {

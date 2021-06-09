@@ -54,11 +54,14 @@ const addSpot = async (req, res, next) => {
                 open_hour: '0000',
                 closed_hour: '2400'
             }
+
             
             //record open days
             if (result.opening_hours) {
                 let periods = result.opening_hours.periods;
-                spotInfo.open_days = periods.map(status => status.open.day).toString();
+                let openDays = periods.map(status => status.open.day);
+                openDays = openDays.filter((day, index) => openDays.indexOf(day) == index);
+                spotInfo.open_days = openDays.toString();
                 if (periods[0].open) {
                     spotInfo.open_hour = periods[0].open.time;
                 }

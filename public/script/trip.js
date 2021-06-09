@@ -25,6 +25,7 @@ function initTripPeriod() {
         showDenyButton: true,
         denyButtonText: `取消`,
         denyButtonColor: '#d33',
+        allowOutsideClick: false,
         html: `
             <div style="margin-bottom: 20px;">您可以隨時在旅程設定中更改</div>
             <label>開始日期：</label><input id="start-date" type="date" name="start-date" placeholder="YYYY-MM-DD"><br>
@@ -51,6 +52,7 @@ function initTripPeriod() {
                     showDenyButton: true,
                     denyButtonText: `取消`,
                     denyButtonColor: '#d33',
+                    allowOutsideClick: false,
                   }).then((result) => {
                     if (result.isConfirmed) {
                        return initTripPeriod()
@@ -62,8 +64,13 @@ function initTripPeriod() {
         } else if (result.isDenied) {
             location.assign(`/trip.html?id=${tripId}`)
         }
-
     })
+    let settings = JSON.parse(localStorage.getItem('trip_settings'));
+    console.log(settings);
+    let initStartDate = document.getElementById('start-date');
+    initStartDate.value = settings['trip_start'].split('T')[0]
+    let initEndDate = document.getElementById('end-date');
+    initEndDate.value = settings['trip_end'].split('T')[0]
 }
 
 function getTripSettings(accessToken, tripId) {

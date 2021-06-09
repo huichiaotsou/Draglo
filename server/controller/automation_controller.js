@@ -21,6 +21,8 @@ const calculateTrips = async (req, res, next) => {
     let remainingSpots = otherEvents.remainingSpots = [];
     let pendingArrangement = [];
     let tooEarlyArrangement = [];
+    let tooEarlyArrangementCount = {}
+    googleIds.map(id => tooEarlyArrangementCount[id] = 0);
     while(googleIds.length > 0) { //while 一直跑到安排完所有景點
         console.log('  ');
         console.log('1: -------------- New Day Start --------------');
@@ -78,12 +80,15 @@ const calculateTrips = async (req, res, next) => {
             console.log('4: 起始點今天是否營業:');
             console.log(open);
             if (open) {
-                if (spotInfo.openHour > startTime + 90) { //起始點是否出門1.5小時內已營業
+                if (spotInfo.openHour > startTime + 120) { //起始點是否出門2小時內已營業
                     console.log('4-1: 此景點今日有營業但太早來了');
                     console.log( "4-2: 將  "+ startSpotId +"  放進tooEarlyArrangement稍待安排");
                     tooEarlyArrangement.push(startSpotId)
-                    console.log("4-3: tooEarlyArrangement:"); 
+                    tooEarlyArrangementCount[startSpotId] += 1;
+
+                    console.log("4-3: tooEarlyArrangement and count:"); 
                     console.log(tooEarlyArrangement);
+                    console.log(tooEarlyArrangementCount[startSpotId]);
                     
                     removeSpot(startSpotId, clusters[clusters.sequence[0]]);
                     removeSpot(startSpotId, googleIds);
@@ -191,7 +196,11 @@ const calculateTrips = async (req, res, next) => {
                 console.log('13: ---- 將先前太早去的景點加回到cluster ----');
                 console.log("14: current early arrangement: ");
                 console.log(tooEarlyArrangement);
-                clusters[clusters.sequence[0]] = clusters[clusters.sequence[0]].concat(tooEarlyArrangement);
+                tooEarlyArrangement.map( googleId => {
+                    if(tooEarlyArrangementCount[googleId] < 7) {
+                        clusters[clusters.sequence[0]] = clusters[clusters.sequence[0]].concat(tooEarlyArrangement);
+                    }
+                })
                 googleIds = googleIds.concat(tooEarlyArrangement);
                 tooEarlyArrangement = []; //清空too early
                 console.log(('15: full list with early arrangement added: '));
@@ -218,8 +227,11 @@ const calculateTrips = async (req, res, next) => {
                 // startSpotId = nextSpotId;
             } else if (nextActivity == -2) { // 太早去的行程放進too early稍待安排
                 console.log( "19: 將  "+ nextSpotId +"  放進tooEarlyArrangement稍待安排");
-                tooEarlyArrangement.push(nextSpotId)
-                console.log("20: tooEarlyArrangement:"); console.log(tooEarlyArrangement);
+                tooEarlyArrangement.push(nextSpotId);
+                tooEarlyArrangementCount[nextSpotId] += 1;
+                console.log("20: tooEarlyArrangement and count:"); 
+                console.log(tooEarlyArrangement);
+                console.log(tooEarlyArrangementCount[nextSpotId]);
 
                 removeSpot(nextSpotId, clusters[clusters.sequence[0]]);
                 removeSpot(nextSpotId, googleIds)
