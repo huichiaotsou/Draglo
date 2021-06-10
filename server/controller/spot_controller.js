@@ -61,8 +61,6 @@ const addSpot = async (req, res, next) => {
                     error: '請選擇特定景點以加入清單'
                 })
             } else {
-                console.log(('spotInfo to be added :'));
-                console.log(spotInfo);
                 await Spot.addSpot(spotInfo, initArrangements);
                 res.sendStatus(200);
             }

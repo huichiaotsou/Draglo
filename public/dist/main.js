@@ -15089,7 +15089,7 @@ function checkSameDay (date1, date2) {
           }
           console.log(a.auto_arranged);
           if (a.auto_arranged == 1) {
-            event.color = '#145DA0'
+            event.color = '#2d4b91'
           }
           calendar.addEvent(event);
         })

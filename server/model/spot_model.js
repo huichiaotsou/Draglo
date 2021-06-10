@@ -11,7 +11,7 @@ const addSpot = async (spotInfo, initArrangements) => {
         } else {
             initArrangements.spot_id = spotId[0][0].id
         }
-        await conn.query('INSERT INTO arrangements SET ? ', initArrangements);
+        await conn.query('INSERT INTO arrangements SET ? ON DUPLICATE KEY UPDATE is_arranged = VALUES(is_arranged)', initArrangements);
         await conn.query('COMMIT');
         return true
     } catch (error) {
