@@ -13,7 +13,7 @@ function signIn(gmail) {
   let email = document.getElementById('email').value;
   let password = document.getElementById('password-field').value;
 
-  if (email.split('@').length != 2) {
+  if (!gmail && email.split('@').length != 2) {
     Swal.fire({
       icon: 'warning',
       title: '請輸入正確的電子郵件地址',
