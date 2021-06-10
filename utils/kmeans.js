@@ -6,7 +6,12 @@ const {
 function getClusters(spotIds, vectors, k, startSpotId){
     try {
         console.log("k: " + k);
-        if(k <= 0 || k > spotIds.length) {
+        if(k <= 1 || k > spotIds.length) {
+            console.log('k <= 1, k > number of spots');
+            console.log({
+                0: spotIds,
+                sequence: [0]
+            });
             return {
                 0: spotIds,
                 sequence: [0]
