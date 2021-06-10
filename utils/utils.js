@@ -128,24 +128,28 @@ const getCityName = (components) => {
 
 //Rate limiter
 const rateLimiter = async (req, res, next) => {
-  try {
-      let ip = req.socket.remoteAddress;
-      let result = await Cache.get(ip);
-      if (result) {
-        if (result.length > 10) {
-          res.status(429).send('too many queries');
+  if (!Cache.client.ready) {
+    return next();
+  } else {
+    try {
+        let ip = req.socket.remoteAddress;
+        let result = await Cache.get(ip);
+        if (result) {
+          if (result.length > 10) {
+            res.status(429).send('too many queries');
+          } else {
+            await Cache.append(ip, '1');
+            next();
+          }
         } else {
-          await Cache.append(ip, '1');
+          await Cache.set(ip, '1');
+          await Cache.expire(ip, 3);
           next();
         }
-      } else {
-        await Cache.set(ip, '1');
-        await Cache.expire(ip, 3);
-        next();
-      }
-  } catch (error) {
-    console.log(error);
-    next(error);
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
   }
 };
 
