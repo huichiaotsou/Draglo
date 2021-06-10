@@ -110,7 +110,7 @@ function getDashboard(behavior){
                       let tripDuration = document.createElement('p');
                       let tripStart = d.trip_start.split('T')[0];
                       let tripEnd = new Date (d.trip_end)
-                      tripEnd.setDate(tripEnd.getDate() + 1)
+                      tripEnd.setDate(tripEnd.getDate() - 1)
                       tripEnd = tripEnd.toISOString().split('T')[0];
                       tripDuration.className = "trip-duration";
                       tripDuration.innerHTML = tripStart + " ~ " + tripEnd;
