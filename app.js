@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+const { socket } = require('./socket')
+const { rateLimiter } = require('./utils/utils') 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -9,12 +11,9 @@ const server = app.listen(4000, ()=>{
     console.log('app running on port 4000');
 })
 
-//socket
-const { socket } = require('./socket')
 socket.init(server);
 
-//add rate limiter
-app.use('/',
+app.use('/', rateLimiter,
     [
         require('./server/route/user_route'),
         require('./server/route/share_route'),

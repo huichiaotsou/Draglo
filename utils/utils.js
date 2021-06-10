@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const { pool } = require('../server/model/mysql');
 const nodemailer = require("nodemailer");
+const Cache = require('./redis');
 const crypto = require('crypto');
-
 
 // TOKEN FORMAT: authorization: Bearer <access_token>
 function verifyToken(req, res, next) {
@@ -126,6 +126,29 @@ const getCityName = (components) => {
   return city;
 }
 
+//Rate limiter
+const rateLimiter = async (req, res, next) => {
+  try {
+      let ip = req.socket.remoteAddress;
+      let result = await Cache.get(ip);
+      if (result) {
+        if (result.length > 10) {
+          res.status(429).send('too many queries');
+        } else {
+          await Cache.append(ip, '1');
+          next();
+        }
+      } else {
+        await Cache.set(ip, '1');
+        await Cache.expire(ip, 3);
+        next();
+      }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
 function encrypt(password) {
   const hash = crypto.createHash('sha1');
   hash.update(password);
@@ -138,5 +161,6 @@ function encrypt(password) {
     checkOwnership,
     sendEmail,
     getCityName,
+    rateLimiter,
     encrypt
   }
