@@ -9,12 +9,9 @@ if (accessToken) {
     location.assign('/index.html');
 }
 
-window.addEventListener('load', ()=>{
-    let status = urlParams.get('status');
-    if (status == 'new') {
-        window.addEventListener('storage', ()=> {
-            setTripPeriod('top')
-        })
+window.addEventListener('storage', ()=> {
+    if (urlParams.get('status') == 'new') {
+        setTripPeriod('top')
     }
 })
 
