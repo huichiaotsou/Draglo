@@ -1,6 +1,7 @@
 const Spot = require('../model/spot_model');
 const Trip = require('../model/trip_model');
 const fetch = require('node-fetch');
+const { getCityName } = require('../../utils/utils')
 require('dotenv').config();
 
 const addSpot = async (req, res, next) => {
@@ -11,47 +12,12 @@ const addSpot = async (req, res, next) => {
         .then(data => data.json())
         .then(async (json) => {
             let { result } = json;
-            
-            //find city: either in locality or in admin level 1
-            let city;
-            let components = result.address_components
-            for (let component of components) {
-                if( component.types[0] == 'postal_town'){
-                    city = component.short_name;
-                    break
-                }
-                if (component.types[0] == 'locality') {
-                    city = component.short_name;
-                    break;
-                }
-                if (component.types[0] == 'administrative_area_level_1') {
-                    city = component.short_name;
-                    break;
-                }
-            }
-
-            if (!city) {
-                for (let component of components) {
-                    if (component.types[0] == 'administrative_area_level_2') {
-                        city = component.short_name;
-                        break;
-                    }
-                }
-            }
-
-            //handle Tokyo
-            for (let i in components) {
-                if (components[i].types[0] == 'administrative_area_level_1' && components[i]['short_name'] == 'Tokyo') {
-                    city = 'Tokyo';
-                    break;
-                }
-            }
-
             if(result.photos) {
                 let photoPath = process.env.PHOTO_PATH + result.photos[0].photo_reference;
                 await Trip.updateImage(tripId, photoPath);
             }
-
+            
+            let city = getCityName(result.address_components);
             let spotInfo = {
                 google_id: placeId,
                 city: city,
@@ -64,7 +30,6 @@ const addSpot = async (req, res, next) => {
                 open_hour: '0000',
                 closed_hour: '2400'
             }
-
             
             //record open days
             if (result.opening_hours) {
