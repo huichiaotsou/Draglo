@@ -17,7 +17,8 @@ const addSpot = async (req, res, next) => {
                 await Trip.updateImage(tripId, photoPath);
             }
             
-            let city = getCityName(result.address_components);
+            let components = result.address_components
+            let city = getCityName(components);
             let spotInfo = {
                 google_id: placeId,
                 city: city,
