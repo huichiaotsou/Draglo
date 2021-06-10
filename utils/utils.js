@@ -90,32 +90,40 @@ const sendEmail = async (title, email, shareToken) => {
 }
 
 const getCityName = (components) => {
+  let city = ''
   for (let component of components) {
       if( component.types[0] == 'postal_town'){
-        return component.short_name;
+          city = component.short_name;
+          break
       }
       if (component.types[0] == 'locality') {
-        return component.short_name;
+          city = component.short_name;
+          break;
       }
       if (component.types[0] == 'administrative_area_level_1') {
-        return component.short_name;
+          city = component.short_name;
+          break;
       }
   }
   
   //handle Tokyo
   for (let i in components) {
     if (components[i].types[0] == 'administrative_area_level_1' && components[i]['short_name'] == 'Tokyo') {
-      return 'Tokyo';
+      city = 'Tokyo';
+      break;
     }
   }
   
   if (!city) {
       for (let component of components) {
           if (component.types[0] == 'administrative_area_level_2') {
-              return component.short_name;
+              city = component.short_name;
+              break;
           }
       }
   }
+
+  return city;
 }
 
 function encrypt(password) {
