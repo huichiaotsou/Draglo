@@ -13,6 +13,16 @@ function signIn(gmail) {
   let email = document.getElementById('email').value;
   let password = document.getElementById('password-field').value;
 
+  if (email.split('@').length != 2) {
+    Swal.fire({
+      icon: 'warning',
+      title: '請輸入正確的電子郵件地址',
+      showConfirmButton: false,
+      timer: 700
+    })
+    return;
+  }
+
   let user = {
     email: email,
     password: password,
@@ -25,7 +35,12 @@ function signIn(gmail) {
     }
   } else {
     if(!email || !password) {
-      alert('please enter login information')
+      Swal.fire({
+        icon: 'warning',
+        title: '請輸入密碼',
+        showConfirmButton: false,
+        timer: 700
+      })
       return;
     }
   }
@@ -76,10 +91,23 @@ function signIn(gmail) {
           }, 700)
         }
       } else if (xhr.status == 403) {
-        alert(xhr.responseText);
+        Swal.fire({
+          icon: 'warning',
+          title: '密碼錯誤',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'OK',
+        })
       } else if (xhr.status == 400) {
-        alert(xhr.responseText);
-        location.assign('/signup.html');
+        Swal.fire({
+          icon: 'warning',
+          title: '尚未註冊，將導向至註冊頁面',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'OK',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            location.assign('/signup.html');
+          } 
+        })
       }
     }
 

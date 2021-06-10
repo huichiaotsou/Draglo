@@ -10,11 +10,32 @@ function signUp() {
     let confirmPassword = document.getElementById('password-repeat').value;
 
     if (!email || !password || !confirmPassword){
-        alert('Please provide complete information')
+      Swal.fire({
+        icon: 'warning',
+        title: '請輸入完整資訊',
+        showConfirmButton: false,
+        timer: 700
+      })
         return;
     }
+
+    if (email.split('@').length != 2) {
+      Swal.fire({
+        icon: 'warning',
+        title: '請輸入正確的電子郵件地址',
+        showConfirmButton: false,
+        timer: 700
+      })
+      return;
+    }
+
     if (password != confirmPassword) {
-        alert('Passwords are not identical');
+      Swal.fire({
+        icon: 'warning',
+        title: '兩次輸入的密碼不相同',
+        showConfirmButton: false,
+        timer: 700
+      })
         return;
     }
 
@@ -60,10 +81,23 @@ function signUp() {
             }, 700)
           }
         } else if (xhr.status == 403) {
-          alert(xhr.responseText);
-          location.assign('/index.html');
+          Swal.fire({
+            icon: 'warning',
+            title: '電子信箱已註冊，將導向至登入頁面',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              location.assign('/index.html');
+            } 
+          })
         } else {
-          alert(xhr.responseText);
+          Swal.fire({
+            icon: 'warning',
+            title: xhr.responseText,
+            showConfirmButton: false,
+            timer: 700
+          })
         }
       };
     };
