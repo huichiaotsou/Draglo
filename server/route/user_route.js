@@ -1,9 +1,12 @@
-const express = require('express');
-const router = express.Router();
+const { verifyToken } = require('../../utils/utils')
+
+//controllers 
 const { signIn, signUp } = require('../controller/user_controller');
 const { createTrip } = require('../controller/trip_controller');
 const { getDashboard } = require('../controller/user_controller');
-const { verifyToken } = require('../../utils/utils')
+
+const express = require('express');
+const router = express.Router();
 
 router.route('/signin')
     .post( signIn )

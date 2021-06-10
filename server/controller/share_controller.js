@@ -16,28 +16,30 @@ const createShareToken = async (req, res, next) => {
 }
 
 const updateShareAccess = async (req, res, next) => {
-    console.log(req.body);
-    let { shareToken } = req.body;
-    let userId = req.user.id;
-    jwt.verify(shareToken, process.env.SHARE_TOKEN_SECRET, async (err, result) => {
-        if (err) {
-          res.sendStatus(403);
-        }
-        let update = await Share.updateShareAccess(userId, shareToken)
-        if (update.error) {
-            res.status(403).send(update.error)
-        } else {
-            res.status(200).send({tripId: result.tripId});
-        }
-    });
-
+    try {
+        console.log(req.body);
+        let { shareToken } = req.body;
+        let userId = req.user.id;
+        jwt.verify(shareToken, process.env.SHARE_TOKEN_SECRET, async (err, result) => {
+            if (err) {
+              res.sendStatus(403);
+            }
+            let update = await Share.updateShareAccess(userId, shareToken)
+            if (update.error) {
+                res.status(403).send(update.error)
+            } else {
+                res.status(200).send({tripId: result.tripId});
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        next (error)
+    }
 }
-
 
 module.exports = {
     createShareToken,
     updateShareAccess,
-    // deleteContributors
 }
 
 

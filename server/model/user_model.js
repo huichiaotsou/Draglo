@@ -48,6 +48,7 @@ const googleSignIn = async (email) => {
         }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '28800s' })
         return user;
     } catch (error) {
+        console.log(error);
         return {error}
     }
 }
@@ -77,6 +78,7 @@ const nativeSignIn = async (email, password) => {
             return user;
         }
     } catch (error) {
+        console.log(error);
         return {error}
     }
 }

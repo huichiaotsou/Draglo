@@ -85,27 +85,37 @@ const getArrangements = async (req, res, next) => {
 }
 
 const removeArrangement = async (req, res, next) => {
-    let { spotId, tripId } = req.body;
-    let result = await Arrangement.removeArrangement(spotId, tripId);
-    if (result.error){
-        res.sendStatus(500);
-    } else {
-        res.sendStatus(200);
+    try {
+        let { spotId, tripId } = req.body;
+        let result = await Arrangement.removeArrangement(spotId, tripId);
+        if (result.error){
+            res.sendStatus(500);
+        } else {
+            res.sendStatus(200);
+        }
+    } catch (error) {
+        console.log(error);
+        next(error)
     }
 }
 
 const updateArrangement = async (req, res, next) => {
-    let { isArranged, spotId, tripId, startTime, endTime, autoArranged } = req.body;
-    let result;
-    if (spotId) {
-        result = await Arrangement.updateArrangement(isArranged, spotId, tripId, startTime, endTime, autoArranged);
-    } else {
-        result = await Arrangement.clearArrangement(tripId);
-    }
-    if (result.error){
-        res.sendStatus(500);
-    } else {
-        res.sendStatus(200);
+    try {
+        let { isArranged, spotId, tripId, startTime, endTime, autoArranged } = req.body;
+        let result;
+        if (spotId) {
+            result = await Arrangement.updateArrangement(isArranged, spotId, tripId, startTime, endTime, autoArranged);
+        } else {
+            result = await Arrangement.clearArrangement(tripId);
+        }
+        if (result.error){
+            res.sendStatus(500);
+        } else {
+            res.sendStatus(200);
+        }
+    } catch (error) {
+        console.log(error);
+        next(error)
     }
 }
   

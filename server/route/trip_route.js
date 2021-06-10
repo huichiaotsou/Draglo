@@ -1,11 +1,12 @@
-const express = require('express');
-const router = express.Router();
 const { verifyToken, verifyAccess } = require('../../utils/utils')
 
 //controllers 
 const { getTripSettings, modifyTripSettings } = require('../controller/trip_controller');
 const { getArrangements, removeArrangement, updateArrangement } = require('../controller/arrangement_controller');
 const { addSpot } = require('../controller/spot_controller');
+
+const express = require('express');
+const router = express.Router();
 
 router.route('/trip', verifyToken, verifyAccess)
     .get( getTripSettings )
