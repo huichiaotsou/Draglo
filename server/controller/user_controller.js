@@ -2,7 +2,7 @@ const Trip = require('../model/trip_model')
 const User = require('../model/user_model')
 const jwt = require('jsonwebtoken');
 const Share = require('../model/share_model');
-
+const validator = require("email-validator");
 
 const getDashboard = async (req, res, next) => {
   let userId = req.user.id;
@@ -23,6 +23,9 @@ const getDashboard = async (req, res, next) => {
 const signUp = async (req, res, next) => {
     try {
       const { email, password, shareToken } = req.body;
+      if (!validator.validate(email)) {
+        res.sendStatus(400);
+      }
       let result = await User.signUp(email, password);      
       if (result.error) {
         res.status(result.statusCode).send(result.error);
@@ -63,6 +66,9 @@ const signUp = async (req, res, next) => {
 const signIn = async (req, res, next) => {
     try {
         const { email, password, shareToken } = req.body;
+        if (!validator.validate(email)) {
+          res.sendStatus(400);
+        }
         let result;
         if (password == 'googleSignInDraglo') {
           result = await User.googleSignIn(email);
