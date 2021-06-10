@@ -11,6 +11,7 @@ const addSpot = async (req, res, next) => {
         .then(data => data.json())
         .then(async (json) => {
             let { result } = json;
+            
             //find city: either in locality or in admin level 1
             let city;
             let components = result.address_components
