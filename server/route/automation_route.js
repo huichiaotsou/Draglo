@@ -1,13 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const { calculateTrips, calculateIntercity } = require('../controller/automation_controller');
+const { calculateTrips } = require('../controller/automation_controller');
+const { verifyToken, verifyAccess } = require('../../utils/utils')
+const { iCalendarFeed } = require('../controller/calendar_controller')
+
 router.use(express.json());
 router.use(express.urlencoded({ extended: false }));
 
-router.route('/automation')
+router.route('/automation', verifyToken, verifyAccess)
     .post( calculateTrips )
 
-router.route('/intercity')
-    .post( calculateIntercity )
+router.route('/calendar', verifyToken, verifyAccess)
+    .post ( iCalendarFeed )
 
 module.exports = router;

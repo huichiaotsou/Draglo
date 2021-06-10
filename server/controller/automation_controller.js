@@ -329,48 +329,7 @@ const calculateTrips = async (req, res, next) => {
     res.send(otherEvents);
 }
 
-
-
-
-
-let reqBody = {
-    'cities' : ['Paris', 'London', 'Aix-en-Provence'],
-    'citiesInfo' : {
-        'Paris' : {
-            name: 'Paris',
-            vector: ['latitude', 'longtitude'], 
-        },
-        'London' : {
-            name: 'Paris',
-            vector: ['latitude', 'longtitude'], 
-        },
-        'Aix-en-Provence' : {
-            name: 'Paris',
-            vector: ['latitude', 'longtitude'], 
-        }
-    }
-}
-
-const calculateIntercity = async (req, res, next) => { 
-    let { cities, citiesInfo } = req.body;
-    let poleCities = findPolePoints(cities, citiesInfo); //return 2 cities
-    let startCity = poleCities[Math.floor(Math.random() * 2)];
-    let startCityCoordinate = citiesInfo[startCity].vector
-
-    let sequence = [];
-    for (let i in cities) {
-        let citiesCoordinates = cities.map( city => citiesInfo[city].vector);
-        let cityIndex = calculateCloserPoint(citiesCoordinates, startCityCoordinate , 'getClosePoint');
-        let closestCity = cities[cityIndex];
-        sequence.push(closestCity);
-        startCityCoordinate = citiesInfo[closestCity].vector;
-        cities.splice(cityIndex , 1);
-    }
-    return sequence;
-}
-
 module.exports = {
-    calculateTrips,
-    calculateIntercity
+    calculateTrips
 }
 
