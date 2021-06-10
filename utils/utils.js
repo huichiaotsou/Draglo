@@ -92,32 +92,27 @@ const sendEmail = async (title, email, shareToken) => {
 const getCityName = (components) => {
   for (let component of components) {
       if( component.types[0] == 'postal_town'){
-          city = component.short_name;
-          break
+        return component.short_name;
       }
       if (component.types[0] == 'locality') {
-          city = component.short_name;
-          break;
+        return component.short_name;
       }
       if (component.types[0] == 'administrative_area_level_1') {
-          city = component.short_name;
-          break;
+        return component.short_name;
       }
   }
   
   //handle Tokyo
   for (let i in components) {
     if (components[i].types[0] == 'administrative_area_level_1' && components[i]['short_name'] == 'Tokyo') {
-      city = 'Tokyo';
-      break;
+      return 'Tokyo';
     }
   }
   
   if (!city) {
       for (let component of components) {
           if (component.types[0] == 'administrative_area_level_2') {
-              city = component.short_name;
-              break;
+              return component.short_name;
           }
       }
   }
