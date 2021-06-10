@@ -18,8 +18,7 @@ const getDashboard = async (userId, behavior, keyword) => {
             sql.query = sql.query.concat('WHERE is_archived = ? AND user_id = ?');
         }
         let result = await pool.query(sql.query, sql.conditions);
-        let trips = result[0]
-        trips = trips.map(trip => {
+        let trips = result[0].map(trip => {
             if (trip.name.length > 20) {
                 return {
                     trip_id: trip.trip_id,
