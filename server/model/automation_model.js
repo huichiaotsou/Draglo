@@ -28,7 +28,11 @@ const getTravelingTime = async (prevSpotId, nextSpotId) => {
     let result = await pool.query(sql.queryStr, sql.condition);
     if (result[0].length == 0) {
         // get time from google API & store in DB
-        let itinerary = await Google.directionAPI(prevSpotId, nextSpotId, 'transit')
+        let itinerary = await Google.directionAPI(prevSpotId, nextSpotId, 'transit', 0)
+        if (itinerary.error) {
+            return Math.round((itinerary.distance / (1000 * 100)) * 60)
+        }
+
         await pool.query('INSERT INTO itineraries SET ?', itinerary);
         return Math.round(itinerary.transit_time) + 15;
     } else {

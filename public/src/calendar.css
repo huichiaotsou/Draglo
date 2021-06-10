@@ -152,7 +152,7 @@ body {
     width: 30%;
   }
 
-  .city {
+  .city, #all-cities {
     cursor: pointer;
     display: flex;
     /* flex-direction: column; */
@@ -168,7 +168,7 @@ body {
     align-items: center;
   }
 
-  .city:hover {
+  .city:hover, #all-cities:hover {
     background-color: #1869bb;
   }
 

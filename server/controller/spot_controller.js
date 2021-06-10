@@ -30,6 +30,15 @@ const addSpot = async (req, res, next) => {
                 }
             }
 
+            if (!city) {
+                for (let component of components) {
+                    if (component.types[0] == 'administrative_area_level_2') {
+                        city = component.short_name;
+                        break;
+                    }
+                }
+            }
+
             //handle Tokyo
             for (let i in components) {
                 if (components[i].types[0] == 'administrative_area_level_1' && components[i]['short_name'] == 'Tokyo') {
@@ -81,11 +90,14 @@ const addSpot = async (req, res, next) => {
                 is_arranged: 0
             }
 
-            let spotAdded = await Spot.addSpot(spotInfo, initArrangements);
-
-            if(spotAdded.error){
-                res.sendStatus(500);
+            if (components.length < 3) {
+                res.status(400).send({
+                    error: '請選擇特定景點以加入清單'
+                })
             } else {
+                console.log(('spotInfo to be added :'));
+                console.log(spotInfo);
+                await Spot.addSpot(spotInfo, initArrangements);
                 res.sendStatus(200);
             }
         });

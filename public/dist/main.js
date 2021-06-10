@@ -14842,94 +14842,131 @@ window.addEventListener('storage', function() {
   let calculateTripBtn = document.getElementById('calculateTrip');
   calculateTripBtn.addEventListener('click', ()=>{
     if (calculateTripBtn.dataset.city == 'null') {
-      Swal.fire({
-        position: 'top-end',
-        icon: 'warning',
-        title: '請選擇城市',
-        text: '請在城市清單中選擇您想要進行自動安排的城市',
-      }) 
-    } else {
-      let cityName = calculateTripBtn.dataset.city;
-      let dayStart = calculateTripBtn.dataset.dayStart;
-      let allEvents = calendar.getEvents();
-      let startDate = new Date(new Date(start).setHours(0,0,0,0));
-      let arrangedEvents = {}; //dayId: 開始, 結束, google id, lat lng
-      let previousCityVector = []
-      if (allEvents.length > 0) { //if 安排中的城市和最後一個不同，則從隔日開始, else 從起始日
-        allEvents.sort(function (a,b) {
-          return new Date(a.start) - new Date(b.start);
-        });
-        //確認新的 startDate
-        let lastEvent = allEvents[allEvents.length - 1];
-        previousCityVector = [lastEvent.extendedProps.latitude, lastEvent.extendedProps.longtitude] 
-        let end = new Date(lastEvent.end)
-        end.setUTCHours(0,0,0,0)
-        console.log('end after setUTCHours 0000:');
-        console.log(end);
-        startDate = new Date (end.setUTCDate(end.getUTCDate() +1))
-        startDate.setHours(0,0,0,0)
-        let lastSpotCity = lastEvent.extendedProps.city
-        console.log(lastSpotCity);
-        console.log(lastEvent.extendedProps);
-        if (lastSpotCity == cityName) {
-          console.log('last city and arranging city matched');
-          startDate = new Date(new Date(start).setHours(0,0,0,0));
-        }
-
-        // arranged events send to backend
-        allEvents.map(e => {
-          let eStart = new Date(e.start)
-          let eEnd = new Date(e.end);
-
-          if (arrangedEvents[eStart.getUTCDay()]) {
-            arrangedEvents[eStart.getUTCDay()].push(
-              {
-                start: (eStart.getUTCHours() * 60) + eStart.getUTCMinutes(),
-                end: (eEnd.getUTCHours() * 60) + eEnd.getUTCMinutes(),
-                google_id: e.id,
-                latitude: e.extendedProps.latitude,
-                longtitude: e.extendedProps.longtitude
-              }
-            )
-
-          } else {
-            arrangedEvents[e.start.getUTCDay()] = [
-              {
-                start: (e.start.getUTCHours() * 60) + e.start.getUTCMinutes(),
-                end: (e.end.getUTCHours() * 60) + e.end.getUTCMinutes(),
-                google_id: e.id,
-                latitude: e.extendedProps.latitude,
-                longtitude: e.extendedProps.longtitude
-              }
-            ]
-          }
-        })
+      let cityList = document.getElementsByClassName('city')
+      let html = `
+      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+      `
+      for (let city of cityList) {
+        html += `
+        <label class="btn btn-sm btn-outline-primary" onclick="switchAutomationCity('${city.innerHTML.split(' ')[0]}');">
+          <input type="radio" 
+          name="options" 
+          autocomplete="off" 
+          style="margin-right: 10px;">${city.innerHTML}
+        </label>`
       }
-      startDate = startDate.toString()
-      console.log('final start Date:');
-      console.log(startDate);
+      html += `</div>`
+  
       Swal.fire({
         position: 'top-end',
-        title: '目前行程計算的設定為：',
-        html: `
-        <div style="color:#007bff; font-size: 20px;">
-          城市：${cityName}
-        </div>
-        <div style="color:#007bff; margin-top:10px"> 
-          預計出門時間：${dayStart / 60}點 
-        </div>
-        `,
-        showCancelButton: true,
+        title: '請選擇自動行程安排的城市',
         confirmButtonColor: '#3085d6',
-        confirmButtonText: `OK`
+        confirmButtonText: '安排行程',
+        html: html
       }).then((result) => {
         if (result.isConfirmed) {
-          calculateTrip(cityName, startDate, dayStart, previousCityVector, arrangedEvents);
+          if (calculateTripBtn.dataset.city == 'null') {
+            Swal.fire({
+              position: 'top-end',
+              title: '尚未選擇城市',
+              text: "請選擇城市以進行自動行程安排",
+              icon: 'warning',
+              confirmButtonColor: '#3085d6',
+              confirmButtonText: 'OK'
+            })
+          } else {
+            calulateBtnClicked();
+          }
+        } else {
+          switchAutomationCity('null')
         }
       })
-
+    } else {
+      calulateBtnClicked();
     }
+
   })
+
+  function calulateBtnClicked() {
+    let cityName = calculateTripBtn.dataset.city;
+    let dayStart = calculateTripBtn.dataset.dayStart;
+    let allEvents = calendar.getEvents();
+    let startDate = new Date(new Date(start).setHours(0,0,0,0));
+    let arrangedEvents = {}; //dayId: 開始, 結束, google id, lat lng
+    let previousCityVector = []
+    if (allEvents.length > 0) { //if 安排中的城市和最後一個不同，則從隔日開始, else 從起始日
+      allEvents.sort(function (a,b) {
+        return new Date(a.start) - new Date(b.start);
+      });
+      //確認新的 startDate
+      let lastEvent = allEvents[allEvents.length - 1];
+      previousCityVector = [lastEvent.extendedProps.latitude, lastEvent.extendedProps.longtitude] 
+      let end = new Date(lastEvent.end)
+      end.setUTCHours(0,0,0,0)
+      console.log('end after setUTCHours 0000:');
+      console.log(end);
+      startDate = new Date (end.setUTCDate(end.getUTCDate() +1))
+      startDate.setHours(0,0,0,0)
+      let lastSpotCity = lastEvent.extendedProps.city
+      console.log(lastSpotCity);
+      console.log(lastEvent.extendedProps);
+      if (lastSpotCity == cityName) {
+        console.log('last city and arranging city matched');
+        startDate = new Date(new Date(start).setHours(0,0,0,0));
+      }
+
+      // arranged events send to backend
+      allEvents.map(e => {
+        let eStart = new Date(e.start)
+        let eEnd = new Date(e.end);
+
+        if (arrangedEvents[eStart.getUTCDay()]) {
+          arrangedEvents[eStart.getUTCDay()].push(
+            {
+              start: (eStart.getUTCHours() * 60) + eStart.getUTCMinutes(),
+              end: (eEnd.getUTCHours() * 60) + eEnd.getUTCMinutes(),
+              google_id: e.id,
+              latitude: e.extendedProps.latitude,
+              longtitude: e.extendedProps.longtitude
+            }
+          )
+
+        } else {
+          arrangedEvents[e.start.getUTCDay()] = [
+            {
+              start: (e.start.getUTCHours() * 60) + e.start.getUTCMinutes(),
+              end: (e.end.getUTCHours() * 60) + e.end.getUTCMinutes(),
+              google_id: e.id,
+              latitude: e.extendedProps.latitude,
+              longtitude: e.extendedProps.longtitude
+            }
+          ]
+        }
+      })
+    }
+    startDate = startDate.toString()
+    console.log('final start Date:');
+    console.log(startDate);
+    Swal.fire({
+      position: 'top-end',
+      title: '目前行程計算的設定為：',
+      html: `
+      <div style="color:#007bff; font-size: 20px;">
+        城市：${cityName}
+      </div>
+      <div style="color:#007bff; margin-top:10px"> 
+        預計出門時間：${dayStart / 60}點 
+      </div>
+      `,
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: `OK`
+    }).then((result) => {
+      if (result.isConfirmed) {
+        calculateTrip(cityName, startDate, dayStart, previousCityVector, arrangedEvents);
+      }
+    })
+  }
 
   let icalBtn = document.getElementById('iCal-feed');
   icalBtn.addEventListener('click', ()=>{

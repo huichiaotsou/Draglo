@@ -226,7 +226,13 @@ function saveSpotInfo(spotName, placeId) {
         getPendingArrangements(null, data.tripId)
         console.log("4");
         socket.emit('refreshSpots', data.tripId)
-
+      } else if (xhr.status == 400){
+        let response = JSON.parse(xhr.responseText)
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: response.error,
+        }) 
       } else {
         Swal.fire({
           icon: 'error',
@@ -286,7 +292,8 @@ function getPendingArrangements(city, tripId, placeId) {
         citiesContainer.innerHTML = '';
         if (cities) {
           let showAll = document.createElement('div');
-          showAll.className = 'city';
+          showAll.setAttribute('id', 'all-cities')
+          // showAll.className = 'city';
           showAll.innerHTML = '全部城市清單';
           showAll.setAttribute('onclick', `
           getPendingArrangements(${null}, ${tripId});
