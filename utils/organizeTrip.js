@@ -89,7 +89,7 @@ let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spots
         console.log("此行程開始時間："); console.log(startTime);
         console.log("景點關門時間："); console.log(spotInfo.closedHour);
         return -1;
-    } else if (startTime < spotInfo.openHour) {
+    } else if (startTime + 60 < spotInfo.openHour) {
         console.log("-------------------------------------------");
         console.log("【太早去】");
         console.log("此行程開始時間："); console.log(startTime);
