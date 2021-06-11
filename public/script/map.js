@@ -195,7 +195,6 @@ function restoreSearchBox() {
 //init pending arrangements list
 window.addEventListener('storage', ()=>{
   getPendingArrangements(null, tripId);
-  console.log("1");
 })
 
 function popUpAddSpot(spotName, placeId) {
@@ -224,7 +223,6 @@ function saveSpotInfo(spotName, placeId) {
     if(xhr.readyState == 4) {
       if(xhr.status == 200) {
         getPendingArrangements(null, data.tripId)
-        console.log("4");
         socket.emit('refreshSpots', data.tripId)
       } else if (xhr.status == 400){
         let response = JSON.parse(xhr.responseText)
@@ -390,10 +388,7 @@ function removeEvent(spotId, tripId) {
       xhr.open('DELETE', '/arrangement');
       xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            // getPendingArrangements(null, tripId);
             socket.emit('refreshSpots', tripId)
-            console.log("5");
-
         }
       }
       xhr.setRequestHeader('Content-Type', 'application/json');

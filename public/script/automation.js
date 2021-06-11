@@ -28,9 +28,6 @@ function calculateTrip (cityName, startDate, dayStart, previousCityVector, arran
 
     let checkDistance = getGeoDistance( [parseFloat(spots[0].dataset.latitude),parseFloat(spots[0].dataset.longtitude)] , previousCityVector);
     let html = '系統正根據景點開放時間、景點間之交通，為您計算行程';
-    console.log('check distance');
-    console.log([parseFloat(spots[0].dataset.latitude),parseFloat(spots[0].dataset.longtitude)] , previousCityVector);
-    console.log(checkDistance);
     if (checkDistance > 60) {
         html = `<div>系統正根據景點開放時間、景點間之交通，為您計算行程</div>
         <div style="font-size: 14px; margin-top:10px; font-weight: 700;">安排中的城市似乎距離上個城市有點距離，請記得預留足夠的交通時間 </div>`
@@ -83,8 +80,6 @@ function renderUnarrangedResult(){
     if (nightEvents.length > 0) {
         responseContent = responseContent + '<strong> 夜晚行程 </strong><div class="dropdown-divider"></div>'
         nightEvents.map(event => {
-            console.log('each night event');
-            console.log(event);
             let openDays = []
             event.openDays.split(',').map( day => {
               if(day == 0) openDays.push(' 週日 ');
@@ -110,8 +105,6 @@ function renderUnarrangedResult(){
     if (remainingSpots.length > 0) {
       responseContent = responseContent + `<br><strong> 其他未安排行程 </strong><div class="dropdown-divider"></div>`
       remainingSpots.map(event => {
-        console.log('each remaining spot');
-        console.log(event);
         let openDays = []
         event.openDays.split(',').map( day => {
             if(day == 0) openDays.push(' 週日 ');
@@ -153,7 +146,6 @@ function renderUnarrangedResult(){
     });
     socket.emit('refreshSpots', tripId)
     socket.emit('renderCalendar', tripId)
-    console.log('socket sent : refreshSpots and renderCalendar ');
 }
 
 //https://www.itread01.com/content/1541853492.html
