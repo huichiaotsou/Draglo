@@ -45,14 +45,14 @@ let getNextSpotId = (currentSpotId, sequence, clusters, spotsInfo) => {
     }
 }
 
-let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spotsInfo, arrangedEvents) => {
+let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spotsInfo, arrangedEvents, startDateUnix) => {
     let transitTime = await getTravelingTime(prevSpotId, nextSpotId, spotsInfo); //prevSpotId, nextSpotId == Google ids
     let spotInfo = await getSpotInfo(nextSpotId); 
     //linger_time, open_days, open_hour, closed_hour
 
     let eventEndsAt = startTime + transitTime + spotInfo.lingerTime;
     //if startTime || eventEndsAt 介於 一行程的排程段, 新的start time 就是 卡住行程的結束
-    let arrangedEventsOfDay = arrangedEvents[dayId];
+    let arrangedEventsOfDay = arrangedEvents[startDateUnix];
     console.log('arrangedEventsOfDay: '); 
     console.log(arrangedEventsOfDay);
     if (arrangedEventsOfDay) {

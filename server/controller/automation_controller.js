@@ -7,7 +7,7 @@ const calculateTrips = async (req, res, next) => {
     try {
         console.log(req.body);
         let { tripId, dayId, googleIds, spotsInfo, tripDuration, startDate, arrangedEvents } = req.body;
-        console.log('arrangedEvents');
+        console.log('arrangedEvents: ');
         console.log(arrangedEvents);
         let startTime = parseInt(req.body.startTime)
         let startDateDatetime = new Date(startDate.split('GMT')[0])
@@ -34,17 +34,21 @@ const calculateTrips = async (req, res, next) => {
             //確認起始點
             let startSpotId = poleSpotIds[Math.floor(Math.random() * poleSpotIds.length)];
     
-            //若usser當日已安排景點，以景點作為出發點計算kmeans結果
+            //若user當日已安排景點，以景點作為出發點計算kmeans結果
             let daysWithArrangedEvents = Object.keys(arrangedEvents)
             if (daysWithArrangedEvents) {
-                for (let day of daysWithArrangedEvents) {
-                    if (day == dayId) {
+                for (let dayUnix of daysWithArrangedEvents) {
+                    console.log('dayUnix and StartDateUnix:');
+                    console.log(dayUnix);
+                    console.log(startDateUnix);
+                    if (dayUnix == startDateUnix) {
                         console.log('2-1: day and dayId match');
-                        let arrangedEvent = arrangedEvents[day][Math.floor(Math.random() * arrangedEvents[day].length)]
-                        let vectors = [];
-                        for( let id of googleIds ) {
-                            vectors.push(spotsInfo[id].vector)
-                        }
+                        let arrangedEvent = arrangedEvents[dayUnix][Math.floor(Math.random() * arrangedEvents[dayUnix].length)]
+                        // let vectors = [];
+                        // for( let id of googleIds ) { 
+                        //     vectors.push(spotsInfo[id].vector)
+                        // }
+                        let vectors = googleIds.map(id => spotsInfo[id].vector) //get all vectors
                         let spotClosestToArrangedEventIndex = calculateCloserPoint(vectors, [arrangedEvent.latitude, arrangedEvent.longtitude], 'getClosePoint')
                         startSpotId = googleIds[spotClosestToArrangedEventIndex]
                         console.log('2-2: new start spot id: ');
@@ -106,12 +110,13 @@ const calculateTrips = async (req, res, next) => {
                         startTime = (spotInfo.openHour >= startTime) ? spotInfo.openHour : startTime;
                         
                         //if startTime 介於 一行程的排程段, 新的start time 就是 卡住行程的結束
-                        let arrangedEventsOfDay = arrangedEvents[dayId];
+                        let arrangedEventsOfDay = arrangedEvents[startDateUnix];
                         if (arrangedEventsOfDay) {
                             console.log('arrangedEventsOfDay: '); 
                             console.log(arrangedEventsOfDay);
                             for (let event of arrangedEventsOfDay) {
-                                if ((startTime <= event.end && startTime >= event.start) ||
+                                if (
+                                    (startTime <= event.end && startTime >= event.start) ||
                                     (startTime + 90 <= event.end && startTime + 90 >= event.start)
                                 ) {
                                     let transitTime = await Automation.getTravelingTime(event.google_id, startSpotId, spotsInfo);
@@ -189,7 +194,7 @@ const calculateTrips = async (req, res, next) => {
                     break;
                 }
                 console.log("12: calculated next spot: " + spotsInfo[nextSpotId].name);
-                let nextActivity = await arrangeNextActivity(dayId, startTime, startSpotId, nextSpotId, spotsInfo, arrangedEvents);
+                let nextActivity = await arrangeNextActivity(dayId, startTime, startSpotId, nextSpotId, spotsInfo, arrangedEvents, startDateUnix);
                 console.log(spotsInfo[startSpotId].name + ' -> ' + spotsInfo[nextSpotId].name + ' : transit and Spot to be added:');
                 console.log(nextActivity);
     

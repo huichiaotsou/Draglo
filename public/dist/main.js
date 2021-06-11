@@ -14917,11 +14917,12 @@ window.addEventListener('storage', function() {
 
       // arranged events send to backend
       allEvents.map(e => {
+        let eventDate = new Date(e.start).setHours(0,0,0,0)
         let eStart = new Date(e.start)
         let eEnd = new Date(e.end);
 
-        if (arrangedEvents[eStart.getUTCDay()]) {
-          arrangedEvents[eStart.getUTCDay()].push(
+        if (arrangedEvents[eventDate]) {
+          arrangedEvents[eventDate].push(
             {
               start: (eStart.getUTCHours() * 60) + eStart.getUTCMinutes(),
               end: (eEnd.getUTCHours() * 60) + eEnd.getUTCMinutes(),
@@ -14932,7 +14933,7 @@ window.addEventListener('storage', function() {
           )
 
         } else {
-          arrangedEvents[e.start.getUTCDay()] = [
+          arrangedEvents[eventDate] = [
             {
               start: (e.start.getUTCHours() * 60) + e.start.getUTCMinutes(),
               end: (e.end.getUTCHours() * 60) + e.end.getUTCMinutes(),
@@ -14942,7 +14943,33 @@ window.addEventListener('storage', function() {
             }
           ]
         }
+
+        // if (arrangedEvents[eStart.getUTCDay()]) {
+        //   arrangedEvents[eStart.getUTCDay()].push(
+        //     {
+        //       start: (eStart.getUTCHours() * 60) + eStart.getUTCMinutes(),
+        //       end: (eEnd.getUTCHours() * 60) + eEnd.getUTCMinutes(),
+        //       google_id: e.id,
+        //       latitude: e.extendedProps.latitude,
+        //       longtitude: e.extendedProps.longtitude
+        //     }
+        //   )
+
+        // } else {
+        //   arrangedEvents[e.start.getUTCDay()] = [
+        //     {
+        //       start: (e.start.getUTCHours() * 60) + e.start.getUTCMinutes(),
+        //       end: (e.end.getUTCHours() * 60) + e.end.getUTCMinutes(),
+        //       google_id: e.id,
+        //       latitude: e.extendedProps.latitude,
+        //       longtitude: e.extendedProps.longtitude
+        //     }
+        //   ]
+        // }
       })
+
+      console.log(arrangedEvents);
+
     }
     startDate = startDate.toString()
     console.log('final start Date:');
