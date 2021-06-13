@@ -14,6 +14,7 @@ const iCalendarFeed = async (req, res, next) => {
             calendar.createEvent(event);
         }
         let calendarId = await Calendar.generateCalendar(tripId);
+        console.log(calendarId);
     
         await calendar.save(path.join(__dirname + '../../../public/calendars/' + `./${calendarId}.ical`))
         res.status(200).send(process.env.ROOT_ROUTE + '/calendars' + `/${calendarId}.ical`)

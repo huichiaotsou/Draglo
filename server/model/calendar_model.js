@@ -13,7 +13,7 @@ const getSpotAddress = async (googleId) => {
 
 const generateCalendar = async (tripId) => {
     try {
-        let calendarId = encrypt(tripId);
+        let calendarId = encrypt(tripId.toString());
         calendarId = calendarId.slice(0,8) + tripId
         let conditions = [calendarId, tripId]
         await pool.query('UPDATE trips SET calendar_id = ? WHERE id = ?', conditions)

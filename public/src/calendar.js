@@ -60,7 +60,9 @@ window.addEventListener('storage', function() {
       }
     },
     drop: function(info) {
-      info.draggedEl.parentNode.removeChild(info.draggedEl);
+      if (info.draggedEl.parentNode) {
+        info.draggedEl.parentNode.removeChild(info.draggedEl);
+      }
     },
     eventReceive: function(info) {
       console.log('eventReceive triggered');
@@ -312,28 +314,6 @@ window.addEventListener('storage', function() {
           ]
         }
 
-        // if (arrangedEvents[eStart.getUTCDay()]) {
-        //   arrangedEvents[eStart.getUTCDay()].push(
-        //     {
-        //       start: (eStart.getUTCHours() * 60) + eStart.getUTCMinutes(),
-        //       end: (eEnd.getUTCHours() * 60) + eEnd.getUTCMinutes(),
-        //       google_id: e.id,
-        //       latitude: e.extendedProps.latitude,
-        //       longtitude: e.extendedProps.longtitude
-        //     }
-        //   )
-
-        // } else {
-        //   arrangedEvents[e.start.getUTCDay()] = [
-        //     {
-        //       start: (e.start.getUTCHours() * 60) + e.start.getUTCMinutes(),
-        //       end: (e.end.getUTCHours() * 60) + e.end.getUTCMinutes(),
-        //       google_id: e.id,
-        //       latitude: e.extendedProps.latitude,
-        //       longtitude: e.extendedProps.longtitude
-        //     }
-        //   ]
-        // }
       })
 
       console.log(arrangedEvents);
@@ -383,7 +363,7 @@ window.addEventListener('storage', function() {
         }
       )
     }
-    createiCalFeed(data)
+    createiCalFeed(data, 'create')
   })
 
   function getPolylinePath(date){ 
@@ -549,10 +529,7 @@ socket.on('refreshPendingArrangements', (tripId)=>{
 
 socket.on('updateArrangement', (eventInfo)=>{
   let event = calendar.getEventById(eventInfo.id)
-  console.log(event);
-  if (event) {
-    event.remove()
-  }
+  if (event) event.remove()
   console.log('event is removed');
   let { extendedProps } = eventInfo
   calendar.addEvent({
@@ -571,9 +548,27 @@ socket.on('updateArrangement', (eventInfo)=>{
     }
   });
   calendar.render();
-  // alert(`user ${eventInfo.user} has updated ${eventInfo.title}: stat: ${eventInfo.start}`)
   console.log('event is re added');
-  // getPendingArrangements(eventInfo.extendedProps.city, tripId)
+
+  let allEvents = calendar.getEvents()
+    let data = {
+      tripId: tripId,
+      tripName: JSON.parse(localStorage.getItem('trip_settings')).name,
+      iCalEvents: []
+    }
+    
+    for (let event of allEvents) {
+      data.iCalEvents.push(
+        {
+          summary: event.title,
+          start: event.start,
+          end: event.end,
+          description: "開放時間: " + event.extendedProps.openHour +" ~ "+ event.extendedProps.closedHour,
+          googleId: event.id
+        }
+      )
+    }
+    createiCalFeed(data, 'update')
   })
 
   socket.on('removeArrangement', (eventId)=>{

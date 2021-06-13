@@ -1,4 +1,3 @@
-// let accessToken = document.cookie.split('=')[1];
 let accessToken = localStorage.getItem('access_token')
 const urlParams = new URLSearchParams(window.location.search);
 const tripId = urlParams.get('id');
@@ -431,28 +430,32 @@ function clearTrip() {
       })
 }
 
-function createiCalFeed(data){
+function createiCalFeed(data, action){
     let xhr = new XMLHttpRequest();
     xhr.open('POST', '/calendar');
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
             if (xhr.status == 200) {
-                Swal.fire({
-                    position: 'top-end',
-                    title: 'iCalendar Feed 已建立',
-                    html:`
-                    
-                    <div>此旅程的日曆網址為：</div>
-                    <div style="display: flex; justify-content:space-around; margin-top: 20px;">
-                        <input type="text" style="font-size: 17px; width: 70%;" id="ical-feed" value="${xhr.responseText}">
-                        <button class="btn btn-sm btn-outline-primary" type="button" onclick="copyLink()" id="copy-btn">複製網址</button> <br>
-                    </div>
-                    <br><a href="https://calendar.google.com/calendar/u/0/r/settings/addbyurl" target="_blank"><div>點擊匯入至 Google Calendar</div></a>
-                    <div style="font-size: 12px; margin-top: 7px;">若您先前已匯入，Google Calendar將自動更新（根據Google更新速度）</div>
-                    `,
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: `OK`
-                })
+                if (action == 'create') {
+                    Swal.fire({
+                        position: 'top-end',
+                        title: 'iCalendar Feed 已建立',
+                        html:`
+                        
+                        <div>此旅程的日曆網址為：</div>
+                        <div style="display: flex; justify-content:space-around; margin-top: 20px;">
+                            <input type="text" style="font-size: 17px; width: 70%;" id="ical-feed" value="${xhr.responseText}">
+                            <button class="btn btn-sm btn-outline-primary" type="button" onclick="copyLink()" id="copy-btn">複製網址</button> <br>
+                        </div>
+                        <br><a href="https://calendar.google.com/calendar/u/0/r/settings/addbyurl" target="_blank"><div>點擊匯入至 Google Calendar</div></a>
+                        <div style="font-size: 12px; margin-top: 7px;">若您先前已匯入，Google Calendar將自動更新（根據Google更新速度）</div>
+                        `,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: `OK`
+                    })
+                } else if (action == 'update') {
+                    console.log('iCal feed updated');
+                }
             } else if (xhr.status != 200) {
                 alert('update failed, please try again later')
             }
