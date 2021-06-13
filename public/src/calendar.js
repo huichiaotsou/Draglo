@@ -301,7 +301,6 @@ window.addEventListener('storage', function() {
               longtitude: e.extendedProps.longtitude
             }
           )
-
         } else {
           arrangedEvents[eventDate] = [
             {

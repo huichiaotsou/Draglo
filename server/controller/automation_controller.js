@@ -10,6 +10,8 @@ const calculateTrips = async (req, res, next) => {
         let startTime = parseInt(req.body.startTime)
         let startDateDatetime = new Date(startDate.split('GMT')[0])
         let startDateUnix = startDateDatetime.getTime();
+        console.log('startDateUnix');
+        console.log(startDateUnix);
         tripDuration = tripDuration + 1;
         let originalStartTime = startTime;
         let wholeTrip = {};
