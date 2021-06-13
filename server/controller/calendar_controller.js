@@ -12,7 +12,9 @@ const iCalendarFeed = async (req, res, next) => {
             event.location = await Calendar.getSpotAddress(event.googleId);
             delete event.googleId
             calendar.createEvent(event);
-        }
+            console.log('iCalEvent: ');
+            console.log(event);
+        }  
         let calendarId = await Calendar.generateCalendar(tripId);
         console.log(calendarId);
     
