@@ -2,8 +2,6 @@ function backToDashboard() {
   location.assign('/dashboard.html')
 }
 
-// let tripId = JSON.parse(localStorage.getItem('trip_settings')).id
-
 // Maps API
 function initMap(spots, path) {
   restoreSearchBox()
@@ -92,7 +90,6 @@ function initMap(spots, path) {
   const input = document.getElementById("pac-input");
   const autocomplete = new google.maps.places.Autocomplete(input);
   autocomplete.bindTo("bounds", map);
-  // Specify just the place data fields that you need.
   autocomplete.setFields(["place_id", "geometry", "name", "formatted_address"]);
   map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
   const infowindow = new google.maps.InfoWindow();
@@ -141,7 +138,8 @@ function initMap(spots, path) {
       
     });
   });
-
+  
+  //trigger add spot when map is clicked
   map.addListener('click', (e)=>{
     if (!e.placeId) {
       return;
