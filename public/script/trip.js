@@ -1,12 +1,14 @@
-let accessToken = localStorage.getItem('access_token')
+const accessToken = localStorage.getItem('access_token')
 const urlParams = new URLSearchParams(window.location.search);
 const tripId = urlParams.get('id');
-if (accessToken) {
-    // 驗tripid 是否屬於author or contributors
-    getTripSettings(accessToken, tripId);
-} else { 
-    location.assign('/index.html');
-}
+
+window.addEventListener('load', ()=>{
+    if (accessToken) {
+        getTripSettings(accessToken, tripId);
+    } else { 
+        location.assign('/index.html');
+    }
+})
 
 window.addEventListener('storage', ()=> {
     if (urlParams.get('status') == 'new') {
