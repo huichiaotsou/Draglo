@@ -3,30 +3,15 @@ import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import './calendar.css';
 
-// let accessToken = document.cookie.split('=')[1];
-let accessToken = localStorage.getItem('access_token')
-const urlParams = new URLSearchParams(window.location.search);
-const tripId = urlParams.get('id');
-
-let socket = io({
-  auth: {
-      token: accessToken
-  }
-});
-
-socket.on('connect', function(){
-  socket.emit('joinTrip', tripId)
-});
-
 let calendar;
-
 window.addEventListener('storage', function() {
-  const tripSettingsString = localStorage.getItem('trip_settings');
-  const tripSettings = JSON.parse(tripSettingsString);
+  
+  const tripSettings = JSON.parse(localStorage.getItem('trip_settings'));
+  const tripId = tripSettings.id;
   const start = tripSettings.trip_start
   const end = tripSettings.trip_end
   const duration = tripSettings.duration; 
-
+  
   // initialize the calendar
   // -----------------------------------------------------------------
   const calendarEl = document.getElementById('calendar');
@@ -439,7 +424,6 @@ window.addEventListener('storage', function() {
         lng: acc.lng + cur.lng
       }
     })
-    console.log(sum);
     path.center.lat = sum.lat/path.coordinates.length;
     path.center.lng = sum.lng/path.coordinates.length;
 
@@ -497,7 +481,6 @@ function checkSameDay (date1, date2) {
               city: a.city
             }
           }
-          console.log(a.auto_arranged);
           if (a.auto_arranged == 1) {
             event.color = '#2d4b91'
           }
@@ -506,7 +489,7 @@ function checkSameDay (date1, date2) {
         calendar.render();
       }
     }
-    xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
+    xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('access_token')}`);
     xhr.send();
   }
 
@@ -535,10 +518,19 @@ function checkSameDay (date1, date2) {
       }
     };
     xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
+    xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('access_token')}`);
     xhr.send(JSON.stringify(data));
   }
 
+let socket = io({
+  auth: {
+      token: localStorage.getItem('access_token')
+  }
+});
+
+socket.on('connect', function(){
+  socket.emit('joinTrip', tripId)
+});
 
 socket.on('join-trip-message', (msg)=>{
   console.log(msg);

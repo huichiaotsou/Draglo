@@ -7,23 +7,22 @@ const calculateTrips = async (req, res, next) => {
     try {
         console.log(req.body);
         let { tripId, dayId, googleIds, spotsInfo, tripDuration, startDate, arrangedEvents } = req.body;
-        console.log('arrangedEvents: ');
-        console.log(arrangedEvents);
         let startTime = parseInt(req.body.startTime)
         let startDateDatetime = new Date(startDate.split('GMT')[0])
         let startDateUnix = startDateDatetime.getTime();
-        
         tripDuration = tripDuration + 1;
         let originalStartTime = startTime;
-        
         let wholeTrip = {};
         let otherEvents = {}
         let nightEvents = otherEvents.nightEvents = [];
         let remainingSpots = otherEvents.remainingSpots = [];
         let pendingArrangement = [];
         let tooEarlyArrangement = [];
+
+        //init count for each place id
         let tooEarlyArrangementCount = {}
         googleIds.map(id => tooEarlyArrangementCount[id] = 0);
+
         while(googleIds.length > 0) { //while 一直跑到安排完所有景點
             console.log('  ');
             console.log('1: -------------- New Day Start --------------');
@@ -38,16 +37,9 @@ const calculateTrips = async (req, res, next) => {
             let daysWithArrangedEvents = Object.keys(arrangedEvents)
             if (daysWithArrangedEvents) {
                 for (let dayUnix of daysWithArrangedEvents) {
-                    console.log('dayUnix and StartDateUnix:');
-                    console.log(dayUnix);
-                    console.log(startDateUnix);
                     if (dayUnix == startDateUnix) {
-                        console.log('2-1: day and dayId match');
+                        console.log('2-1: dayUnix and startDateUnix match');
                         let arrangedEvent = arrangedEvents[dayUnix][Math.floor(Math.random() * arrangedEvents[dayUnix].length)]
-                        // let vectors = [];
-                        // for( let id of googleIds ) { 
-                        //     vectors.push(spotsInfo[id].vector)
-                        // }
                         let vectors = googleIds.map(id => spotsInfo[id].vector) //get all vectors
                         let spotClosestToArrangedEventIndex = calculateCloserPoint(vectors, [arrangedEvent.latitude, arrangedEvent.longtitude], 'getClosePoint')
                         startSpotId = googleIds[spotClosestToArrangedEventIndex]
@@ -64,17 +56,16 @@ const calculateTrips = async (req, res, next) => {
             let spotInfo = await Automation.getSpotInfo(startSpotId);
             console.log('3-1: 當前景點資訊：');
             console.log(spotInfo);
-            if (spotInfo.openHour >= 960) { //after 5 pm
+            if (spotInfo.openHour >= 960) { //after 5 pm, categorized to night events
                 //紀錄nightEventSpotIds
                 spotInfo.activity = spotsInfo[startSpotId].name;
                 nightEvents.push(spotInfo);
                 //刪除並找下一個startSpotId
                 removeSpot(startSpotId, googleIds);  
                 removeSpot(startSpotId, clusters[clusters.sequence[0]]); 
-                // startSpotId = getNextSpotId(startSpotId, clusters.sequence[0], clusters, spotsInfo);;
                 continue;
             } else {
-                //起始點當日是否營業：
+                //cehck 起始點當日是否營業：
                 let open = false;
                 let openDays = spotInfo.openDays.split(',');
                 for (let day of openDays) {
@@ -109,7 +100,7 @@ const calculateTrips = async (req, res, next) => {
                     } else {
                         startTime = (spotInfo.openHour >= startTime) ? spotInfo.openHour : startTime;
                         
-                        //if startTime 介於 一行程的排程段, 新的start time 就是 卡住行程的結束
+                        //if startTime 介於 一行程的排程段, 新的startTime = arranged行程的結束
                         let arrangedEventsOfDay = arrangedEvents[startDateUnix];
                         if (arrangedEventsOfDay) {
                             console.log('arrangedEventsOfDay: '); 
@@ -117,7 +108,7 @@ const calculateTrips = async (req, res, next) => {
                             for (let event of arrangedEventsOfDay) {
                                 if (
                                     (startTime <= event.end && startTime >= event.start) ||
-                                    (startTime + 90 <= event.end && startTime + 90 >= event.start)
+                                    (startTime + spotInfo.lingerTime <= event.end && startTime + spotInfo.lingerTime >= event.start)
                                 ) {
                                     let transitTime = await Automation.getTravelingTime(event.google_id, startSpotId, spotsInfo);
                                     startTime = event.end + transitTime;
@@ -135,11 +126,11 @@ const calculateTrips = async (req, res, next) => {
                                 end: startTime + spotInfo.lingerTime
                             }
                         ];
+
                         startTime += spotInfo.lingerTime;
                         console.log('5: 本日起始行程');
                         console.log(wholeTrip[startDateUnix]);
                         removeSpot(startSpotId, googleIds);  
-                        // removeSpot(startSpotId, poleSpotIds); 
                         removeSpot(startSpotId, clusters[clusters.sequence[0]]); 
                         if(clusters[clusters.sequence[0]].length == 0) {
                             console.log('5-1: 叢集已沒有景點，刪除叢集編號：');
@@ -189,8 +180,8 @@ const calculateTrips = async (req, res, next) => {
                 console.log('目前clusters狀況: ');
                 console.log(clusters);
                 let nextSpotId = getNextSpotId(startSpotId, clusters.sequence[0], clusters, spotsInfo);
-                if (startSpotId == -1) { //已無景點
-                    console.log('11-2: startSpotId == -1，已無景點');
+                if (nextSpotId == -1) { //已無景點
+                    console.log('11-2: nextSpotId == -1，已無景點');
                     break;
                 }
                 console.log("12: calculated next spot: " + spotsInfo[nextSpotId].name);

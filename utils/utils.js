@@ -135,7 +135,7 @@ const rateLimiter = async (req, res, next) => {
         let ip = req.socket.remoteAddress;
         let result = await Cache.get(ip);
         if (result) {
-          if (result.length > 10) {
+          if (result.length > 20) {
             res.status(429).send('too many queries');
           } else {
             await Cache.append(ip, '1');

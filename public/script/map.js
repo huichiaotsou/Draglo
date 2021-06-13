@@ -291,7 +291,6 @@ function getPendingArrangements(city, tripId, placeId) {
         if (cities) {
           let showAll = document.createElement('div');
           showAll.setAttribute('id', 'all-cities')
-          // showAll.className = 'city';
           showAll.innerHTML = '全部城市清單';
           showAll.setAttribute('onclick', `
           getPendingArrangements(${null}, ${tripId});

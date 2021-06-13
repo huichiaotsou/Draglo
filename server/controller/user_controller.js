@@ -5,19 +5,24 @@ const Share = require('../model/share_model');
 const validator = require("email-validator");
 
 const getDashboard = async (req, res, next) => {
-  let userId = req.user.id;
-  let { keyword, archived, shared } = req.query;
-  let result;
-  if (keyword) {
-    result = await Trip.getDashboard(userId, "search", keyword);
-  } else if (archived) {
-    result = await Trip.getDashboard(userId, "archived");
-  } else if (shared) {
-    result = await Trip.getDashboard(userId, "shared");
-  } else {
-    result = await Trip.getDashboard(userId);
+  try {
+    let userId = req.user.id;
+    let { keyword, archived, shared } = req.query;
+    let result;
+    if (keyword) {
+      result = await Trip.getDashboard(userId, "search", keyword);
+    } else if (archived) {
+      result = await Trip.getDashboard(userId, "archived");
+    } else if (shared) {
+      result = await Trip.getDashboard(userId, "shared");
+    } else {
+      result = await Trip.getDashboard(userId);
+    }
+    res.send(result)
+  } catch (error) {
+    console.log(error);
+    next(error);
   }
-  res.send(result)
 }
 
 const signUp = async (req, res, next) => {
@@ -58,8 +63,9 @@ const signUp = async (req, res, next) => {
           res.status(200).send(response);
         }
       }
-    } catch (err) {
-      next(err);
+    } catch (error) {
+      console.log(error);
+      next(error);
     }
   }
 
@@ -106,8 +112,9 @@ const signIn = async (req, res, next) => {
             res.status(200).send(response);
           }
         }
-      } catch (err) {
-        next(err);
+      } catch (error) {
+        console.log(error);
+        next(error);
       }
 }
 
