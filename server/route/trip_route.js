@@ -8,18 +8,16 @@ const { addSpot } = require('../controller/spot_controller');
 const express = require('express');
 const router = express.Router();
 
-router.use(verifyToken, verifyAccess)
-
 router.route('/trip')
-    .get( getTripSettings )
-    .patch( modifyTripSettings )
+    .get( verifyToken, verifyAccess, getTripSettings )
+    .patch( verifyToken, verifyAccess, modifyTripSettings )
     
 router.route('/spot')
-    .post( addSpot )
+    .post( verifyToken, verifyAccess, addSpot )
 
 router.route('/arrangement')
-    .get( getArrangements )
-    .patch( updateArrangement ) //-> (修改arrangement的linger time 時要平均spots 的 linger time）
-    .delete( removeArrangement )
+    .get( verifyToken, verifyAccess, getArrangements )
+    .patch( verifyToken, verifyAccess, updateArrangement ) //-> (修改arrangement的linger time 時要平均spots 的 linger time）
+    .delete( verifyToken, verifyAccess, removeArrangement )
 
 module.exports = router;

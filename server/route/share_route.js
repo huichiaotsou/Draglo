@@ -6,10 +6,8 @@ const { createShareToken, updateShareAccess } = require('../controller/share_con
 const express = require('express');
 const router = express.Router();
 
-router.use(verifyToken)
-
 router.route('/share')
-    .post ( verifyAccess, createShareToken )
-    .patch ( updateShareAccess )
+    .post ( verifyToken, verifyAccess, createShareToken )
+    .patch ( verifyToken, updateShareAccess )
 
 module.exports = router

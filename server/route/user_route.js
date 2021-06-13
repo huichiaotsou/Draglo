@@ -14,12 +14,10 @@ router.route('/signin')
 router.route('/signup')
     .post( signUp )
 
-router.use(verifyToken) //applied only for below routes
-
 router.route('/trip')
-    .post( createTrip )
+    .post( verifyToken, createTrip )
 
 router.route('/dashboard')
-    .get( getDashboard )
+    .get( verifyToken, getDashboard )
 
 module.exports = router;

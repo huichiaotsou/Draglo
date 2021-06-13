@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>Draglo - Trips </title>
     <meta charset='utf-8' />
-    <!-- <link href='./src/calendar.css' rel='stylesheet' /> -->
     <script src="/socket.io/socket.io.js"></script>
     <link href='./dist/main.css' rel='stylesheet' />
     <script src="./script/trip.js"></script>
@@ -24,7 +24,6 @@
       <button id="back-dashboard" type="button" class="btn btn-outline-secondary" onclick="backToDashboard()">回主控台</button>
       
       <div id="nav-bar">
-        <!-- Single danger button -->
         <div id="account" class="btn-group">
           <button id="automation" class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             帳號
@@ -37,22 +36,8 @@
         </div>
         <div class="alert alert-dark" role="alert" id="archive-banner" onclick="archiveTrip(0)">
           正在瀏覽已封存行程，點擊此處以回復行程
-        </div>
-
-      
-      <!-- Single danger button -->
-      <!-- <div class="btn-group">
-        <button id="automation" class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          自動化
-        </button>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" href="#">計算交通時間</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" id="calculateTrip" data-city="null">自動安排行程</a>
-        </div>
-      </div> -->
+        </div>      
     </div> 
-    
     
     <div id="trip-title" class="col-sm-3 col-sm-offset-4">
       <div class="input-group mb-3">
@@ -62,7 +47,6 @@
         </div>
       </div>
     </div>
-    <!-- Single danger button -->
     <div id="settings" class="btn-group">
       <button class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         旅程設定
@@ -88,24 +72,19 @@
   
   <main>
     <div class="flex-row" id="main">
-      <!-- [START] CALENDAR CONTAINER -->
       <div id='calendar-container'>
         <div id='calendar'></div>
       </div>
-      <!-- [END] CALENDAR CONTAINER -->
       
-      <!-- [START] --------------------------RIGHT SIDE-------------------------- --> 
       <div class='right_side' class='flex-col'>
         <div id="scroll-area" class="flex-row">
           <div class="scroll-container">
-            <!-- [START] EXTERNAL EVENT BLOCK -->
             <div class="flex-row">
               <span id='spots-list-title'>景點清單</span>
               <span id='delete-message'>雙擊以刪除景點</span>
             </div>
             <div id='external-events'>
             </div>
-              <!-- [END] EXTERNAL EVENT BLOCK -->
           </div>
 
             
@@ -126,11 +105,9 @@
           <div id="instruction">
             搜尋後，請點擊 
             <img style="width: 30px;" src="/images/mapicon.webp" alt="map icon"> 
-            <!-- <div id="instruction-check-bg"><span id="instruction-check">&#x2713</span> </div> -->
             以新增景點 
           </div>
         </div>
-        <!-- [END] --------------------------RIGHT SIDE-------------------------- --> 
       </div>
 
     </main>
@@ -141,8 +118,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="css/trip.css">
-    
-    
+
     <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBtGsZzNEp000nLgBRtwZwhWJZyGd4AjMY&callback=initMap&libraries=places&language=zh-TW&v=weekly"
     async

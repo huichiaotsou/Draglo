@@ -9,12 +9,11 @@ const router = express.Router();
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: false }));
-router.use(verifyToken, verifyAccess)
 
 router.route('/automation')
-    .post( calculateTrips )
+    .post(verifyToken, verifyAccess, calculateTrips )
 
 router.route('/calendar')
-    .post ( iCalendarFeed )
+    .post (verifyToken, verifyAccess, iCalendarFeed )
 
 module.exports = router;

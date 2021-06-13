@@ -68,3 +68,9 @@ a, a:hover {
     margin-top: 5px;
     text-decoration: none;
 }
+
+#not-found {
+    margin-top:15%;
+    text-align: center;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

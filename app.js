@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const { socket } = require('./socket')
 const { rateLimiter } = require('./utils/utils') 
+const path = require('path');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -28,6 +29,6 @@ app.use((err, req, res, next)=>{
 })
 
 app.use((req, res)=>{
-    res.status(404).send('the page does not exist');
+    res.status(404).sendFile(path.join(__dirname, './public', '404.html'))
 })    
 
