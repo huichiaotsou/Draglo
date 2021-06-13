@@ -14904,7 +14904,7 @@ window.addEventListener('storage', function() {
 
       // arranged events send to backend
       allEvents.map(e => {
-        let eventDate = new Date(e.start).setHours(0,0,0,0)
+        let eventDate = new Date(e.start).setUTCHours(0,0,0,0)
         let eStart = new Date(e.start)
         let eEnd = new Date(e.end);
 
@@ -14918,7 +14918,6 @@ window.addEventListener('storage', function() {
               longtitude: e.extendedProps.longtitude
             }
           )
-
         } else {
           arrangedEvents[eventDate] = [
             {
