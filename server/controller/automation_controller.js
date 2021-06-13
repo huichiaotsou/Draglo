@@ -108,7 +108,7 @@ const calculateTrips = async (req, res, next) => {
                             for (let event of arrangedEventsOfDay) {
                                 if (
                                     (startTime <= event.end && startTime >= event.start) ||
-                                    (startTime + spotInfo.lingerTime <= event.end && startTime + spotInfo.lingerTime >= event.start)
+                                    (startTime + 90 <= event.end && startTime + 90 >= event.start)
                                 ) {
                                     let transitTime = await Automation.getTravelingTime(event.google_id, startSpotId, spotsInfo);
                                     startTime = event.end + transitTime;

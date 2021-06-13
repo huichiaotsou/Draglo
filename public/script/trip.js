@@ -327,30 +327,41 @@ function shareTrip(){
         confirmButtonText: `OK`
     }).then((result) => {
         if (result.isConfirmed) {
-            let tripSettings = JSON.parse(localStorage.getItem('trip_settings'))
-            let data = {
-                tripId: tripId,
-                title: tripSettings.name
-            }
             let email = document.getElementById('share-email').value
-            data.email = email;
-            Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                title: '邀請函傳送成功，請點擊邀請連結取得權限',
-                showConfirmButton: false,
-                timer: 1000
-            })
-            let xhr = new XMLHttpRequest()
-            xhr.open('POST', `/share`);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    console.log('OK');
+            if (email && email.split('@').length > 2) {
+                let tripSettings = JSON.parse(localStorage.getItem('trip_settings'))
+                let data = {
+                    tripId: tripId,
+                    title: tripSettings.name
                 }
+                let email = document.getElementById('share-email').value
+                data.email = email;
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: '邀請函傳送成功，請點擊邀請連結取得權限',
+                    showConfirmButton: false,
+                    timer: 1000
+                })
+                let xhr = new XMLHttpRequest()
+                xhr.open('POST', `/share`);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        console.log('OK');
+                    }
+                }
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
+                xhr.send(JSON.stringify(data));
+            } else {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'warning',
+                    title: '請輸入電子郵件地址',
+                    showConfirmButton: false,
+                    timer: 1000
+                })
             }
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
-            xhr.send(JSON.stringify(data));
         }
     })
           
