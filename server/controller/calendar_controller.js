@@ -7,14 +7,11 @@ const iCalendarFeed = async (req, res, next) => {
     try {
         let { tripId, tripName, iCalEvents } = req.body;
     
-        const calendar = ical(
-            {
-                name: tripName,
-                timezone: 'Asia/Taipei'
-            });
+        const calendar = ical({name: tripName});
         for (let event of iCalEvents) {
             event.location = await Calendar.getSpotAddress(event.googleId);
             delete event.googleId
+            event.timezone = 'Asia/Taipei'
             calendar.createEvent(event);
             console.log('iCalEvent: ');
             console.log(event);
