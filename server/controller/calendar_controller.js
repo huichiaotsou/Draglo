@@ -8,16 +8,17 @@ require('dotenv').config()
 const iCalendarFeed = async (req, res, next) => {
     try {
         let { tripId, tripName, iCalEvents } = req.body;
-        const vtimezone = tz.getVtimezone('Asia/Taipei');
+        // const vtimezone = tz.getVtimezone('Asia/Taipei');
 
         const calendar = ical({
             name: tripName,
-            timezone: vtimezone,
+            generator: tz,
             });
         
         for (let event of iCalEvents) {
             event.location = await Calendar.getSpotAddress(event.googleId);
             delete event.googleId
+            event.timezone = 'Asia/Taipei';
             calendar.createEvent(event);
             console.log('iCalEvent: ');
             console.log(event);
