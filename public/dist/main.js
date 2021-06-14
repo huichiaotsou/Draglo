@@ -15040,83 +15040,83 @@ function checkSameDay (date1, date2) {
   }
 }
 
-  function isEventOut (x, y) {
-    let calendar = document.getElementById('calendar-container');
-    if (x >= calendar.offsetWidth - 20 || y < 100)  { 
-      return true; 
-    }
-    return false;
+function isEventOut (x, y) {
+  let calendar = document.getElementById('calendar-container');
+  if (x >= calendar.offsetWidth - 20 || y < 100)  { 
+    return true; 
   }
+  return false;
+}
 
-  function getArrangements (calendar, tripId) {
-    //clear calendar
-    let allEvents = calendar.getEvents();
-    if (allEvents.length > 0){
-      allEvents.map(e => {
-        e.remove()
-      })
-    }
-    //get all arrangements and push in calendar
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', `/arrangement?status=arranged&id=${tripId}`);
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState == 4 && xhr.status == 200) {
-        let arrangements = JSON.parse(xhr.responseText);
-        arrangements.map( a => {
-          let event = {
-            id: a.google_id,
-            title: a.name,
-            start: a.start_time,
-            end: a.end_time,
-            extendedProps: {
-              spotId: a.spot_id,
-              latitude: parseFloat(a.latitude),
-              longtitude: parseFloat(a.longtitude),
-              openHour: a.open_hour,
-              closedHour: a.closed_hour,
-              city: a.city
-            }
-          }
-          if (a.auto_arranged == 1) {
-            event.color = '#2d4b91'
-          }
-          calendar.addEvent(event);
-        })
-        calendar.render();
-      }
-    }
-    xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('access_token')}`);
-    xhr.send();
+function getArrangements (calendar, tripId) {
+  //clear calendar
+  let allEvents = calendar.getEvents();
+  if (allEvents.length > 0){
+    allEvents.map(e => {
+      e.remove()
+    })
   }
-
-  function updateArrangement (isArranged, spotId, tripId, startTime, endTime, autoArranged) {
-    let data = { 
-      isArranged, 
-      spotId, 
-      tripId, 
-      startTime, 
-      endTime,
-      autoArranged
-    };
-    let xhr = new XMLHttpRequest();
-    xhr.open('PATCH', '/arrangement');
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState == 4) {
-        if (xhr.status == 200) {
-          console.log('update OK');
-        } else if (xhr.status == 403){
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: '您的權限不足',
-          })
+  //get all arrangements and push in calendar
+  let xhr = new XMLHttpRequest();
+  xhr.open('GET', `/arrangement?status=arranged&id=${tripId}`);
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      let arrangements = JSON.parse(xhr.responseText);
+      arrangements.map( a => {
+        let event = {
+          id: a.google_id,
+          title: a.name,
+          start: a.start_time,
+          end: a.end_time,
+          extendedProps: {
+            spotId: a.spot_id,
+            latitude: parseFloat(a.latitude),
+            longtitude: parseFloat(a.longtitude),
+            openHour: a.open_hour,
+            closedHour: a.closed_hour,
+            city: a.city
+          }
         }
-      }
-    };
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('access_token')}`);
-    xhr.send(JSON.stringify(data));
+        if (a.auto_arranged == 1) {
+          event.color = '#2d4b91'
+        }
+        calendar.addEvent(event);
+      })
+      calendar.render();
+    }
   }
+  xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('access_token')}`);
+  xhr.send();
+}
+
+function updateArrangement (isArranged, spotId, tripId, startTime, endTime, autoArranged) {
+  let data = { 
+    isArranged, 
+    spotId, 
+    tripId, 
+    startTime, 
+    endTime,
+    autoArranged
+  };
+  let xhr = new XMLHttpRequest();
+  xhr.open('PATCH', '/arrangement');
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4) {
+      if (xhr.status == 200) {
+        console.log('update OK');
+      } else if (xhr.status == 403){
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: '您的權限不足',
+        })
+      }
+    }
+  };
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('access_token')}`);
+  xhr.send(JSON.stringify(data));
+}
 
 let socket = io({
   auth: {
