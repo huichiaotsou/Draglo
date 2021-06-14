@@ -352,11 +352,13 @@ window.addEventListener('storage', function() {
     }
     
     for (let event of allEvents) {
+      console.log(event.start);
+      console.log(event.start.toISOString());
       data.iCalEvents.push(
         {
           summary: event.title,
-          start: event.start,
-          end: event.end,
+          start: event.start.toISOString(),
+          end: event.end.toISOString(),
           description: "開放時間: " + event.extendedProps.openHour +" ~ "+ event.extendedProps.closedHour,
           googleId: event.id
         }
@@ -560,8 +562,8 @@ socket.on('updateArrangement', (eventInfo)=>{
       data.iCalEvents.push(
         {
           summary: event.title,
-          start: event.start,
-          end: event.end,
+          start: event.start.toISOString(),
+          end: event.end.toISOString(),
           description: "開放時間: " + event.extendedProps.openHour +" ~ "+ event.extendedProps.closedHour,
           googleId: event.id
         }
