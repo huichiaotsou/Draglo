@@ -16,7 +16,6 @@ const createShareToken = async (tripId, shareToken) => {
 
 const updateShareAccess = async (userId, shareToken) => {
     try {
-        console.log(userId, shareToken);
         let checkTokenUsed = await pool.query('SELECT * FROM contributors WHERE share_token = ? AND token_used = 0', shareToken)
         if (checkTokenUsed[0].length > 0) {
             let conditions = [userId, shareToken]

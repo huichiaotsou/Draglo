@@ -1,5 +1,5 @@
 const ical = require('ical-generator');
-const tz = require('@touch4it/ical-timezones');
+const timezone = require('@touch4it/ical-timezones');
 
 const path = require('path');
 const Calendar = require('../model/calendar_model')
@@ -8,11 +8,9 @@ require('dotenv').config()
 const iCalendarFeed = async (req, res, next) => {
     try {
         let { tripId, tripName, iCalEvents } = req.body;
-        // const vtimezone = tz.getVtimezone('Asia/Taipei');
-
         const calendar = ical({
             name: tripName,
-            generator: tz,
+            generator: timezone,
             });
         
         for (let event of iCalEvents) {
@@ -20,8 +18,6 @@ const iCalendarFeed = async (req, res, next) => {
             delete event.googleId
             event.timezone = 'Asia/Taipei';
             calendar.createEvent(event);
-            console.log('iCalEvent: ');
-            console.log(event);
         }  
         let calendarId = await Calendar.generateCalendar(tripId);
         await calendar.save(path.join(__dirname + '../../../public/calendars/' + `./${calendarId}.ical`))

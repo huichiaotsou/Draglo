@@ -17,7 +17,6 @@ const createShareToken = async (req, res, next) => {
 
 const updateShareAccess = async (req, res, next) => {
     try {
-        console.log(req.body);
         let { shareToken } = req.body;
         let userId = req.user.id;
         jwt.verify(shareToken, process.env.SHARE_TOKEN_SECRET, async (err, result) => {

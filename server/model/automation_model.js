@@ -29,11 +29,10 @@ const getTravelingTime = async (prevSpotId, nextSpotId) => {
             queryStr: 'SELECT transit_time FROM itineraries WHERE start_google_id = ? AND end_google_id = ?',
             condition: [prevSpotId, nextSpotId],
         }
-        console.log(`SELECT transit_time FROM itineraries WHERE start_google_id = '${prevSpotId}' AND end_google_id = '${nextSpotId}'`);
         
         let result = await pool.query(sql.queryStr, sql.condition);
         if (result[0].length == 0) {
-            // get time from google API & store in DB
+            // get transit time from google API & store in DB
             let itinerary = await Google.directionAPI(prevSpotId, nextSpotId, 'transit', 0)
             if (itinerary.error) {
                 return Math.round((itinerary.distance / (1000 * 100)) * 60)
@@ -60,16 +59,13 @@ const arrangeAutomationResult = async (tripId, userId, dayId, startDate, wholeTr
             wholeTrip[unixDay].map(activity => {
                 let dateForStart = new Date(parseInt(unixDay));
                 let dateForEnd = new Date(parseInt(unixDay));
-                // let timezoneOffset = dateForStart.getTimezoneOffset() / 60;
-                let timeStart = dateForStart.setMinutes(dateForStart.getMinutes() + activity.startTime) //).setHours(dateForStart.getHours() + (timezoneOffset * 2))
-                let timeEnd = dateForEnd.setMinutes(dateForEnd.getMinutes() + activity.end) //).setHours(dateForEnd.getHours() + (timezoneOffset * 2))
+                let timeStart = dateForStart.setMinutes(dateForStart.getMinutes() + activity.startTime)
+                let timeEnd = dateForEnd.setMinutes(dateForEnd.getMinutes() + activity.end)
                 if (activity.activity != 'transit') {
                     values.push([tripId, userId, activity.spotId, new Date(timeStart), new Date(timeEnd), 1, 1])
                 }
             })
         })
-        console.log("arrangements raw data: ");
-        console.log(values);
         if(values.length > 0) {
             await pool.query(queryStr.concat(upsert), [values]);
         }

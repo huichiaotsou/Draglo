@@ -77,8 +77,6 @@ const sendEmail = async (title, email, shareToken) => {
           </a>`
   });
 
-  console.log("Message sent: %s", info.messageId);
-
   transporter.verify(function(error, success) {
       if (error) {
         console.log(error);

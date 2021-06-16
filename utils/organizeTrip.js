@@ -12,7 +12,6 @@ let removeSpot = (removedItem, itemsArray) => {
 
 let getNextSpotId = (currentSpotId, sequence, clusters, spotsInfo) => {
     if (Object.keys(clusters).length == 2 && clusters[sequence].length == 1) {
-        console.log("one last remaining spot: "+ clusters[sequence][0]);
         return clusters[sequence][0]
     }
 
@@ -22,23 +21,12 @@ let getNextSpotId = (currentSpotId, sequence, clusters, spotsInfo) => {
 
     let currentClusterVectors = clusters[sequence].map(id => spotsInfo[id].vector);
     
-    console.log("------------------------");
-    console.log("叢集中的景點：");
-    clusters[sequence].map(id => { 
-        console.log(spotsInfo[id].name);
-    })
-    console.log("------------------------");
-
     let currentSpotVector = spotsInfo[currentSpotId].vector;
     let nextSpotIndex = calculateCloserPoint(currentClusterVectors, currentSpotVector,'getClosePoint')
     if (nextSpotIndex == -1) { // => cluster length == 1
-        console.log("叢集已無其他景點，刪除叢集");
         delete clusters[sequence]; //remove used-up cluster
         sequence = clusters.sequence[1]; //assign new sequence
         clusters.sequence.splice(0,1); // remove the sequence of index 0
-        console.log("currentSpot: " + spotsInfo[currentSpotId].name + ", 新的cluster ID : " + sequence);
-        console.log("clusters:");
-        console.log(clusters);
         return getNextSpotId(currentSpotId, sequence, clusters, spotsInfo);
     } else {
         return clusters[sequence][nextSpotIndex];
@@ -53,8 +41,6 @@ let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spots
     let eventEndsAt = startTime + transitTime + spotInfo.lingerTime;
     //if startTime || eventEndsAt 介於 一行程的排程段, 新的start time 就是 卡住行程的結束
     let arrangedEventsOfDay = arrangedEvents[startDateUnix];
-    console.log('arrangedEventsOfDay: '); 
-    console.log(arrangedEventsOfDay);
     if (arrangedEventsOfDay) {
         for (let event of arrangedEventsOfDay) {
             if (
@@ -62,12 +48,8 @@ let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spots
                 (eventEndsAt <= event.end && eventEndsAt >= event.start)
             ) {
                 startTime = event.end;
-                console.log('new startTime: ');
-                console.log(startTime);
                 transitTime = await getTravelingTime(event.google_id, nextSpotId, spotsInfo);
                 eventEndsAt = startTime + transitTime + spotInfo.lingerTime;
-                console.log('new eventEndsAt: ');
-                console.log(eventEndsAt);
             }
         }
     }
@@ -82,23 +64,10 @@ let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spots
     }
     
     if (eventEndsAt > 1200 || startTime > spotInfo.closedHour || !open) {
-        console.log("-------------------------------------------");
-        console.log("【行程將會超時(8pm)、太晚去、今天沒開】");
-        console.log('今天是否營業:'); console.log(open);
-        console.log("當日已使用時間(mins)："); console.log(eventEndsAt);
-        console.log("此行程開始時間："); console.log(startTime);
-        console.log("景點關門時間："); console.log(spotInfo.closedHour);
         return -1;
     } else if (startTime + 60 < spotInfo.openHour) {
-        console.log("-------------------------------------------");
-        console.log("【太早去】");
-        console.log("此行程開始時間："); console.log(startTime);
-        console.log("景點開門時間："); console.log(spotInfo.openHour);
         return -2;
-
     } else if ( eventEndsAt > 1110) { //行程安排後，若會晚於 18:30， call it a day
-        console.log('【滿日】');
-        console.log("當日已使用時間(mins)："); console.log(eventEndsAt);
         return {
             keepArranging : false,
             arrangement : [
@@ -117,11 +86,7 @@ let arrangeNextActivity = async (dayId, startTime, prevSpotId, nextSpotId, spots
         }
     } else {
         if (startTime > 720 && startTime < 825) { //若行程開始於 12h ~ 13h45，新增午餐時間
-            console.log('新增午餐時間');
-            console.log('--------------------');
-            console.log('原本開始時間'); console.log(startTime);
             startTime = startTime + 60;
-            console.log("午餐後的開始時間"); console.log(startTime);
         }
         return {
             keepArranging: true,
@@ -158,11 +123,6 @@ const findPolePoints = (keys, spotsInfo) => {
             }
         })
     })
-    console.log('pole spots:');
-    polePointsKeys.map(p =>{
-        console.log(spotsInfo[p].name);
-    })
-    console.log('------------------');
     return polePointsKeys;
 }
 

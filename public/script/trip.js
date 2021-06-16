@@ -85,7 +85,6 @@ function setTripPeriod(position) {
             }
         })
         let settings = JSON.parse(localStorage.getItem('trip_settings'));
-        console.log(settings);
         let initStartDate = document.getElementById('start-date');
     initStartDate.value = settings['trip_start'].split('T')[0]
     let initEndDate = document.getElementById('end-date');
@@ -345,11 +344,7 @@ function shareTrip(){
                 })
                 let xhr = new XMLHttpRequest()
                 xhr.open('POST', `/share`);
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState == 4 && xhr.status == 200) {
-                        console.log('OK');
-                    }
-                }
+                // xhr.onreadystatechange = function () {}
                 xhr.setRequestHeader('Content-Type', 'application/json');
                 xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
                 xhr.send(JSON.stringify(data));
@@ -390,12 +385,8 @@ function NativeSignOut() {
 }
 
 function googleSignOut() {
-    console.log('google sign out');
     let auth2 = gapi.auth2.getAuthInstance();
-    console.log(auth2);
-    auth2.signOut().then(function () {
-      console.log('User signed out.');
-    });
+    auth2.signOut()
   }
 
   function onLoad() {
@@ -466,8 +457,6 @@ function createiCalFeed(data, action){
                         confirmButtonColor: '#3085d6',
                         confirmButtonText: `OK`
                     })
-                } else if (action == 'update') {
-                    console.log('iCal feed updated');
                 }
             } else if (xhr.status != 200) {
                 alert('update failed, please try again later')

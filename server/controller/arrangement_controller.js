@@ -46,8 +46,6 @@ const getArrangements = async (req, res, next) => {
                 }
             } else if (placeId) {
                 let checkArranged = await Arrangement.getArrangements(id, placeId);
-                console.log('checkArranged');
-                console.log(checkArranged);
                 if (checkArranged.length > 0) {
                     response.isArranged = true;
                 }
@@ -95,7 +93,7 @@ const removeArrangement = async (req, res, next) => {
         }
     } catch (error) {
         console.log(error);
-        next(error)
+        next(error);
     }
 }
 
@@ -115,7 +113,7 @@ const updateArrangement = async (req, res, next) => {
         }
     } catch (error) {
         console.log(error);
-        next(error)
+        next(error);
     }
 }
   

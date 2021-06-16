@@ -2,8 +2,6 @@ require('dotenv').config();
 const axios = require('axios');
 
 let directionAPI = async (prevSpotId, nextSpotId, mode, breaker) => {
-    console.log('A. directionAPI: ');
-    console.log('A-1. FROM '+ prevSpotId + ' TO ' + nextSpotId);
     let directionURL = process.env.DIRECTION_API + 'origin=place_id:' + prevSpotId +'&destination=place_id:' + nextSpotId + '&mode=' + mode
     let travelTime = await axios.get(directionURL)
         .then((res) => {
@@ -15,8 +13,6 @@ let directionAPI = async (prevSpotId, nextSpotId, mode, breaker) => {
                 }
             }
             if (data.available_travel_modes) { //no public transit found
-                console.log('A-2. no public transit found ');
-                console.log('A-3. use: '+ data.available_travel_modes[0]);
                 breaker += 1
                 return directionAPI(prevSpotId, nextSpotId, data.available_travel_modes[0], breaker)
             }

@@ -5,13 +5,7 @@ const {
 
 function getClusters(spotIds, vectors, k, startSpotId){
     try {
-        console.log("k: " + k);
         if(k <= 1 || k > spotIds.length) {
-            console.log('k <= 1, k > number of spots');
-            console.log({
-                0: spotIds,
-                sequence: [0]
-            });
             return {
                 0: spotIds,
                 sequence: [0]
@@ -72,8 +66,6 @@ function getClusters(spotIds, vectors, k, startSpotId){
                 }
             }
             if (countStableCentroids == k) {
-                console.log('kmeans: clusters are established');
-                console.log('--------------------------------');
                 keepTuning = false;
     
                 let centroidsForSequence = [ ...centroids ]
@@ -88,14 +80,11 @@ function getClusters(spotIds, vectors, k, startSpotId){
                         }
                     }
                 }
-                console.log("kmeans result: ");
-                console.log(groupedPlaces);
                 return groupedPlaces;
             } else {
                 for (let i = 0; i < centroids.length; i++){
                     centroids[i] = newCentroids[i]
                 }
-                console.log('kmeans: keep tuning');
                 keepTuning = true;
             }
         }

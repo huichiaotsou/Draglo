@@ -65,7 +65,6 @@ window.addEventListener('storage', function() {
       }
     },
     eventReceive: function(info) {
-      console.log('eventReceive triggered');
       //change is_arranged = 1 and record period
       let { spotId } = info.event.extendedProps
       let { start, end } = info.event
@@ -92,7 +91,6 @@ window.addEventListener('storage', function() {
       socket.emit('refreshSpots', tripId);
     },
     eventDrop: function(info) {
-      console.log('eventDrop triggered');
       //change arrangement period
       let { spotId } = info.event.extendedProps
       let { start, end } = info.event
@@ -118,7 +116,6 @@ window.addEventListener('storage', function() {
       socket.emit('updateArrangement', eventInfo)
     },
     eventResize : function(info) {
-      console.log('eventResize triggered');
       //change arrangement period
       let { spotId } = info.event.extendedProps
       let { start, end } = info.event
@@ -273,15 +270,10 @@ window.addEventListener('storage', function() {
       previousCityVector = [lastEvent.extendedProps.latitude, lastEvent.extendedProps.longtitude] 
       let end = new Date(lastEvent.end)
       end.setUTCHours(0,0,0,0)
-      console.log('end after setUTCHours 0000:');
-      console.log(end);
       startDate = new Date (end.setUTCDate(end.getUTCDate() +1))
       startDate.setHours(0,0,0,0)
       let lastSpotCity = lastEvent.extendedProps.city
-      console.log(lastSpotCity);
-      console.log(lastEvent.extendedProps);
       if (lastSpotCity == cityName) {
-        console.log('last city and arranging city matched');
         startDate = new Date(new Date(start).setHours(0,0,0,0));
       }
 
@@ -314,13 +306,8 @@ window.addEventListener('storage', function() {
         }
 
       })
-
-      console.log(arrangedEvents);
-
     }
     startDate = startDate.toString()
-    console.log('final start Date:');
-    console.log(startDate);
     Swal.fire({
       position: 'top-end',
       title: '目前行程計算的設定為：',
@@ -352,8 +339,6 @@ window.addEventListener('storage', function() {
     }
     
     for (let event of allEvents) {
-      console.log(event.start);
-      console.log(event.start.toISOString());
       data.iCalEvents.push(
         {
           summary: event.title,
@@ -488,7 +473,6 @@ function updateArrangement (isArranged, spotId, tripId, startTime, endTime, auto
   xhr.onreadystatechange = function () {
     if (xhr.readyState == 4) {
       if (xhr.status == 200) {
-        console.log('update OK');
       } else if (xhr.status == 403){
         Swal.fire({
           icon: 'error',
@@ -514,24 +498,20 @@ socket.on('connect', function(){
 });
 
 socket.on('join-trip-message', (msg)=>{
-  console.log(msg);
   getPendingArrangements(null, tripId)
 })
 
 socket.on('room-brocast', (msg)=>{
-  console.log(msg);
   getPendingArrangements(null, tripId)
 })
 
 socket.on('refreshPendingArrangements', (tripId)=>{
-    console.log('refresh pending arrangements');
     getPendingArrangements(null, tripId)
 })
 
 socket.on('updateArrangement', (eventInfo)=>{
   let event = calendar.getEventById(eventInfo.id)
   if (event) event.remove()
-  console.log('event is removed');
   let { extendedProps } = eventInfo
   calendar.addEvent({
     id: eventInfo.id,
@@ -549,7 +529,6 @@ socket.on('updateArrangement', (eventInfo)=>{
     }
   });
   calendar.render();
-  console.log('event is re added');
 
   let allEvents = calendar.getEvents()
     let data = {
@@ -580,7 +559,6 @@ socket.on('updateArrangement', (eventInfo)=>{
   })
 
   socket.on('renderCalendar', (tripId)=>{
-    console.log('render calendar socket triggered');
     getArrangements(calendar, tripId);
   })
 
