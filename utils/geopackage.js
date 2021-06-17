@@ -1,4 +1,4 @@
-//https://www.itread01.com/content/1541853492.html
+// https://www.itread01.com/content/1541853492.html
 function getRad(d){
     var PI = Math.PI;
     return d*PI/180.0;
