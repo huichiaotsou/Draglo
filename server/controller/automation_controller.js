@@ -31,8 +31,8 @@ const calculateTrips = async (req, res, next) => {
     const { nightEvents, remainingSpots } = otherEvents;
 
     // record pending arrangements
-    let pendingArrangement = [];
-    let tooEarlyArrangement = [];
+    let pendingArrangements = [];
+    let tooEarlyArrangements = [];
 
     // initialize count for each place id, stored in object
     const tooEarlyArrangementCount = {};
@@ -77,7 +77,7 @@ const calculateTrips = async (req, res, next) => {
         }
         if (open) {
           if (spotInfo.openHour > startTime + 120) { // greedy: if startSpot opens within 2 hours
-            tooEarlyArrangement.push(startSpotId);
+            tooEarlyArrangements.push(startSpotId);
             tooEarlyArrangementCount[startSpotId] += 1;
 
             removeSpot(startSpotId, clusters[clusters.sequence[0]]);
@@ -124,7 +124,7 @@ const calculateTrips = async (req, res, next) => {
           }
         } else {
           // remove spot from cluster and find the next spot
-          pendingArrangement.push(startSpotId);
+          pendingArrangements.push(startSpotId);
           removeSpot(startSpotId, googleIds);
           removeSpot(startSpotId, clusters[clusters.sequence[0]]);
           if (clusters[clusters.sequence[0]].length === 0) {
@@ -151,21 +151,21 @@ const calculateTrips = async (req, res, next) => {
         // eslint-disable-next-line max-len
         const nextActivity = await arrangeNextActivity(dayId, startTime, startSpotId, nextSpotId, spotsInfo, arrangedEvents, startDateUnix);
 
-        if (tooEarlyArrangement.length > 0) { // add back too early arrangements to cluster
-          tooEarlyArrangement.forEach((googleId) => {
+        if (tooEarlyArrangements.length > 0) { // add back too early arrangements to cluster
+          tooEarlyArrangements.forEach((googleId) => {
             if (tooEarlyArrangementCount[googleId] < 7) {
               const sequence = clusters.sequence[0];
-              clusters[sequence] = clusters[sequence].concat(tooEarlyArrangement);
+              clusters[sequence] = clusters[sequence].concat(tooEarlyArrangements);
             }
           });
-          googleIds = googleIds.concat(tooEarlyArrangement);
-          tooEarlyArrangement = [];
+          googleIds = googleIds.concat(tooEarlyArrangements);
+          tooEarlyArrangements = [];
         }
 
         // -1 = arrangement later than 8pm / later than spot open hour / not open
         if (nextActivity === -1) {
           // remove and jump to next spot till end between 6:30 ~ 8:00 pm
-          pendingArrangement.push(nextSpotId);
+          pendingArrangements.push(nextSpotId);
           removeSpot(nextSpotId, clusters[clusters.sequence[0]]);
           removeSpot(nextSpotId, googleIds);
           if (clusters[clusters.sequence[0]].length === 0) {
@@ -174,7 +174,7 @@ const calculateTrips = async (req, res, next) => {
           }
           // startSpotId = nextSpotId;
         } else if (nextActivity === -2) { // 太早去的行程放進too early稍待安排
-          tooEarlyArrangement.push(nextSpotId);
+          tooEarlyArrangements.push(nextSpotId);
           tooEarlyArrangementCount[nextSpotId] += 1;
 
           removeSpot(nextSpotId, clusters[clusters.sequence[0]]);
@@ -201,9 +201,9 @@ const calculateTrips = async (req, res, next) => {
         }
       }
 
-      if (pendingArrangement.length > 0) { // add back pending arrangements to full list
-        googleIds = googleIds.concat(pendingArrangement);
-        pendingArrangement = [];
+      if (pendingArrangements.length > 0) { // add back pending arrangements to full list
+        googleIds = googleIds.concat(pendingArrangements);
+        pendingArrangements = [];
       }
 
       dayId += 1; // move to next dat
@@ -215,7 +215,7 @@ const calculateTrips = async (req, res, next) => {
       tripDuration -= 1;
     }
 
-    if (googleIds.length > 0 || tooEarlyArrangement.length > 0 || pendingArrangement.length > 0) {
+    if (googleIds.length > 0 || tooEarlyArrangements.length > 0 || pendingArrangements.length > 0) {
       if (googleIds.length > 0) {
         for (const id of googleIds) {
           const remainingSpotInfo = await Automation.getSpotInfo(id);
@@ -223,15 +223,15 @@ const calculateTrips = async (req, res, next) => {
           remainingSpots.push(remainingSpotInfo);
         }
       }
-      if (tooEarlyArrangement.length > 0) {
-        for (const id of tooEarlyArrangement) {
+      if (tooEarlyArrangements.length > 0) {
+        for (const id of tooEarlyArrangements) {
           const remainingSpotInfo = await Automation.getSpotInfo(id);
           remainingSpotInfo.activity = spotsInfo[id].name;
           remainingSpots.push(remainingSpotInfo);
         }
       }
-      if (pendingArrangement.length > 0) {
-        for (const id of pendingArrangement) {
+      if (pendingArrangements.length > 0) {
+        for (const id of pendingArrangements) {
           const remainingSpotInfo = await Automation.getSpotInfo(id);
           remainingSpotInfo.activity = spotsInfo[id].name;
           remainingSpots.push(remainingSpotInfo);
