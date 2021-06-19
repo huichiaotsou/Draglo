@@ -86,12 +86,12 @@ const removeArrangement = async (req, res, next) => {
   try {
     const {
       spotId, tripId,
-    } = req.body;
+    } = req.params;
     const result = await Arrangement.removeArrangement(spotId, tripId);
     if (result.error) {
       res.sendStatus(500);
     } else {
-      res.sendStatus(200);
+      res.sendStatus(204);
     }
   } catch (error) {
     next(error);
@@ -101,19 +101,22 @@ const removeArrangement = async (req, res, next) => {
 const updateArrangement = async (req, res, next) => {
   try {
     const {
-      isArranged, spotId, tripId, startTime, endTime, autoArranged,
+      isArranged, startTime, endTime, autoArranged,
     } = req.body;
+    const {
+      spotId, tripId,
+    } = req.params;
     let result;
-    if (spotId) {
+    if (spotId === 'cleartrip') {
+      result = await Arrangement.clearArrangement(tripId);
+    } else {
       result = await Arrangement
         .updateArrangement(isArranged, spotId, tripId, startTime, endTime, autoArranged);
-    } else {
-      result = await Arrangement.clearArrangement(tripId);
     }
     if (result.error) {
       res.sendStatus(500);
     } else {
-      res.sendStatus(200);
+      res.sendStatus(204);
     }
   } catch (error) {
     next(error);

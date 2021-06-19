@@ -8,16 +8,20 @@ const { addSpot } = require('../controller/spot_controller');
 
 const router = express.Router();
 
-router.route('/trip')
-  .get(verifyToken, verifyAccess, getTripSettings)
-  .patch(verifyToken, verifyAccess, modifyTripSettings);
-
 router.route('/spot')
   .post(verifyToken, verifyAccess, addSpot);
 
 router.route('/arrangement')
-  .get(verifyToken, verifyAccess, getArrangements)
-  .patch(verifyToken, verifyAccess, updateArrangement)
-  .delete(verifyToken, verifyAccess, removeArrangement);
+  .get(verifyToken, verifyAccess, getArrangements);
+
+router.route('/arrangement/:tripId/:spotId')
+  .delete(verifyToken, verifyAccess, removeArrangement)
+  .patch(verifyToken, verifyAccess, updateArrangement);
+
+router.route('/trip')
+  .get(verifyToken, verifyAccess, getTripSettings);
+
+router.route('/trip/:tripId')
+  .patch(verifyToken, verifyAccess, modifyTripSettings);
 
 module.exports = router;

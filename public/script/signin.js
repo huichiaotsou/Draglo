@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 let accessToken = localStorage.getItem('access_token')
 //document.cookie
 if ( accessToken ) {
@@ -54,7 +56,7 @@ function signIn(gmail) {
   
   //AJAX
   const xhr = new XMLHttpRequest();
-  xhr.open('POST', '/signin');
+  xhr.open('POST', '/1.0/signin');
   xhr.setRequestHeader('Content-Type', 'application/json');
 
   xhr.onreadystatechange = function () {

@@ -63,7 +63,7 @@ const addSpot = async (req, res, next) => {
           });
         } else {
           await Spot.addSpot(spotInfo, initArrangements);
-          res.sendStatus(200);
+          res.sendStatus(204);
         }
       });
   } catch (error) {

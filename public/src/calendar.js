@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Calendar } from '@fullcalendar/core';
 import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -428,7 +429,7 @@ function getArrangements (calendar, tripId) {
   }
   //get all arrangements and push in calendar
   let xhr = new XMLHttpRequest();
-  xhr.open('GET', `/arrangement?status=arranged&id=${tripId}`);
+  xhr.open('GET', `/1.0/arrangement?status=arranged&id=${tripId}`);
   xhr.onreadystatechange = function () {
     if (xhr.readyState == 4 && xhr.status == 200) {
       let arrangements = JSON.parse(xhr.responseText);
@@ -469,10 +470,11 @@ function updateArrangement (isArranged, spotId, tripId, startTime, endTime, auto
     autoArranged
   };
   let xhr = new XMLHttpRequest();
-  xhr.open('PATCH', '/arrangement');
+  let requestRoute = `/1.0/arrangement/${tripId}/${spotId}`
+  xhr.open('PATCH', requestRoute);
   xhr.onreadystatechange = function () {
     if (xhr.readyState == 4) {
-      if (xhr.status == 200) {
+      if (xhr.status == 204) {
       } else if (xhr.status == 403){
         Swal.fire({
           icon: 'error',
@@ -505,8 +507,9 @@ socket.on('room-brocast', (msg)=>{
   getPendingArrangements(null, tripId)
 })
 
-socket.on('refreshPendingArrangements', (tripId)=>{
-    getPendingArrangements(null, tripId)
+socket.on('refreshSpots', (tripId)=>{
+  console.log('socket.on_refreshSpots');
+  getPendingArrangements(null, tripId)
 })
 
 socket.on('updateArrangement', (eventInfo)=>{

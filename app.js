@@ -17,12 +17,14 @@ const server = app.listen(4000, () => {
 
 socket.init(server);
 
-app.use('/', rateLimiter,
+const apiVersion = process.env.API_VERSION;
+
+app.use(`/${apiVersion}`, rateLimiter,
   [
     require('./server/route/user_route'),
     require('./server/route/share_route'),
-    require('./server/route/trip_route'),
     require('./server/route/automation_route'),
+    require('./server/route/trip_route'),
   ]);
 
 // eslint-disable-next-line no-unused-vars

@@ -41,34 +41,37 @@ const getTripSettings = async (req, res, next) => {
 const modifyTripSettings = async (req, res, next) => {
   try {
     const {
-      tripId, modify, tripName, archived,
+      modify, tripName, archived,
     } = req.body;
+    const {
+      tripId,
+    } = req.params;
 
     const tripStart = new Date(req.body.tripStart);
     const tripEnd = new Date(req.body.tripEnd);
     if ((tripEnd - tripStart) / (1000 * 60 * 60 * 24) > 20) {
-      res.sendStatus(500);
+      res.status(500).send('too long period');
     }
     if (modify === 'duration') {
       const result = await Trip.updateDuration(tripId, tripStart, tripEnd);
       if (result.error) {
-        res.sendStatus(500);
+        res.status(500).send('server error, please try again later');
       } else {
-        res.sendStatus(200);
+        res.sendStatus(204);
       }
     } else if (modify === 'name') {
       const result = await Trip.updateName(tripId, tripName);
       if (result.error) {
-        res.sendStatus(500);
+        res.status(500).send('server error, please try again later');
       } else {
-        res.sendStatus(200);
+        res.sendStatus(204);
       }
     } else if (modify === 'archived') {
       const result = await Trip.archiveTrip(tripId, archived);
       if (result.error) {
-        res.sendStatus(500);
+        res.status(500).send('server error, please try again later');
       } else {
-        res.sendStatus(200);
+        res.sendStatus(204);
       }
     }
   } catch (error) {

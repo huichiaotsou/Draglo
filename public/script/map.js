@@ -1,3 +1,4 @@
+/* eslint-disable */
 function backToDashboard() {
   location.assign('/dashboard.html')
 }
@@ -216,10 +217,10 @@ function saveSpotInfo(spotName, placeId) {
     tripId: tripId
   }
   let xhr = new XMLHttpRequest();
-  xhr.open('POST', '/spot');
+  xhr.open('POST', '/1.0/spot');
   xhr.onreadystatechange = function () {
     if(xhr.readyState == 4) {
-      if(xhr.status == 200) {
+      if(xhr.status == 204) {
         getPendingArrangements(null, data.tripId)
         socket.emit('refreshSpots', data.tripId)
       } else if (xhr.status == 400){
@@ -244,13 +245,14 @@ function saveSpotInfo(spotName, placeId) {
 }
 
 function getPendingArrangements(city, tripId, placeId) {
+  console.log('get pending arrangements');
   let xhr = new XMLHttpRequest();
   if (city) {
-    xhr.open('GET', `/arrangement?status=pending&id=${tripId}&city=${city}`);
+    xhr.open('GET', `/1.0/arrangement?status=pending&id=${tripId}&city=${city}`);
   } else if (placeId) {
-    xhr.open('GET', `/arrangement?status=pending&id=${tripId}&placeId=${placeId}`);
+    xhr.open('GET', `/1.0/arrangement?status=pending&id=${tripId}&placeId=${placeId}`);
   } else {
-    xhr.open('GET', `/arrangement?status=pending&id=${tripId}`);
+    xhr.open('GET', `/1.0/arrangement?status=pending&id=${tripId}`);
   }
   xhr.onreadystatechange = function () {
     if (xhr.readyState == 4) {
@@ -313,11 +315,6 @@ function getPendingArrangements(city, tripId, placeId) {
           spotList.innerHTML = `
           <div style='color: grey; padding-top: 5%;'>此景點已安排至行程中</div>`
         }
-        if (!city && spots.length == 0) {
-          spotList.innerHTML = `
-          <div style='color: grey; padding-top: 5%;'>目前清單中沒有景點
-          <br>請在地圖搜尋後點擊加入</div>`
-        }
       } else {
         Swal.fire({
           icon: 'error',
@@ -376,21 +373,17 @@ function removeEvent(spotId, tripId) {
     confirmButtonText: 'OK'
   }).then((result) => {
     if (result.isConfirmed) {
-      //set is_arranged to -1 and reload spot list
-      let data = {
-        spotId,
-        tripId
-      }
       let xhr = new XMLHttpRequest();
-      xhr.open('DELETE', '/arrangement');
+      let requestRoute = `/1.0/arrangement/${tripId}/${spotId}`;
+      xhr.open('DELETE', requestRoute);
       xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
+        if (xhr.readyState == 4 && xhr.status == 204) {
             socket.emit('refreshSpots', tripId)
         }
       }
       xhr.setRequestHeader('Content-Type', 'application/json');
       xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
-      xhr.send(JSON.stringify(data));      
+      xhr.send();
 
     }
   })

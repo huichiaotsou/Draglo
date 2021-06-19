@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 //veriry identity, if ok, render user's trips / if not, alert: please log in again
 let accessToken = localStorage.getItem('access_token')
 // document.cookie.split('=')[1];
@@ -9,7 +11,7 @@ if (accessToken) {
 
 function createTrip() {
     let xhr = new XMLHttpRequest();
-    xhr.open('POST', '/trip');
+    xhr.open('POST', '/1.0/trip');
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
           if (xhr.status != 200) {
@@ -65,16 +67,16 @@ function getDashboard(behavior){
     let keyword = document.getElementById('keyword').value;
     let xhr = new XMLHttpRequest();
     if (keyword) {
-        xhr.open('GET', `/dashboard?keyword=${keyword}`);
+        xhr.open('GET', `/1.0/dashboard?keyword=${keyword}`);
         container.innerHTML = "";
     } else if (behavior == 'archived'){
-        xhr.open('GET', '/dashboard?archived=true');
+        xhr.open('GET', '/1.0/dashboard?archived=true');
         container.innerHTML = "";
     } else if (behavior == 'shared') {
-        xhr.open('GET', '/dashboard?shared=true');
+        xhr.open('GET', '/1.0/dashboard?shared=true');
         container.innerHTML = "";
     } else {
-        xhr.open('GET', '/dashboard');
+        xhr.open('GET', '/1.0/dashboard');
     }
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {

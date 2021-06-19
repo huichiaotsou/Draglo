@@ -1,6 +1,7 @@
 /* eslint-disable no-loop-func */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-continue */
+
 const Automation = require('../model/automation_model');
 const Kmeans = require('../../utils/kmeans');
 const {
@@ -34,7 +35,7 @@ const calculateTrips = async (req, res, next) => {
     let pendingArrangements = [];
     let tooEarlyArrangements = [];
 
-    // initialize count for each place id, stored in object
+    // initialize count for each place id, stored in an object
     const tooEarlyArrangementCount = {};
     googleIds.forEach((id) => { tooEarlyArrangementCount[id] = 0; });
 
@@ -76,7 +77,8 @@ const calculateTrips = async (req, res, next) => {
           }
         }
         if (open) {
-          if (spotInfo.openHour > startTime + 120) { // greedy: if startSpot opens within 2 hours
+          // greedy: if startSpot opens within 2 hours
+          if (spotInfo.openHour > startTime + (2 * 60)) {
             tooEarlyArrangements.push(startSpotId);
             tooEarlyArrangementCount[startSpotId] += 1;
 

@@ -1,5 +1,5 @@
 const express = require('express');
-const { verifyToken, verifyAccess } = require('../../utils/utils');
+const { verifyAccess } = require('../../utils/utils');
 
 // controllers
 const { createShareToken, updateShareAccess } = require('../controller/share_controller');
@@ -7,7 +7,7 @@ const { createShareToken, updateShareAccess } = require('../controller/share_con
 const router = express.Router();
 
 router.route('/share')
-  .post(verifyToken, verifyAccess, createShareToken)
-  .patch(verifyToken, updateShareAccess);
+  .patch(updateShareAccess)
+  .post(verifyAccess, createShareToken);
 
 module.exports = router;

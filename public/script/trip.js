@@ -1,3 +1,4 @@
+/* eslint-disable */
 const accessToken = localStorage.getItem('access_token')
 const urlParams = new URLSearchParams(window.location.search);
 const tripId = urlParams.get('id');
@@ -78,7 +79,7 @@ function setTripPeriod(position) {
                     endDate = new Date(endDate + 'T00:00:00.000Z')
                     endDate.setDate(endDate.getDate() + 1)
                     modifyTripDuration(tripId, startDate, endDate) 
-                    location.assign(`/trip.html?id=${tripId}`)
+                    
                 }
             } else if (result.isDenied) {
                 location.assign(`/trip.html?id=${tripId}`)
@@ -93,7 +94,7 @@ function setTripPeriod(position) {
 
 function getTripSettings(accessToken, tripId) {
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', `/trip?id=${tripId}`);
+    xhr.open('GET', `/1.0/trip?id=${tripId}`);
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
           if (xhr.status == 403) {
@@ -167,16 +168,16 @@ function changeDayStart() {
 
 function modifyTripDuration(tripId, tripStart, tripEnd) {
     let data = { 
-        tripId,
         tripStart,
         tripEnd,
         modify: 'duration'
     }
     let xhr = new XMLHttpRequest();
-    xhr.open('PATCH', '/trip')
+    let requestRoute = `/1.0/trip/${tripId}`
+    xhr.open('PATCH', requestRoute);
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
-            if (xhr.status == 200) {
+            if (xhr.status == 204) {
                 getTripSettings(accessToken, tripId);
                 Swal.fire({
                     position: 'top-end',
@@ -185,6 +186,9 @@ function modifyTripDuration(tripId, tripStart, tripEnd) {
                     showConfirmButton: false,
                     timer: 1000
                 })
+                setTimeout(() => {
+                  location.assign(`/trip.html?id=${tripId}`)
+                }, 700);
             } else if (xhr.status == 403) {
                 Swal.fire({
                     icon: 'error',
@@ -192,7 +196,7 @@ function modifyTripDuration(tripId, tripStart, tripEnd) {
                     text: '您的權限不足',
                   })                  
             } else {
-                alert('Server Error, please try again later')
+                alert(xhr.responseText);
             }
         }
     }
@@ -203,15 +207,15 @@ function modifyTripDuration(tripId, tripStart, tripEnd) {
 
 function updateTripName() {
     let data = {
-        tripId,
         tripName: document.getElementById('trip-name').value,
         modify: "name"
     }
     let xhr = new XMLHttpRequest();
-    xhr.open('PATCH', '/trip');
+    let requestRoute = `/1.0/trip/${tripId}`
+    xhr.open('PATCH', requestRoute);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
-            if (xhr.status == 200) {
+            if (xhr.status == 204) {
                 getTripSettings(accessToken, tripId);
                 Swal.fire({
                     icon: 'success',
@@ -238,16 +242,16 @@ function updateTripName() {
 //action = 2, deleted
 function archiveTrip(action) {
     let data = {
-        tripId,
         archived: action,
         tripName: document.getElementById('trip-name').value,
         modify: "archived",
     }
     let xhr = new XMLHttpRequest();
-    xhr.open('PATCH', '/trip');
+    let requestRoute = `/1.0/trip/${tripId}`
+    xhr.open('PATCH', requestRoute);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
-            if (xhr.status == 200) {
+            if (xhr.status == 204) {
                 getTripSettings(accessToken, tripId);
                 if (action == 1) {
                     Swal.fire({
@@ -343,8 +347,7 @@ function shareTrip(){
                     timer: 1000
                 })
                 let xhr = new XMLHttpRequest()
-                xhr.open('POST', `/share`);
-                // xhr.onreadystatechange = function () {}
+                xhr.open('POST', `/1.0/share`);
                 xhr.setRequestHeader('Content-Type', 'application/json');
                 xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
                 xhr.send(JSON.stringify(data));
@@ -413,10 +416,11 @@ function clearTrip() {
       }).then((result) => {
         if (result.isConfirmed) {
             let xhr = new XMLHttpRequest()
-            xhr.open('PATCH', '/arrangement');
+            let requestRoute = `/1.0/arrangement/${tripId}/cleartrip`
+            xhr.open('PATCH', requestRoute);
             xhr.onreadystatechange = function () {
               if (xhr.readyState == 4) {
-                if (xhr.status == 200) {
+                if (xhr.status == 204) {
                     location.reload()
                 } else if (xhr.status == 403){
                   Swal.fire({
@@ -429,14 +433,14 @@ function clearTrip() {
             };
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
-            xhr.send(JSON.stringify({tripId}));
+            xhr.send();
         }
       })
 }
 
 function createiCalFeed(data, action){
     let xhr = new XMLHttpRequest();
-    xhr.open('POST', '/calendar');
+    xhr.open('POST', '/1.0/calendar');
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
             if (xhr.status == 200) {

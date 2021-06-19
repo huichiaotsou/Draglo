@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 function switchAutomationCity(cityName) {
     let calculateTripBtn = document.getElementById('calculateTrip');
     calculateTripBtn.dataset.city = cityName;
@@ -52,7 +54,7 @@ function calculateTrip (cityName, startDate, dayStart, previousCityVector, arran
         }
     })
     let xhr = new XMLHttpRequest();
-    xhr.open('POST', '/automation')
+    xhr.open('POST', '/1.0/automation')
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             let otherEvents = JSON.parse(xhr.responseText);

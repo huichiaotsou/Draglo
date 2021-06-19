@@ -2,15 +2,14 @@
     const urlParams = new URLSearchParams(window.location.search);
     const shareToken = urlParams.get('code');
     let accessToken = localStorage.getItem('access_token')
-    // document.cookie.split('=')[1];
 
     if (accessToken) {
         //send shareToken and code to patch /share
         let xhr = new XMLHttpRequest()
-        xhr.open('PATCH', `/share`);
+        xhr.open('PATCH', '/1.0/share');
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4) {
-                if (xhr.status == 200) {
+                if (xhr.status == 204) {
                     let response = JSON.parse(xhr.responseText)
                     location.assign(`/trip.html?id=${response.tripId}`);
                 } else if (xhr.status != 200) {
