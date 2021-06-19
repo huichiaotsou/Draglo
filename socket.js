@@ -19,13 +19,13 @@ socket.init = (server) => {
     console.log('user connected at', url);
     const tripId = url.split('=')[1];
 
-    socket.on('joinTrip', (tripId) => {
+    socket.on('joinTrip', () => {
       socket.join(tripId);
       socket.emit('join-trip-message', `You've join No. ${tripId} Trip`);
       io.sockets.to(tripId).emit('room-brocast', 'user has join this room');
     });
 
-    socket.on('refreshSpots', (tripId) => {
+    socket.on('refreshSpots', () => {
       console.log(`${tripId} refreshSpots --> tripId received on backend`);
       io.to(tripId).emit('refreshSpots', tripId);
     });
@@ -40,8 +40,8 @@ socket.init = (server) => {
       io.to(tripId).emit('removeArrangement', eventId);
     });
 
-    socket.on('renderCalendar', (tripId) => {
-      console.log(tripId, 'renderCalendar --> tripId received on backend');
+    socket.on('renderCalendar', () => {
+      console.log('renderCalendar --> tripId received on backend');
       io.to(tripId).emit('renderCalendar', tripId);
     });
   });

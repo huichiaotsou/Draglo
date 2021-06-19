@@ -3,7 +3,7 @@ const { pool } = require('./mysql');
 const getDashboard = async (userId, behavior, keyword) => {
   try {
     const sql = {
-      query: 'SELECT trips.id AS trip_id, name, image, trip_start, trip_end FROM trips ',
+      query: 'SELECT DISTINCT trips.id AS trip_id, name, image, trip_start, trip_end FROM trips ',
       conditions: [0, userId],
     };
     if (behavior === 'search') {

@@ -331,7 +331,7 @@ function shareTrip(){
     }).then((result) => {
         if (result.isConfirmed) {
             let email = document.getElementById('share-email').value
-            if (email && email.split('@').length > 2) {
+            if (email && email.split('@').length > 1) {
                 let tripSettings = JSON.parse(localStorage.getItem('trip_settings'))
                 let data = {
                     tripId: tripId,
@@ -347,7 +347,7 @@ function shareTrip(){
                     timer: 1000
                 })
                 let xhr = new XMLHttpRequest()
-                xhr.open('POST', `/1.0/share`);
+                xhr.open('POST', '/1.0/share');
                 xhr.setRequestHeader('Content-Type', 'application/json');
                 xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`);
                 xhr.send(JSON.stringify(data));
@@ -421,7 +421,7 @@ function clearTrip() {
             xhr.onreadystatechange = function () {
               if (xhr.readyState == 4) {
                 if (xhr.status == 204) {
-                    location.reload()
+                  location.reload()
                 } else if (xhr.status == 403){
                   Swal.fire({
                     icon: 'error',

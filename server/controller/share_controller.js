@@ -26,9 +26,9 @@ const updateShareAccess = async (req, res, next) => {
       }
       const update = await Share.updateShareAccess(userId, shareToken);
       if (update.error) {
-        res.status(403).send(update.error);
+        res.status(500).send(update.error);
       } else {
-        res.status(204).send({ tripId: result.tripId });
+        res.status(200).send({ tripId: result.tripId });
       }
     });
   } catch (error) {

@@ -9,10 +9,11 @@
         xhr.open('PATCH', '/1.0/share');
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4) {
-                if (xhr.status == 204) {
+                if (xhr.status == 200) {
                     let response = JSON.parse(xhr.responseText)
                     location.assign(`/trip.html?id=${response.tripId}`);
                 } else if (xhr.status != 200) {
+                    alert(xhr.status)
                     alert(xhr.responseText)
                 }
             }
