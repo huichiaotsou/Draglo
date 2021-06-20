@@ -11,8 +11,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static('public'));
 
-const server = app.listen(4000, () => {
-  console.log('app running on port 4000');
+const { NODE_ENV, PORT_TEST, PORT } = process.env;
+const port = NODE_ENV === 'test' ? PORT_TEST : PORT;
+
+const server = app.listen(port, () => {
+  console.log(`app running on port ${port}`);
 });
 
 socket.init(server);
@@ -30,9 +33,11 @@ app.use(`/${apiVersion}`, rateLimiter,
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   console.log(err);
-  res.sendStatus(500);
+  res.status(500).send('server error, please try again later');
 });
 
 app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, './public', '404.html'));
 });
+
+module.exports = app;

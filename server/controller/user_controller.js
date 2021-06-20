@@ -71,16 +71,20 @@ const signUp = async (req, res, next) => {
 
 const signIn = async (req, res, next) => {
   try {
-    const { email, password, shareToken } = req.body;
+    const {
+      email, password, shareToken, provider,
+    } = req.body;
+
     if (!validator.validate(email)) {
       res.sendStatus(400);
     }
     let result;
-    if (password === 'googleSignInDraglo') {
+    if (provider === 'Google') {
       result = await User.googleSignIn(email);
     } else {
       result = await User.nativeSignIn(email, password);
     }
+
     if (result.error) {
       res.status(result.statusCode).send(result.error);
     } else {

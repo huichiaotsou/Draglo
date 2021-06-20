@@ -78,17 +78,18 @@ const updateDuration = async (tripId, tripStart, tripEnd) => {
     await pool.query('UPDATE trips SET trip_start = ?, trip_end = ? WHERE id = ?', conditions);
     return true;
   } catch (error) {
-    return { error };
+    console.log(error);
+    throw new Error({ error });
   }
 };
 
 const updateName = async (tripId, tripName) => {
   try {
-    const conditions = [tripName, tripId];
-    await pool.query('UPDATE trips SET name = ? WHERE id = ?', conditions);
+    await pool.query('UPDATE trips SET name = ? WHERE id = ?', [tripName, tripId]);
     return true;
   } catch (error) {
-    return { error };
+    console.log(error);
+    throw new Error({ error });
   }
 };
 
@@ -98,7 +99,8 @@ const archiveTrip = async (tripId, action) => {
     await pool.query('UPDATE trips SET is_archived = ? WHERE id = ?', conditions);
     return true;
   } catch (error) {
-    return { error };
+    console.log(error);
+    throw new Error({ error });
   }
 };
 
@@ -108,7 +110,8 @@ const updateImage = async (tripId, image) => {
     await pool.query('UPDATE trips SET image = ? WHERE id = ?', conditions);
     return true;
   } catch (error) {
-    return { error };
+    console.log(error);
+    throw new Error({ error });
   }
 };
 

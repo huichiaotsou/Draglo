@@ -217,7 +217,7 @@ function saveSpotInfo(spotName, placeId) {
     tripId: tripId
   }
   let xhr = new XMLHttpRequest();
-  xhr.open('POST', '/1.0/spot');
+  xhr.open('POST', '/1.0/arrangement');
   xhr.onreadystatechange = function () {
     if(xhr.readyState == 4) {
       if(xhr.status == 204) {
@@ -245,7 +245,6 @@ function saveSpotInfo(spotName, placeId) {
 }
 
 function getPendingArrangements(city, tripId, placeId) {
-  console.log('get pending arrangements');
   let xhr = new XMLHttpRequest();
   if (city) {
     xhr.open('GET', `/1.0/arrangement?status=pending&id=${tripId}&city=${city}`);

@@ -49,30 +49,20 @@ const modifyTripSettings = async (req, res, next) => {
 
     const tripStart = new Date(req.body.tripStart);
     const tripEnd = new Date(req.body.tripEnd);
-    if ((tripEnd - tripStart) / (1000 * 60 * 60 * 24) > 20) {
-      res.status(500).send('too long period');
-    }
-    if (modify === 'duration') {
-      const result = await Trip.updateDuration(tripId, tripStart, tripEnd);
-      if (result.error) {
-        res.status(500).send('server error, please try again later');
-      } else {
-        res.sendStatus(204);
-      }
+    const MAX_DURATION = 20;
+    if ((tripEnd - tripStart) / (1000 * 60 * 60 * 24) > MAX_DURATION) {
+      res.status(403).send('too long period');
+    } else if (tripEnd < tripStart) {
+      res.status(403).send('trip end is earlier than trip start');
+    } else if (modify === 'duration') {
+      await Trip.updateDuration(tripId, tripStart, tripEnd);
+      res.sendStatus(204);
     } else if (modify === 'name') {
-      const result = await Trip.updateName(tripId, tripName);
-      if (result.error) {
-        res.status(500).send('server error, please try again later');
-      } else {
-        res.sendStatus(204);
-      }
+      await Trip.updateName(tripId, tripName);
+      res.sendStatus(204);
     } else if (modify === 'archived') {
-      const result = await Trip.archiveTrip(tripId, archived);
-      if (result.error) {
-        res.status(500).send('server error, please try again later');
-      } else {
-        res.sendStatus(204);
-      }
+      await Trip.archiveTrip(tripId, archived);
+      res.sendStatus(204);
     }
   } catch (error) {
     console.log(error);

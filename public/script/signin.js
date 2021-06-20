@@ -28,12 +28,14 @@ function signIn(gmail) {
   let user = {
     email: email,
     password: password,
+    provider: 'native'
   };
   
   if (gmail) {
     user = {
       email: gmail,
-      password: 'googleSignInDraglo',
+      password: null,
+      provider: 'Google'
     }
   } else {
     if(!email || !password) {

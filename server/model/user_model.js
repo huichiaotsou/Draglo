@@ -29,8 +29,8 @@ const signUp = async (email, password) => {
 const googleSignIn = async (email) => {
   try {
     const queryStr = 'SELECT id, email FROM users WHERE email = ?';
-    const checkUser = await pool.query(queryStr, email);
-    let user = checkUser[0][0];
+    const [[checkUser]] = await pool.query(queryStr, email);
+    let user = checkUser;
     if (!user) {
       const set = {
         email,
