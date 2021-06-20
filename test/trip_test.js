@@ -181,11 +181,12 @@ describe('trip_controller', () => {
 
   it('create trip', async () => {
     const [[initTripCount]] = await pool.query('SELECT COUNT(*) AS count FROM trips');
-    await requester
+    const res = await requester
       .post('/1.0/trip')
       .set('Authorization', `Bearer ${accessToken1}`);
     const [[finaltripCount]] = await pool.query('SELECT COUNT(*) AS count FROM trips');
     assert.equal(finaltripCount.count, initTripCount.count + 1);
+    await pool.query('DELETE FROM trips WHERE id = ?', res.body.tripId);
   });
 
   it('create trip without log in', async () => {
