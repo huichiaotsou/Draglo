@@ -29,26 +29,31 @@ const iCalEvents = [
 
 describe('ical_controller', () => {
   let accessToken1;
+  let accessToken3;
 
   before(async () => {
     const res1 = await requester
       .post('/1.0/signin')
       .send(users[0]);
     accessToken1 = res1.body.data.access_token;
+    const res2 = await requester
+      .post('/1.0/signin')
+      .send(users[2]);
+    accessToken3 = res2.body.data.access_token;
   });
 
-  it('update ical feed: user has access (trip_id: 1, user_id: 1)', async () => {
+  it('update ical feed: user has access (trip_id: 2, user_id: 3)', async () => {
     const reqBody = {
-      tripId: 1,
-      tripName: 'trip1',
+      tripId: 2,
+      tripName: 'trip2',
       iCalEvents,
     };
     const res = await requester
       .post('/1.0/calendar')
-      .set('Authorization', `Bearer ${accessToken1}`)
+      .set('Authorization', `Bearer ${accessToken3}`)
       .send(reqBody);
     assert.equal(res.status, 200);
-    assert.equal(res.text, 'https://draglo.com/calendars/356a192b1.ical');
+    assert.equal(res.text, 'https://draglo.com/calendars/da4b92372.ical');
   });
 
   it('update ical feed: user has no access (trip_id: 5, user_id: 1)', async () => {
