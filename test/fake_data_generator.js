@@ -26,7 +26,7 @@ const _createFakeTrips = async () => {
 };
 
 const _createFakeSharedTrips = async () => {
-  const queryString = 'INSERT INTO contributors (trip_id, user_id) VALUES ?';
+  const queryString = 'INSERT INTO contributors (trip_id, user_id, share_token, token_used) VALUES ?';
   await pool.query(queryString, [sharedTrips.map((t) => Object.values(t))]);
 };
 

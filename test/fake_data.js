@@ -78,10 +78,14 @@ const sharedTrips = [
   {
     trip_id: 2,
     user_id: 1,
+    share_token: 'share_token_1',
+    token_used: 1,
   },
   {
     trip_id: 3,
     user_id: 1,
+    share_token: 'share_token_2',
+    token_used: 0,
   },
 ];
 
