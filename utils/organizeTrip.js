@@ -1,16 +1,9 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-param-reassign */
 const { getSpotInfo, getTravelingTime } = require('../server/model/automation_model');
 const { getGeoDistance, calculateCloserPoint } = require('./geopackage');
-
-const removeSpot = (itemToRemove, items) => {
-  // eslint-disable-next-line no-restricted-syntax
-  for (const i in items) {
-    if (items[i] === itemToRemove) {
-      items.splice(i, 1);
-    }
-  }
-};
+const Automation = require('../server/model/automation_model');
 
 const getNextSpotId = (currentSpotId, sequence, clusters, spotsInfo) => {
   if (Object.keys(clusters).length === 2 && clusters[sequence].length === 1) {
@@ -131,9 +124,38 @@ const findPolePoints = (keys, spotsInfo) => {
   return polePointsKeys;
 };
 
+const removeItemFromArrays = (itemToRemove, arrays, clusters) => {
+  for (const array of arrays) {
+    for (const i in array) {
+      if (array[i] === itemToRemove) {
+        array.splice(i, 1);
+      }
+    }
+  }
+  if (clusters && clusters[clusters.sequence[0]].length === 0) {
+    delete clusters[clusters.sequence[0]];
+    clusters.sequence.splice(0, 1);
+  }
+};
+
+const renderRemainingSpots = async (spotIdsArray, spotsInfo) => {
+  const response = [];
+  for (const spotIds of spotIdsArray) {
+    if (spotIds.length > 0) {
+      for (const id of spotIds) {
+        const remainingSpotInfo = await Automation.getSpotInfo(id);
+        remainingSpotInfo.activity = spotsInfo[id].name;
+        response.push(remainingSpotInfo);
+      }
+    }
+  }
+  return response;
+};
+
 module.exports = {
   getNextSpotId,
   arrangeNextActivity,
-  removeSpot,
+  removeSpot: removeItemFromArrays,
   findPolePoints,
+  renderRemainingSpots,
 };

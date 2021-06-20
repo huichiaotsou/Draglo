@@ -1,3 +1,4 @@
+/* eslint-disable object-curly-newline */
 /* eslint-disable no-loop-func */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-continue */
@@ -5,31 +6,29 @@
 const Automation = require('../model/automation_model');
 const Kmeans = require('../../utils/kmeans');
 const {
-  getNextSpotId, arrangeNextActivity, removeSpot, findPolePoints,
+  getNextSpotId, arrangeNextActivity, removeSpot, findPolePoints, renderRemainingSpots,
 } = require('../../utils/organizeTrip');
 const { calculateCloserPoint } = require('../../utils/geopackage');
 
+const NIGHT_EVENT_THRESHOLD = 960;
+const HOUR = 60;
+const EARLY_ARRANGEMENT_COUNT = 7;
+
 const calculateTrips = async (req, res, next) => {
   try {
-    const {
-      tripId, spotsInfo, startDate, arrangedEvents,
-    } = req.body;
-    let {
-      dayId, googleIds, tripDuration,
-    } = req.body;
-    let startTime = parseInt(req.body.startTime, 10);
-    const startDateDatetime = new Date(startDate.split('GMT')[0]);
-    const originalStartTime = startTime;
-    let startDateUnix = startDateDatetime.getTime();
+    // load and sort request body
+    const { tripId, spotsInfo, startDate, arrangedEvents } = req.body;
+    let { dayId, googleIds, tripDuration } = req.body;
     tripDuration += 1;
+    let startTime = parseInt(req.body.startTime, 10);
+    const originalStartTime = startTime;
+
+    const startDateDatetime = new Date(startDate.split('GMT')[0]);
+    let startDateUnix = startDateDatetime.getTime();
 
     // record arrangements
     const wholeTrip = {};
-    const otherEvents = {
-      nightEvents: [],
-      remainingSpots: [],
-    };
-    const { nightEvents, remainingSpots } = otherEvents;
+    const otherEvents = {};
 
     // record pending arrangements
     let pendingArrangements = [];
@@ -38,6 +37,18 @@ const calculateTrips = async (req, res, next) => {
     // initialize count for each place id, stored in an object
     const tooEarlyArrangementCount = {};
     googleIds.forEach((id) => { tooEarlyArrangementCount[id] = 0; });
+
+    // after 5 pm, categorized to night events
+    const nightEvents = [];
+    for (const googleId of googleIds) {
+      const spotInfo = await Automation.getSpotInfo(googleId);
+      if (spotInfo.openHour >= NIGHT_EVENT_THRESHOLD) {
+        spotInfo.activity = spotsInfo[googleId].name;
+        nightEvents.push(spotInfo);
+        removeSpot(googleId, [googleIds]);
+      }
+    }
+    otherEvents.nightEvents = nightEvents;
 
     // loop until all spots arranged
     while (googleIds.length > 0) {
@@ -59,103 +70,85 @@ const calculateTrips = async (req, res, next) => {
       }
 
       const clusters = Kmeans.getClusters(googleIds, spotsInfo, tripDuration, startSpotId);
-
       const spotInfo = await Automation.getSpotInfo(startSpotId);
-      if (spotInfo.openHour >= 960) { // after 5 pm, categorized to night events
-        spotInfo.activity = spotsInfo[startSpotId].name;
-        nightEvents.push(spotInfo);
-        removeSpot(startSpotId, googleIds);
-        removeSpot(startSpotId, clusters[clusters.sequence[0]]);
-        continue;
-      } else {
-        // if the starting spot opens the day
-        let open = false;
-        const openDays = spotInfo.openDays.split(',');
-        for (const day of openDays) {
-          if (parseInt(day, 10) === parseInt(dayId, 10)) {
-            open = true;
-          }
+
+      // check if the starting spot opens the day
+      let open = false;
+      const openDays = spotInfo.openDays.split(',');
+      for (const day of openDays) {
+        if (parseInt(day, 10) === parseInt(dayId, 10)) {
+          open = true;
         }
-        if (open) {
-          // greedy: if startSpot opens within 2 hours
-          if (spotInfo.openHour > startTime + (2 * 60)) {
-            tooEarlyArrangements.push(startSpotId);
-            tooEarlyArrangementCount[startSpotId] += 1;
+      }
+      if (open) {
+        // greedy: if startSpot opens within 2 hours
+        if (spotInfo.openHour > startTime + (2 * HOUR)) {
+          tooEarlyArrangements.push(startSpotId);
+          tooEarlyArrangementCount[startSpotId] += 1;
+          removeSpot(startSpotId, [clusters[clusters.sequence[0]], googleIds], clusters);
+          continue;
+        } else {
+          startTime = (spotInfo.openHour >= startTime) ? spotInfo.openHour : startTime;
 
-            removeSpot(startSpotId, clusters[clusters.sequence[0]]);
-            removeSpot(startSpotId, googleIds);
-            if (clusters[clusters.sequence[0]].length === 0) {
-              delete clusters[clusters.sequence[0]];
-              clusters.sequence.splice(0, 1);
-            }
-            continue;
-          } else {
-            startTime = (spotInfo.openHour >= startTime) ? spotInfo.openHour : startTime;
-
-            // if startTime 介於 一行程的排程段, 新的startTime = arranged行程的結束
-            const arrangedEventsOfDay = arrangedEvents[startDateUnix];
-            if (arrangedEventsOfDay) {
-              for (const event of arrangedEventsOfDay) {
-                if (
-                  (startTime <= event.end && startTime >= event.start)
-                  || (startTime + 90 <= event.end && startTime + 90 >= event.start)
-                ) {
-                  const transitTime = await Automation
-                    .getTravelingTime(event.google_id, startSpotId, spotsInfo);
-                  startTime = event.end + transitTime;
-                }
+          // if startTime is between some arrangement's start and end, startTime = arrangement's end
+          const arrangedEventsOfDay = arrangedEvents[startDateUnix];
+          if (arrangedEventsOfDay) {
+            for (const event of arrangedEventsOfDay) {
+              if (
+                (startTime <= event.end && startTime >= event.start)
+                || (startTime + 90 <= event.end && startTime + 90 >= event.start)
+              ) {
+                const transitTime = await Automation
+                  .getTravelingTime(event.google_id, startSpotId, spotsInfo);
+                startTime = event.end + transitTime;
               }
             }
-
-            wholeTrip[startDateUnix] = [ // initialize the day
-              {
-                activity: spotsInfo[startSpotId].name,
-                spotId: spotsInfo[startSpotId].spotId,
-                startTime,
-                end: startTime + spotInfo.lingerTime,
-              },
-            ];
-
-            startTime += spotInfo.lingerTime;
-            removeSpot(startSpotId, googleIds);
-            removeSpot(startSpotId, clusters[clusters.sequence[0]]);
-            if (clusters[clusters.sequence[0]].length === 0) {
-              delete clusters[clusters.sequence[0]];
-              clusters.sequence.splice(0, 1);
-            }
           }
-        } else {
-          // remove spot from cluster and find the next spot
-          pendingArrangements.push(startSpotId);
-          removeSpot(startSpotId, googleIds);
-          removeSpot(startSpotId, clusters[clusters.sequence[0]]);
-          if (clusters[clusters.sequence[0]].length === 0) {
-            delete clusters[clusters.sequence[0]];
-            clusters.sequence.splice(0, 1);
-          }
-          startSpotId = getNextSpotId(startSpotId, clusters.sequence[0], clusters, spotsInfo);
-          continue;
+
+          // initialize the day
+          wholeTrip[startDateUnix] = [
+            {
+              activity: spotsInfo[startSpotId].name,
+              spotId: spotsInfo[startSpotId].spotId,
+              startTime,
+              end: startTime + spotInfo.lingerTime,
+            },
+          ];
+
+          startTime += spotInfo.lingerTime;
+          removeSpot(startSpotId, [googleIds, clusters[clusters.sequence[0]]], clusters);
         }
+      } else {
+        // remove spot from cluster and find the next spot
+        pendingArrangements.push(startSpotId);
+        removeSpot(startSpotId, [googleIds, clusters[clusters.sequence[0]]], clusters);
+        startSpotId = getNextSpotId(startSpotId, clusters.sequence[0], clusters, spotsInfo);
+        continue;
       }
 
       let keepArranging = true;
-      while (keepArranging) { // 一直跑到當日景點排滿為止
-        if (Object.keys(clusters).length === 1) { // clusters empty
+      while (keepArranging) {
+        // keep arranging until the day is full
+        if (Object.keys(clusters).length === 1) {
+          // clusters empty
           break;
         }
         if (Object.keys(clusters).length > 1 && clusters.sequence.length === 0) {
           clusters.sequence.push(Object.keys(clusters)[0]);
         }
         const nextSpotId = getNextSpotId(startSpotId, clusters.sequence[0], clusters, spotsInfo);
-        if (nextSpotId === -1) { // no more spots
+        if (nextSpotId === -1) {
+          // no more spots
           break;
         }
-        // eslint-disable-next-line max-len
-        const nextActivity = await arrangeNextActivity(dayId, startTime, startSpotId, nextSpotId, spotsInfo, arrangedEvents, startDateUnix);
+        const nextActivity = await arrangeNextActivity(
+          dayId, startTime, startSpotId, nextSpotId, spotsInfo, arrangedEvents, startDateUnix,
+        );
 
-        if (tooEarlyArrangements.length > 0) { // add back too early arrangements to cluster
+        // add back too early arrangements to cluster if count < 7
+        if (tooEarlyArrangements.length > 0) {
           tooEarlyArrangements.forEach((googleId) => {
-            if (tooEarlyArrangementCount[googleId] < 7) {
+            if (tooEarlyArrangementCount[googleId] < EARLY_ARRANGEMENT_COUNT) {
               const sequence = clusters.sequence[0];
               clusters[sequence] = clusters[sequence].concat(tooEarlyArrangements);
             }
@@ -164,51 +157,38 @@ const calculateTrips = async (req, res, next) => {
           tooEarlyArrangements = [];
         }
 
-        // -1 = arrangement later than 8pm / later than spot open hour / not open
         if (nextActivity === -1) {
-          // remove and jump to next spot till end between 6:30 ~ 8:00 pm
+          // -1 -> arrangement later than 8pm / later than spot open_hour / not open
+          // remove and jump to next spot till the end is between 6:30 ~ 8:00 pm
           pendingArrangements.push(nextSpotId);
-          removeSpot(nextSpotId, clusters[clusters.sequence[0]]);
-          removeSpot(nextSpotId, googleIds);
-          if (clusters[clusters.sequence[0]].length === 0) {
-            delete clusters[clusters.sequence[0]];
-            clusters.sequence.splice(0, 1);
-          }
-          // startSpotId = nextSpotId;
-        } else if (nextActivity === -2) { // 太早去的行程放進too early稍待安排
+          removeSpot(nextSpotId, [clusters[clusters.sequence[0]], googleIds], clusters);
+        } else if (nextActivity === -2) {
+          // -2 -> arrangement ealier than spot open_hour
           tooEarlyArrangements.push(nextSpotId);
           tooEarlyArrangementCount[nextSpotId] += 1;
-
-          removeSpot(nextSpotId, clusters[clusters.sequence[0]]);
-          removeSpot(nextSpotId, googleIds);
-          if (clusters[clusters.sequence[0]].length === 0) {
-            delete clusters[clusters.sequence[0]];
-            clusters.sequence.splice(0, 1);
-          }
-          // startSpotId = nextSpotId;
+          removeSpot(nextSpotId, [clusters[clusters.sequence[0]], googleIds], clusters);
         } else {
-          keepArranging = nextActivity.keepArranging; // while(true or false)
+          // spot is arranged, nextActivity.keepArranging decides whether keep arranging
+          keepArranging = nextActivity.keepArranging;// (true or false)
           wholeTrip[startDateUnix] = wholeTrip[startDateUnix].concat(nextActivity.arrangement);
           startSpotId = nextSpotId;
           if (keepArranging) {
             startTime = nextActivity.arrangement[1].end;
           }
-          removeSpot(nextSpotId, googleIds); // remove arranged spot
-          removeSpot(nextSpotId, poleSpotIds);
-          removeSpot(nextSpotId, clusters[clusters.sequence[0]]);
-          if (clusters[clusters.sequence[0]].length === 0) {
-            delete clusters[clusters.sequence[0]];
-            clusters.sequence.splice(0, 1);
-          }
+          removeSpot(nextSpotId,
+            [
+              googleIds, poleSpotIds, clusters[clusters.sequence[0]],
+            ], clusters);
         }
       }
 
-      if (pendingArrangements.length > 0) { // add back pending arrangements to full list
+      if (pendingArrangements.length > 0) {
+        // add back pending arrangements to the list
         googleIds = googleIds.concat(pendingArrangements);
         pendingArrangements = [];
       }
-
-      dayId += 1; // move to next dat
+      // move to the next day
+      dayId += 1;
       if (dayId === 7) dayId = 0;
 
       // add one day to unix time
@@ -217,29 +197,9 @@ const calculateTrips = async (req, res, next) => {
       tripDuration -= 1;
     }
 
-    if (googleIds.length > 0 || tooEarlyArrangements.length > 0 || pendingArrangements.length > 0) {
-      if (googleIds.length > 0) {
-        for (const id of googleIds) {
-          const remainingSpotInfo = await Automation.getSpotInfo(id);
-          remainingSpotInfo.activity = spotsInfo[id].name;
-          remainingSpots.push(remainingSpotInfo);
-        }
-      }
-      if (tooEarlyArrangements.length > 0) {
-        for (const id of tooEarlyArrangements) {
-          const remainingSpotInfo = await Automation.getSpotInfo(id);
-          remainingSpotInfo.activity = spotsInfo[id].name;
-          remainingSpots.push(remainingSpotInfo);
-        }
-      }
-      if (pendingArrangements.length > 0) {
-        for (const id of pendingArrangements) {
-          const remainingSpotInfo = await Automation.getSpotInfo(id);
-          remainingSpotInfo.activity = spotsInfo[id].name;
-          remainingSpots.push(remainingSpotInfo);
-        }
-      }
-    }
+    otherEvents.remainingSpots = await renderRemainingSpots(
+      [googleIds, tooEarlyArrangements, pendingArrangements], spotsInfo,
+    );
 
     await Automation.arrangeAutomationResult(tripId, req.user.id, dayId, startDate, wholeTrip);
     res.send(otherEvents);
