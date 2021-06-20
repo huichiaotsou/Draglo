@@ -28,18 +28,23 @@ const signUp = async (email, password) => {
 
 const googleSignIn = async (email) => {
   try {
-    const queryStr = 'SELECT id, email FROM users WHERE email = ?';
-    const [[checkUser]] = await pool.query(queryStr, email);
-    let user = checkUser;
+    const queryStr = 'SELECT id, email, password FROM users WHERE email = ?';
+    let [[user]] = await pool.query(queryStr, email);
+    const password = encrypt(email);
     if (!user) {
       const set = {
         email,
-        password: encrypt(email),
+        password,
       };
       const [createUser] = await pool.query('INSERT INTO users SET ?', set);
       user = {
         id: createUser.insertId,
         email,
+      };
+    } else if (user.password !== password) {
+      return {
+        statusCode: 401,
+        error: 'access denied',
       };
     }
     user.access_token = jwt.sign({
@@ -56,8 +61,7 @@ const googleSignIn = async (email) => {
 const nativeSignIn = async (email, password) => {
   try {
     const queryStr = 'SELECT id, email, password FROM users WHERE email = ?';
-    const [[checkUser]] = await pool.query(queryStr, email);
-    const user = checkUser;
+    const [[user]] = await pool.query(queryStr, email);
     const inputPassword = encrypt(password);
     let response;
     if (!user) {

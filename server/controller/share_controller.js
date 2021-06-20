@@ -10,7 +10,7 @@ const createShareToken = async (req, res, next) => {
     const shareToken = jwt.sign({ tripId, email }, process.env.SHARE_TOKEN_SECRET);
     await Share.createShareToken(tripId, shareToken);
     await sendEmail(title, email, shareToken);
-    res.sendStatus(204);
+    res.status(200).send(shareToken);
   } catch (error) {
     next(error);
   }

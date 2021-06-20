@@ -8,14 +8,16 @@ if ( accessToken ) {
 
 function onSignIn(googleUser) {
   let profile = googleUser.getBasicProfile();
-  signIn(profile.getEmail())
+  let googleToken = googleUser.getAuthResponse().id_token;
+  // signIn(profile.getEmail())
+  signIn(googleToken)
 }
 
-function signIn(gmail) {
+function signIn(googleToken) {
   let email = document.getElementById('email').value;
   let password = document.getElementById('password-field').value;
 
-  if (!gmail && email.split('@').length != 2) {
+  if (!googleToken && email.split('@').length != 2) {
     Swal.fire({
       icon: 'warning',
       title: '請輸入正確的電子郵件地址',
@@ -31,11 +33,12 @@ function signIn(gmail) {
     provider: 'native'
   };
   
-  if (gmail) {
+  if (googleToken) {
     user = {
-      email: gmail,
+      provider: 'Google',
+      googleToken,
+      email: null,
       password: null,
-      provider: 'Google'
     }
   } else {
     if(!email || !password) {
@@ -65,7 +68,7 @@ function signIn(gmail) {
     if (xhr.readyState === 4) {
       if (xhr.status === 200) {
 
-        if (gmail) {
+        if (googleToken) {
           Swal.fire({
             icon: 'success',
             title: 'Google 登入成功',

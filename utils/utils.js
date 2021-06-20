@@ -5,6 +5,8 @@ const crypto = require('crypto');
 const { pool } = require('../server/model/mysql');
 const Cache = require('./redis');
 
+const { NODE_ENV } = process.env;
+
 function verifyToken(req, res, next) {
   try {
     const authHeader = req.headers.authorization;
@@ -48,6 +50,9 @@ const verifyAccess = async (req, res, next) => {
 };
 
 const sendEmail = async (title, email, shareToken) => {
+  if (NODE_ENV === 'test') {
+    return;
+  }
   try {
     const transporter = nodemailer.createTransport({
       host: 'mail.gandi.net',

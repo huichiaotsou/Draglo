@@ -10,7 +10,8 @@ const createShareToken = async (tripId, shareToken) => {
     await pool.query('INSERT INTO contributors SET ?', set);
     return true;
   } catch (error) {
-    return { error };
+    console.log(error);
+    throw new Error({ error });
   }
 };
 
@@ -24,7 +25,8 @@ const updateShareAccess = async (userId, shareToken) => {
     await pool.query('UPDATE contributors SET user_id = ?, token_used = 1 WHERE share_token = ?', conditions);
     return true;
   } catch (error) {
-    return { error };
+    console.log(error);
+    throw new Error({ error });
   }
 };
 
