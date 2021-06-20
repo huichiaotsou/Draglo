@@ -5,7 +5,7 @@ require('dotenv').config();
 const { NODE_ENV } = process.env;
 const { encrypt } = require('../utils/utils');
 const {
-  users, trips, sharedTrips,
+  users, trips, sharedTrips, spots,
 } = require('./fake_data');
 
 const { pool } = require('../server/model/mysql');
@@ -30,6 +30,11 @@ const _createFakeSharedTrips = async () => {
   await pool.query(queryString, [sharedTrips.map((t) => Object.values(t))]);
 };
 
+const _createFakeSpots = async () => {
+  const queryString = 'INSERT INTO spots (google_id,city,name,latitude,longtitude,linger_time,address,open_days,open_hour,closed_hour) VALUES ?';
+  await pool.query(queryString, [spots.map((t) => Object.values(t))]);
+};
+
 const createFakeData = async () => {
   if (NODE_ENV !== 'test') {
     console.log('Not in test env');
@@ -39,6 +44,7 @@ const createFakeData = async () => {
   await _createFakeUsers();
   await _createFakeTrips();
   await _createFakeSharedTrips();
+  await _createFakeSpots();
 };
 
 const truncateFakeData = async () => {
@@ -57,7 +63,7 @@ const truncateFakeData = async () => {
     await conn.release();
   };
 
-  const tables = ['users', 'trips', 'contributors'];
+  const tables = ['users', 'trips', 'contributors', 'spots'];
   for (const table of tables) {
     await truncateTable(table);
   }

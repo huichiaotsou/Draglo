@@ -89,8 +89,48 @@ const sharedTrips = [
   },
 ];
 
+const spots = [
+  {
+    google_id: 'spot_google_id_1',
+    city: 'Taipei City',
+    name: 'spot_name_1',
+    latitude: 24.9960345,
+    longtitude: 121.5762835,
+    linger_time: 90,
+    address: 'spot_address_1',
+    open_days: '0,1,2,3,4,5,6',
+    open_hour: '0900',
+    closed_hour: '1800',
+  },
+  {
+    google_id: 'spot_google_id_2',
+    city: 'Taipei City',
+    name: 'spot_name_2',
+    latitude: 24.972981,
+    longtitude: 121.5883709,
+    linger_time: 90,
+    address: 'spot_address_2',
+    open_days: '0,1,2,3,4,5,6',
+    open_hour: '0900',
+    closed_hour: '1800',
+  },
+  {
+    google_id: 'spot_google_id_3',
+    city: 'Taipei City',
+    name: 'spot_name_2',
+    latitude: 24.9983469,
+    longtitude: 121.5810358,
+    linger_time: 90,
+    address: 'spot_address_3',
+    open_days: '0,1,2,3,4,5,6',
+    open_hour: '0900',
+    closed_hour: '1800',
+  },
+];
+
 module.exports = {
   users,
   trips,
   sharedTrips,
+  spots,
 };
