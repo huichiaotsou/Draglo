@@ -93,47 +93,6 @@ const sendEmail = async (title, email, shareToken) => {
   }
 };
 
-const getCityName = (components) => {
-  try {
-    let city = '';
-    for (const component of components) {
-      if (component.types[0] === 'postal_town') {
-        city = component.short_name;
-        break;
-      }
-      if (component.types[0] === 'locality') {
-        city = component.short_name;
-        break;
-      }
-      if (component.types[0] === 'administrative_area_level_1') {
-        city = component.short_name;
-        break;
-      }
-    }
-
-    // handle Tokyo
-    for (const component of components) {
-      if (component.types[0] === 'administrative_area_level_1' && component.short_name === 'Tokyo') {
-        city = 'Tokyo';
-        break;
-      }
-    }
-
-    if (!city) {
-      for (const component of components) {
-        if (component.types[0] === 'administrative_area_level_2') {
-          city = component.short_name;
-          break;
-        }
-      }
-    }
-    return city;
-  } catch (error) {
-    console.log(error);
-    return { error };
-  }
-};
-
 const rateLimiter = async (req, res, next) => {
   if (!Cache.client.ready) {
     next();
@@ -170,7 +129,6 @@ module.exports = {
   verifyToken,
   verifyAccess,
   sendEmail,
-  getCityName,
   rateLimiter,
   encrypt,
 };

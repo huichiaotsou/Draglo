@@ -1,20 +1,22 @@
+require('dotenv').config();
 const fetch = require('node-fetch');
 const Spot = require('../model/spot_model');
 const Trip = require('../model/trip_model');
-const { getCityName } = require('../../utils/utils');
-require('dotenv').config();
+const { getCityName, recordOpenDays } = require('../../utils/organizeTrip');
+
+const { PLACE_API, PHOTO_PATH } = process.env;
 
 const addSpot = async (req, res, next) => {
   try {
     const { tripId, spotName, placeId } = req.body;
     const userId = req.user.id;
-    const placeAPI = process.env.PLACE_API + placeId;
+    const placeAPI = PLACE_API + placeId;
     fetch(placeAPI)
       .then((data) => data.json())
       .then(async (json) => {
         const { result } = json;
         if (result.photos) {
-          const photoPath = process.env.PHOTO_PATH + result.photos[0].photo_reference;
+          const photoPath = PHOTO_PATH + result.photos[0].photo_reference;
           await Trip.updateImage(tripId, photoPath);
         }
 
@@ -33,21 +35,9 @@ const addSpot = async (req, res, next) => {
           closed_hour: '2400',
         };
 
-        // record open days
+        // record open days if exists
         if (result.opening_hours) {
-          const { periods } = result.opening_hours;
-          let openDays = periods.map((status) => status.open.day);
-          openDays = openDays.filter((day, index) => openDays.indexOf(day) === index);
-          spotInfo.open_days = openDays.toString();
-          if (periods[0].open) {
-            spotInfo.open_hour = periods[0].open.time;
-          }
-          if (periods[0].close) {
-            spotInfo.closed_hour = periods[0].close.time;
-            if (parseInt(spotInfo.closed_hour, 10) <= 430) {
-              spotInfo.closed_hour = 2400 + parseInt(spotInfo.closed_hour, 10);
-            }
-          }
+          recordOpenDays(result.opening_hours, spotInfo);
         }
 
         // init arrangements
@@ -57,7 +47,7 @@ const addSpot = async (req, res, next) => {
           is_arranged: 0,
         };
 
-        if (components.length < 3) {
+        if (components.length <= 3) {
           res.status(400).send({
             error: '請選擇特定景點以加入清單',
           });

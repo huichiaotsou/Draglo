@@ -175,6 +175,63 @@ const reformatArrangementTime = (arrangements) => {
   }
 };
 
+const getCityName = (components) => {
+  try {
+    let city = '';
+    for (const component of components) {
+      if (component.types[0] === 'postal_town') {
+        city = component.short_name;
+        break;
+      }
+      if (component.types[0] === 'locality') {
+        city = component.short_name;
+        break;
+      }
+      if (component.types[0] === 'administrative_area_level_1') {
+        city = component.short_name;
+        break;
+      }
+    }
+
+    // handle Tokyo
+    for (const component of components) {
+      if (component.types[0] === 'administrative_area_level_1' && component.short_name === 'Tokyo') {
+        city = 'Tokyo';
+        break;
+      }
+    }
+
+    if (!city) {
+      for (const component of components) {
+        if (component.types[0] === 'administrative_area_level_2') {
+          city = component.short_name;
+          break;
+        }
+      }
+    }
+    return city;
+  } catch (error) {
+    console.log(error);
+    return { error };
+  }
+};
+
+const recordOpenDays = (googleResult, spotInfo) => {
+  const { periods } = googleResult;
+  let openDays = periods.map((status) => status.open.day);
+  openDays = openDays.filter((day, index) => openDays.indexOf(day) === index);
+  spotInfo.open_days = openDays.toString();
+  if (periods[0].open) {
+    spotInfo.open_hour = periods[0].open.time;
+  }
+  if (periods[0].close) {
+    spotInfo.closed_hour = periods[0].close.time;
+    if (parseInt(spotInfo.closed_hour, 10) <= 430) {
+      spotInfo.closed_hour = 2400 + parseInt(spotInfo.closed_hour, 10);
+    }
+  }
+};
+
 module.exports = {
   getNextSpotId,
   arrangeNextActivity,
@@ -182,4 +239,6 @@ module.exports = {
   findPolePoints,
   renderRemainingSpots,
   reformatArrangementTime,
+  getCityName,
+  recordOpenDays,
 };

@@ -28,7 +28,6 @@ describe('trip_controller', () => {
     const expectedTrip = {
       id: 1,
       name: 'trip1',
-      image: '/images/bg.jpg',
       trip_start: '2022-01-01T00:00:00.000Z',
       trip_end: '2022-01-06T00:00:00.000Z',
       day_start: '0900',
@@ -39,6 +38,7 @@ describe('trip_controller', () => {
       otherTrips: [{ id: 1, name: 'trip1' }],
       duration: 5, // duration is 5 cuz trip_end ad midnight of Jan 6 (end of Jan 5)
     };
+    delete resTrip.image;
     assert.deepEqual(resTrip, expectedTrip);
   });
 
