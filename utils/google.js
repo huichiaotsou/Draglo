@@ -37,7 +37,7 @@ const directionAPI = async (prevSpotId, nextSpotId, mode, breaker) => {
 
 const getGmailAddress = async (googleToken) => {
   const requestURL = `https://oauth2.googleapis.com/tokeninfo?id_token=${googleToken}`;
-  const gmail = await axios.get(requestURL)
+  const result = await axios.get(requestURL)
     .then((res) => {
       const { data } = res;
       return { gmail: data.email };
@@ -46,7 +46,7 @@ const getGmailAddress = async (googleToken) => {
       console.log(error);
       return { error };
     });
-  return gmail;
+  return result;
 };
 
 module.exports = {

@@ -1,4 +1,5 @@
 const Arrangement = require('../model/arrangement_model');
+const { reformatArrangementTime } = require('../../utils/organizeTrip');
 
 const getArrangements = async (req, res, next) => {
   try {
@@ -14,26 +15,7 @@ const getArrangements = async (req, res, next) => {
       } else {
         pendingArrangements = await Arrangement.getPendingArrangements(id);
       }
-
-      for (const arrangement of pendingArrangements) {
-        arrangement.open_hour = `${Math.floor(arrangement.open_hour / 100)}:${arrangement.open_hour % 100}`;
-        arrangement.closed_hour = `${Math.floor(arrangement.closed_hour / 100)}:${arrangement.closed_hour % 100}`;
-        if (parseInt(arrangement.open_hour.split(':')[0], 10) === 0) {
-          arrangement.open_hour = `00:${arrangement.open_hour.split(':')[1]}`;
-        }
-        if (parseInt(arrangement.open_hour.split(':')[1], 10) === 0) {
-          arrangement.open_hour = `${arrangement.open_hour.split(':')[0]}:00`;
-        }
-        if (parseInt(arrangement.closed_hour.split(':')[0], 10) === 0) {
-          arrangement.closed_hour = `00:${arrangement.closed_hour.split(':')[1]}`;
-        }
-        if (parseInt(arrangement.closed_hour.split(':')[1], 10) === 0) {
-          arrangement.closed_hour = `${arrangement.closed_hour.split(':')[0]}:00`;
-        }
-        if (parseInt(arrangement.closed_hour.split(':')[0], 10) > 24) {
-          arrangement.closed_hour = `${arrangement.closed_hour.split(':')[0] - 24}:${arrangement.closed_hour.split(':')[1]}`;
-        }
-      }
+      reformatArrangementTime(pendingArrangements);
 
       const response = {
         cities: '',
@@ -55,26 +37,7 @@ const getArrangements = async (req, res, next) => {
       res.send(response);
     } else if (status === 'arranged') {
       const arrangements = await Arrangement.getArrangements(id);
-      // tuning open hours to human readable format
-      for (const arrangement of arrangements) {
-        arrangement.open_hour = `${Math.floor(arrangement.open_hour / 100)}:${arrangement.open_hour % 100}`;
-        arrangement.closed_hour = `${Math.floor(arrangement.closed_hour / 100)}:${arrangement.closed_hour % 100}`;
-        if (arrangement.open_hour.split(':')[0] === 0) {
-          arrangement.open_hour = `00:${arrangement.open_hour.split(':')[1]}`;
-        }
-        if (arrangement.open_hour.split(':')[1] === 0) {
-          arrangement.open_hour = `${arrangement.open_hour.split(':')[0]}:00`;
-        }
-        if (arrangement.closed_hour.split(':')[0] === 0) {
-          arrangement.closed_hour = `00:${arrangement.closed_hour.split(':')[1]}`;
-        }
-        if (arrangement.closed_hour.split(':')[1] === 0) {
-          arrangement.closed_hour = `${arrangement.closed_hour.split(':')[0]}:00`;
-        }
-        if (parseInt(arrangement.closed_hour.split(':')[0], 10) > 24) {
-          arrangement.closed_hour = `${arrangement.closed_hour.split(':')[0] - 24}:${arrangement.closed_hour.split(':')[1]}`;
-        }
-      }
+      reformatArrangementTime(arrangements);
       res.send(arrangements);
     }
   } catch (error) {
@@ -89,7 +52,7 @@ const removeArrangement = async (req, res, next) => {
     } = req.params;
     const result = await Arrangement.removeArrangement(spotId, tripId);
     if (result.error) {
-      res.sendStatus(500);
+      res.sendStatus(403);
     } else {
       res.sendStatus(204);
     }
@@ -114,7 +77,7 @@ const updateArrangement = async (req, res, next) => {
         .updateArrangement(isArranged, spotId, tripId, startTime, endTime, autoArranged);
     }
     if (result.error) {
-      res.sendStatus(500);
+      res.sendStatus(403);
     } else {
       res.sendStatus(204);
     }

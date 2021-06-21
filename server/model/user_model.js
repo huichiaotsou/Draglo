@@ -41,11 +41,6 @@ const googleSignIn = async (email) => {
         id: createUser.insertId,
         email,
       };
-    } else if (user.password !== password) {
-      return {
-        statusCode: 401,
-        error: 'access denied',
-      };
     }
     user.access_token = jwt.sign({
       id: user.id,

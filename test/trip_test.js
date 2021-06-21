@@ -128,7 +128,7 @@ describe('trip_controller', () => {
       });
     assert.equal(res.status, 403);
     assert.equal(res.text, 'trip end is earlier than trip start');
-    await pool.query('UPDATE trips SET trip_start = 2022-01-01, trip_end = 2022-01-06 WHERE id = 1');
+    await pool.query('UPDATE trips SET trip_start = "2022-01-01", trip_end = "2022-01-06" WHERE id = 1');
   });
 
   it('modify trip_id 1: name', async () => {

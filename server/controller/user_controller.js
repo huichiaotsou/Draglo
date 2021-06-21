@@ -57,7 +57,7 @@ const signUp = async (req, res, next) => {
               res.status(403).send(update.error);
               return;
             }
-            response.tripId = jwtResult.tripId;
+            response.data.tripId = jwtResult.tripId;
             res.status(200).send(response);
           });
         } else {
@@ -82,10 +82,10 @@ const signIn = async (req, res, next) => {
     let result;
     if (provider === 'Google') {
       const { gmail } = await getGmailAddress(googleToken);
-      if (gmail) {
-        result = await User.googleSignIn(gmail);
-      } else {
+      if (!gmail) {
         res.status(190).send('Invalid access token');
+      } else {
+        result = await User.googleSignIn(gmail);
       }
     } else {
       result = await User.nativeSignIn(email, password);
@@ -116,7 +116,7 @@ const signIn = async (req, res, next) => {
             res.status(403).send(update.error);
             return;
           }
-          response.tripId = jwtResult.tripId;
+          response.data.tripId = jwtResult.tripId;
           res.status(200).send(response);
         });
       } else {

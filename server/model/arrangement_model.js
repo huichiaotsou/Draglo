@@ -19,7 +19,7 @@ const getPendingArrangements = async (tripId, city, placeId) => {
     return result;
   } catch (error) {
     console.log(error);
-    return { error };
+    throw new Error({ error });
   }
 };
 
@@ -40,18 +40,21 @@ const getArrangements = async (tripId, placeId) => {
     return result;
   } catch (error) {
     console.log(error);
-    return { error };
+    throw new Error({ error });
   }
 };
 
 const removeArrangement = async (spotId, tripId) => {
   try {
     const queryStr = 'DELETE FROM arrangements WHERE trip_id = ? AND spot_id = ?';
-    await pool.query(queryStr, [tripId, spotId]);
+    const [result] = await pool.query(queryStr, [tripId, spotId]);
+    if (result.affectedRows !== 1) {
+      return { error: 'removal failed' };
+    }
     return true;
   } catch (error) {
     console.log(error);
-    return { error };
+    throw new Error({ error });
   }
 };
 
@@ -59,11 +62,14 @@ const updateArrangement = async (isArranged, spotId, tripId, startTime, endTime,
   try {
     const queryStr = 'UPDATE arrangements SET is_arranged = ?, start_time = ?, end_time = ?, auto_arranged = ? WHERE spot_id = ? AND trip_id = ? ';
     const conditions = [isArranged, startTime, endTime, autoArranged, spotId, tripId];
-    await pool.query(queryStr, conditions);
+    const [result] = await pool.query(queryStr, conditions);
+    if (result.changedRows === 0) {
+      return { error: 'no arrangement updated' };
+    }
     return true;
   } catch (error) {
     console.log(error);
-    return { error };
+    throw new Error({ error });
   }
 };
 
@@ -74,7 +80,7 @@ const clearArrangement = async (tripId) => {
     return true;
   } catch (error) {
     console.log(error);
-    return { error };
+    throw new Error({ error });
   }
 };
 

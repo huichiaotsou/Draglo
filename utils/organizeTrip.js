@@ -152,10 +152,34 @@ const renderRemainingSpots = async (spotIdsArray, spotsInfo) => {
   return response;
 };
 
+// tuning open hours to human readable format
+const reformatArrangementTime = (arrangements) => {
+  for (const arrangement of arrangements) {
+    arrangement.open_hour = `${Math.floor(arrangement.open_hour / 100)}:${arrangement.open_hour % 100}`;
+    arrangement.closed_hour = `${Math.floor(arrangement.closed_hour / 100)}:${arrangement.closed_hour % 100}`;
+    if (arrangement.open_hour.split(':')[0] === '0') {
+      arrangement.open_hour = `00:${arrangement.open_hour.split(':')[1]}`;
+    }
+    if (arrangement.open_hour.split(':')[1] === '0') {
+      arrangement.open_hour = `${arrangement.open_hour.split(':')[0]}:00`;
+    }
+    if (arrangement.closed_hour.split(':')[0] === '0') {
+      arrangement.closed_hour = `00:${arrangement.closed_hour.split(':')[1]}`;
+    }
+    if (arrangement.closed_hour.split(':')[1] === '0') {
+      arrangement.closed_hour = `${arrangement.closed_hour.split(':')[0]}:00`;
+    }
+    if (parseInt(arrangement.closed_hour.split(':')[0], 10) > 24) {
+      arrangement.closed_hour = `${arrangement.closed_hour.split(':')[0] - 24}:${arrangement.closed_hour.split(':')[1]}`;
+    }
+  }
+};
+
 module.exports = {
   getNextSpotId,
   arrangeNextActivity,
   removeSpot: removeItemFromArrays,
   findPolePoints,
   renderRemainingSpots,
+  reformatArrangementTime,
 };

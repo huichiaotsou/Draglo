@@ -117,7 +117,7 @@ const spots = [
   {
     google_id: 'spot_google_id_3',
     city: 'Taipei City',
-    name: 'spot_name_2',
+    name: 'spot_name_3',
     latitude: 24.9983469,
     longtitude: 121.5810358,
     linger_time: 90,
@@ -126,6 +126,81 @@ const spots = [
     open_hour: '0900',
     closed_hour: '1800',
   },
+  {
+    google_id: 'spot_google_id_4',
+    city: 'Taitung',
+    name: 'spot_name_4',
+    latitude: 24.9993469,
+    longtitude: 121.5820358,
+    linger_time: 90,
+    address: 'spot_address_4',
+    open_days: '0,1,5,6',
+    open_hour: '1800',
+    closed_hour: '2300',
+  },
+  {
+    google_id: 'spot_google_id_5',
+    city: 'Taitung',
+    name: 'spot_name_5',
+    latitude: 24.9989469,
+    longtitude: 121.5830358,
+    linger_time: 90,
+    address: 'spot_address_5',
+    open_days: '0,1,5,6',
+    open_hour: '1800',
+    closed_hour: '2300',
+  },
+];
+
+const arrangements = [
+  {
+    trip_id: 1,
+    user_id: 1,
+    spot_id: 1,
+    start_time: '2022-01-01 09:00:00',
+    end_time: '2022-01-01 10:30:00',
+    is_arranged: 1,
+  },
+  {
+    trip_id: 1,
+    user_id: 1,
+    spot_id: 2,
+    start_time: '2022-01-01 11:00:00',
+    end_time: '2022-01-01 12:30:00',
+    is_arranged: 1,
+  },
+  {
+    trip_id: 1,
+    user_id: 1,
+    spot_id: 3,
+    start_time: null,
+    end_time: null,
+    is_arranged: 0,
+  },
+  {
+    trip_id: 1,
+    user_id: 1,
+    spot_id: 4,
+    start_time: null,
+    end_time: null,
+    is_arranged: 0,
+  },
+  {
+    trip_id: 2,
+    user_id: 1,
+    spot_id: 1,
+    start_time: '2022-01-01 09:00:00',
+    end_time: '2022-01-01 10:30:00',
+    is_arranged: 1,
+  },
+  {
+    trip_id: 2,
+    user_id: 1,
+    spot_id: 2,
+    start_time: null,
+    end_time: null,
+    is_arranged: 0,
+  },
 ];
 
 module.exports = {
@@ -133,4 +208,5 @@ module.exports = {
   trips,
   sharedTrips,
   spots,
+  arrangements,
 };
