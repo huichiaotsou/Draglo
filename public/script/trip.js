@@ -13,7 +13,8 @@ window.addEventListener('load', ()=>{
 
 window.addEventListener('storage', ()=> {
     if (urlParams.get('status') == 'new') {
-        setTripPeriod('top')
+      urlParams.delete('status');
+      setTripPeriod('top');
     }
 })
 
@@ -50,7 +51,7 @@ function setTripPeriod(position) {
                     allowOutsideClick: false,
                   }).then((result) => {
                     if (result.isConfirmed) {
-                       return setTripPeriod('top')
+                       return setTripPeriod(position)
                     } else if (result.isDenied) {
                         location.assign(`/trip.html?id=${tripId}`)
                     }
@@ -69,7 +70,7 @@ function setTripPeriod(position) {
                         allowOutsideClick: false,
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            return setTripPeriod('top')
+                            return setTripPeriod(position)
                         } else if (result.isDenied) {
                             location.assign(`/trip.html?id=${tripId}`)
                         }
@@ -79,7 +80,6 @@ function setTripPeriod(position) {
                     endDate = new Date(endDate + 'T00:00:00.000Z')
                     endDate.setDate(endDate.getDate() + 1)
                     modifyTripDuration(tripId, startDate, endDate) 
-                    
                 }
             } else if (result.isDenied) {
                 location.assign(`/trip.html?id=${tripId}`)
@@ -180,7 +180,6 @@ function modifyTripDuration(tripId, tripStart, tripEnd) {
             if (xhr.status == 204) {
                 getTripSettings(accessToken, tripId);
                 Swal.fire({
-                    position: 'top-end',
                     icon: 'success',
                     title: '修改成功',
                     showConfirmButton: false,
