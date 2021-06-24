@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 let accessToken = localStorage.getItem('access_token')
 //document.cookie
 if ( accessToken ) {
@@ -6,14 +8,16 @@ if ( accessToken ) {
 
 function onSignIn(googleUser) {
   let profile = googleUser.getBasicProfile();
-  signIn(profile.getEmail())
+  let googleToken = googleUser.getAuthResponse().id_token;
+  // signIn(profile.getEmail())
+  signIn(googleToken)
 }
 
-function signIn(gmail) {
+function signIn(googleToken) {
   let email = document.getElementById('email').value;
   let password = document.getElementById('password-field').value;
 
-  if (!gmail && email.split('@').length != 2) {
+  if (!googleToken && email.split('@').length != 2) {
     Swal.fire({
       icon: 'warning',
       title: '請輸入正確的電子郵件地址',
@@ -26,12 +30,15 @@ function signIn(gmail) {
   let user = {
     email: email,
     password: password,
+    provider: 'native'
   };
   
-  if (gmail) {
+  if (googleToken) {
     user = {
-      email: gmail,
-      password: 'googleSignInDraglo',
+      provider: 'Google',
+      googleToken,
+      email: null,
+      password: null,
     }
   } else {
     if(!email || !password) {
@@ -54,14 +61,14 @@ function signIn(gmail) {
   
   //AJAX
   const xhr = new XMLHttpRequest();
-  xhr.open('POST', '/signin');
+  xhr.open('POST', '/1.0/signin');
   xhr.setRequestHeader('Content-Type', 'application/json');
 
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4) {
       if (xhr.status === 200) {
 
-        if (gmail) {
+        if (googleToken) {
           Swal.fire({
             icon: 'success',
             title: 'Google 登入成功',

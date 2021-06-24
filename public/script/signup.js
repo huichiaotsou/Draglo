@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 let accessToken = localStorage.getItem('access_token')
 //document.cookie
 if (accessToken) {
@@ -53,7 +55,7 @@ function signUp() {
   
     //AJAX
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/signup');
+    xhr.open('POST', '/1.0/signup');
     xhr.setRequestHeader('Content-Type', 'application/json');
   
     //status check

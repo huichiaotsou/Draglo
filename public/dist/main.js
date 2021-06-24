@@ -14615,6 +14615,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _fullcalendar_interaction__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @fullcalendar/interaction */ "./node_modules/@fullcalendar/interaction/main.js");
 /* harmony import */ var _fullcalendar_timegrid__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @fullcalendar/timegrid */ "./node_modules/@fullcalendar/timegrid/main.js");
 /* harmony import */ var _calendar_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./calendar.css */ "./src/calendar.css");
+/* eslint-disable */
 
 
 
@@ -14628,6 +14629,12 @@ window.addEventListener('storage', function() {
   const start = tripSettings.trip_start
   const end = tripSettings.trip_end
   const duration = tripSettings.duration; 
+
+  let socket = io({
+    auth: {
+        token: localStorage.getItem('access_token')
+    }
+  });
   
   // initialize the calendar
   // -----------------------------------------------------------------
@@ -14672,8 +14679,10 @@ window.addEventListener('storage', function() {
         eventDetails.dataset.closedHour = event.extendedProps.closedHour;
         eventDetails.dataset.city = event.extendedProps.city;
         eventBack.appendChild(eventDetails);
-        socket.emit('refreshSpots', tripId);
         socket.emit('removeArrangement', publicId)
+        setTimeout(() => {
+          socket.emit('refreshSpots');
+        }, 500);
       }
     },
     drop: function(info) {
@@ -14705,14 +14714,18 @@ window.addEventListener('storage', function() {
         }
       }
       socket.emit('updateArrangement', eventInfo)
-      socket.emit('refreshSpots', tripId);
+      setTimeout(() => {
+        socket.emit('refreshSpots');
+      }, 500);
     },
     eventDrop: function(info) {
       //change arrangement period
       let { spotId } = info.event.extendedProps
       let { start, end } = info.event
       updateArrangement(1, spotId, tripId, start, end, 0);
-      socket.emit('refreshSpots', tripId);
+      setTimeout(() => {
+        socket.emit('refreshSpots');
+      }, 500);
       let event = info.event
       let eventInfo = {
         id: event.id,
@@ -14755,7 +14768,6 @@ window.addEventListener('storage', function() {
         }
       }
       socket.emit('updateArrangement', eventInfo)
-      
     },
     eventClick : function(info) {
       let date = info.event.start
@@ -15012,7 +15024,76 @@ window.addEventListener('storage', function() {
 
     return path;
   }
-  calendar.render();    
+  calendar.render();
+  
+  socket.on('connect', function(){
+    socket.emit('joinTrip')
+  });
+  
+  socket.on('join-trip-message', (msg)=>{
+    getPendingArrangements(null, tripId)
+  })
+  
+  socket.on('room-brocast', (msg)=>{
+    getPendingArrangements(null, tripId)
+  })
+  
+  socket.on('refreshSpots', (tripId)=>{
+    getPendingArrangements(null, tripId)
+  })
+  
+  socket.on('updateArrangement', (eventInfo)=>{
+    let event = calendar.getEventById(eventInfo.id)
+    if (event) event.remove()
+    let { extendedProps } = eventInfo
+    calendar.addEvent({
+      id: eventInfo.id,
+      title: eventInfo.title,
+      start: eventInfo.start,
+      end: eventInfo.end,
+      color: '#3788d8',
+      extendedProps: {
+        spotId: extendedProps.spotId,
+        latitude: parseFloat(extendedProps.latitude),
+        longtitude: parseFloat(extendedProps.longtitude),
+        openHour: extendedProps.openHour,
+        closedHour: extendedProps.closedHour,
+        city: extendedProps.city
+      }
+    });
+    calendar.render();
+  
+    let allEvents = calendar.getEvents()
+      let data = {
+        tripId: tripId,
+        tripName: JSON.parse(localStorage.getItem('trip_settings')).name,
+        iCalEvents: []
+      }
+      
+      for (let event of allEvents) {
+        data.iCalEvents.push(
+          {
+            summary: event.title,
+            start: event.start.toISOString(),
+            end: event.end.toISOString(),
+            description: "開放時間: " + event.extendedProps.openHour +" ~ "+ event.extendedProps.closedHour,
+            googleId: event.id
+          }
+        )
+      }
+      createiCalFeed(data, 'update')
+    })
+  
+    socket.on('removeArrangement', (eventId)=>{
+      let event = calendar.getEventById(eventId)
+      if (event) {
+        event.remove();
+      }
+    })
+  
+    socket.on('renderCalendar', (tripId)=>{
+      getArrangements(calendar, tripId);
+    })
 });
 
 function checkSameDay (date1, date2) {
@@ -15045,7 +15126,7 @@ function getArrangements (calendar, tripId) {
   }
   //get all arrangements and push in calendar
   let xhr = new XMLHttpRequest();
-  xhr.open('GET', `/arrangement?status=arranged&id=${tripId}`);
+  xhr.open('GET', `/1.0/arrangement?status=arranged&id=${tripId}`);
   xhr.onreadystatechange = function () {
     if (xhr.readyState == 4 && xhr.status == 200) {
       let arrangements = JSON.parse(xhr.responseText);
@@ -15086,10 +15167,11 @@ function updateArrangement (isArranged, spotId, tripId, startTime, endTime, auto
     autoArranged
   };
   let xhr = new XMLHttpRequest();
-  xhr.open('PATCH', '/arrangement');
+  let requestRoute = `/1.0/arrangement/${tripId}/${spotId}`
+  xhr.open('PATCH', requestRoute);
   xhr.onreadystatechange = function () {
     if (xhr.readyState == 4) {
-      if (xhr.status == 200) {
+      if (xhr.status == 204) {
       } else if (xhr.status == 403){
         Swal.fire({
           icon: 'error',
@@ -15103,83 +15185,6 @@ function updateArrangement (isArranged, spotId, tripId, startTime, endTime, auto
   xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('access_token')}`);
   xhr.send(JSON.stringify(data));
 }
-
-let socket = io({
-  auth: {
-      token: localStorage.getItem('access_token')
-  }
-});
-
-socket.on('connect', function(){
-  socket.emit('joinTrip', tripId)
-});
-
-socket.on('join-trip-message', (msg)=>{
-  getPendingArrangements(null, tripId)
-})
-
-socket.on('room-brocast', (msg)=>{
-  getPendingArrangements(null, tripId)
-})
-
-socket.on('refreshPendingArrangements', (tripId)=>{
-    getPendingArrangements(null, tripId)
-})
-
-socket.on('updateArrangement', (eventInfo)=>{
-  let event = calendar.getEventById(eventInfo.id)
-  if (event) event.remove()
-  let { extendedProps } = eventInfo
-  calendar.addEvent({
-    id: eventInfo.id,
-    title: eventInfo.title,
-    start: eventInfo.start,
-    end: eventInfo.end,
-    color: '#3788d8',
-    extendedProps: {
-      spotId: extendedProps.spotId,
-      latitude: parseFloat(extendedProps.latitude),
-      longtitude: parseFloat(extendedProps.longtitude),
-      openHour: extendedProps.openHour,
-      closedHour: extendedProps.closedHour,
-      city: extendedProps.city
-    }
-  });
-  calendar.render();
-
-  let allEvents = calendar.getEvents()
-    let data = {
-      tripId: tripId,
-      tripName: JSON.parse(localStorage.getItem('trip_settings')).name,
-      iCalEvents: []
-    }
-    
-    for (let event of allEvents) {
-      data.iCalEvents.push(
-        {
-          summary: event.title,
-          start: event.start.toISOString(),
-          end: event.end.toISOString(),
-          description: "開放時間: " + event.extendedProps.openHour +" ~ "+ event.extendedProps.closedHour,
-          googleId: event.id
-        }
-      )
-    }
-    createiCalFeed(data, 'update')
-  })
-
-  socket.on('removeArrangement', (eventId)=>{
-    let event = calendar.getEventById(eventId)
-    if (event) {
-      event.remove();
-    }
-  })
-
-  socket.on('renderCalendar', (tripId)=>{
-    getArrangements(calendar, tripId);
-  })
-
-
 })();
 
 /******/ })()
