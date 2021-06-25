@@ -71,7 +71,7 @@ Website URL: https://draglo.com
 * The optimized schedule is calculated in consideration of spots' location and opening hours
 * Path per day is rendered on clicking any scheduled event
 * Spots with special business hours will be notified for user's further arrangement
-![calculate](https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/calculation-short.gif)
+![calculate](https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/calculation.gif)
 
 ### Share and co-edit
 * Share trip with sending invitation email and co-edit real time with friends
