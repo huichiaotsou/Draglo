@@ -53,11 +53,37 @@ Website URL: https://draglo.com
 * Goolge Direction API
 
 ## Architecture
-![Architecture](https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/server_architecture.png)
+![Architecture](https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/architecture.png)
 
 ## Database Schema
 ![Schema](https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/schema.png)
 
 ## Features
+### Intuitive UX/UI
+* Search and add desired spots with Google Maps
+![search_add_spots](https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/search_add_spots.mov)
+
+### Drag and Drop
+* Arrange the schedule with dragging spots in and out of the calendar
+![drag_and_drop](https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/drag_and_drop.mov)
+
+### Automatic Calculation
+* The optimized schedule is calculated in consideration of spots' location and opening hours
+* Path per day is rendered on clicking any scheduled event
+* Spots with special business hours will be notified for user's further arrangement
+![calculate](https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/calculation.mov)
+
+### Share and co-edit
+* Share trip with sending invitation email and co-edit real time with friends
+![share](https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/co_edit.mov)
+
+### iCalendar Feed
+* Create iCalendar feed to import the schedule to your own calendar
+![icalendar](https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/ical.mov)
+
 ## Demo Account
+* Login: test@test.com
+* Password: test123
+
 ## Contact
+* Email Address: huichiao.tsou@gmail.com
