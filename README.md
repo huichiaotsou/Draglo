@@ -53,7 +53,7 @@ Website URL: https://draglo.com
 * Goolge Direction API
 
 ## Architecture
-![Architecture](https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/architecture.png)
+![Architecture](https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/architecture_.png)
 
 ## Database Schema
 ![Schema](https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/schema.png)
