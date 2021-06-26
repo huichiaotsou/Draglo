@@ -3,7 +3,7 @@
 An innovative and intuitive platform for arranging travel plans with Google Place Search and drag-and-drop calendar.
 
 
-Website URL: https://draglo.com
+Plan your trip: https://draglo.com
 
 ![Dashboard Preview](https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/dashboard_preview.png)
 
