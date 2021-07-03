@@ -38,9 +38,7 @@ const verifyAccess = async (req, res, next) => {
     }
     const [[checkAuthor]] = await pool.query('SELECT COUNT(*) AS count FROM trips WHERE id = ? AND user_id = ?', [tripId, userId]);
     const [[checkContributor]] = await pool.query('SELECT COUNT(*) AS count FROM contributors WHERE trip_id = ? AND user_id = ?', [tripId, userId]);
-    console.log(checkAuthor);
-    console.log(checkContributor);
-    if (checkAuthor.count === 0 && checkContributor.count === 0) {
+    if (checkAuthor.count < 1 && checkContributor.count < 1) {
       res.sendStatus(403);
       return;
     }
