@@ -56,7 +56,7 @@ Plan your trip now: https://draglo.com
 ![Architecture](https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/architecture_.png)
 
 ## Database Schema
-![Schema](https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/schema.png)
+![Schema](https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/schema_new.png)
 
 ## Features
 ### Intuitive UX/UI
