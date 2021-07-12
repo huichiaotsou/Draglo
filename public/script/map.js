@@ -182,7 +182,7 @@ function restoreSearchBox() {
   const container = document.getElementById('google_maps_container');
   container.innerHTML = `
     <div style="display: none">
-      <input id="pac-input" class="controls" type="text" placeholder="搜尋景點">
+      <input id="pac-input" class="controls" type="text" placeholder="Search for a touristic spot">
     </div>
     <div id="map"></div>
     <div id="infowindow-content">
@@ -199,7 +199,7 @@ window.addEventListener('storage', ()=>{
 function popUpAddSpot(spotName, placeId) {
   Swal.fire({
     position: 'center-end',
-    title: '是否新增景點：<br>"' + spotName +'"',
+    title: 'Add the spot<br>"' + spotName +'"',
     showCancelButton: true,
     confirmButtonText: 'OK',
     confirmButtonColor: '#3085d6'
@@ -234,7 +234,7 @@ function saveSpotInfo(spotName, placeId) {
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
-          text: '景點新增失敗，請再試一次或聯絡網站管理員',
+          text: 'Failed to add spot <by> Please try again or contact website admin',
         }) 
       }
     }
@@ -290,7 +290,7 @@ function getPendingArrangements(city, tripId, placeId) {
         if (cities) {
           let showAll = document.createElement('div');
           showAll.setAttribute('id', 'all-cities')
-          showAll.innerHTML = '全部城市清單';
+          showAll.innerHTML = 'List of Cities';
           showAll.setAttribute('onclick', `
           getPendingArrangements(${null}, ${tripId});
           switchAutomationCity('null');`);
@@ -318,7 +318,7 @@ function getPendingArrangements(city, tripId, placeId) {
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
-          text: '景點重整失敗，請再試一次或聯絡網站管理員',
+          text: 'Failed to refresh spot list <by> Please try again or contact website admin',
         }) 
       }
     }
@@ -363,12 +363,10 @@ function renderDayPath(path) {
 function removeEvent(spotId, tripId) {
   Swal.fire({
     position: 'top-end',
-    title: '確認刪除景點',
-    text: "刪除後您將必須重新搜尋並加回清單",
+    title: 'Deleting the spot',
     icon: 'warning',
     showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
+    confirmButtonColor: '#d33',
     confirmButtonText: 'OK'
   }).then((result) => {
     if (result.isConfirmed) {

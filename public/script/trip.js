@@ -21,17 +21,17 @@ window.addEventListener('storage', ()=> {
 function setTripPeriod(position) {
     Swal.fire({
         position: position,
-        title: '設定旅行區間',
+        title: `When do you plan to travel?`,
         confirmButtonColor: '#3085d6',
-        confirmButtonText: `確認`,
+        confirmButtonText: `OK`,
         showDenyButton: true,
-        denyButtonText: `取消`,
+        denyButtonText: `Cancel`,
         denyButtonColor: '#d33',
         allowOutsideClick: false,
         html: `
-            <div style="margin-bottom: 20px;">您可以隨時在旅程設定中更改</div>
-            <label>開始日期：</label><input id="start-date" type="date" name="start-date" placeholder="YYYY-MM-DD"><br>
-            <label>結束日期：</label><input id="end-date" type="date" name="end-date" placeholder="YYYY-MM-DD">
+            <div style="margin-bottom: 20px;">the duration can also be modified in the "Settings"</div>
+            <label>From </label><input id="start-date" type="date" name="start-date" placeholder="YYYY-MM-DD" style="width: 155px; margin-left:8px;"><br>
+            <label>To </label><input id="end-date" type="date" name="end-date" placeholder="YYYY-MM-DD" style="width: 155px; margin-left:27px;">
             `,
       }).then((result) => {
         if (result.isConfirmed) {
@@ -40,13 +40,13 @@ function setTripPeriod(position) {
             if ((new Date(endDate) - new Date(startDate))/(1000*60*60*24) > 20) {
                 Swal.fire({
                     position: position,
-                    title: '行程過長',
-                    text: '行程區間最多僅接受20天',
+                    title: 'Too Long :(',
+                    text: 'The longest accepted period is 20 days',
                     icon: 'warning',
                     confirmButtonColor: '#3085d6',
-                    confirmButtonText: '重新設定',
+                    confirmButtonText: 'Reconfigure',
                     showDenyButton: true,
-                    denyButtonText: `取消`,
+                    denyButtonText: `cancel`,
                     denyButtonColor: '#d33',
                     allowOutsideClick: false,
                   }).then((result) => {
@@ -59,13 +59,13 @@ function setTripPeriod(position) {
                 } else if (startDate > endDate){
                     Swal.fire({
                         position: position,
-                        title: '日期錯誤',
-                        text: "結束日期早於開始日期",
+                        title: 'Wrong date',
+                        text: "Trip end is earlier than trip start",
                         icon: 'warning',
                         confirmButtonColor: '#3085d6',
-                        confirmButtonText: '重新設定',
+                        confirmButtonText: 'Reconfigure',
                         showDenyButton: true,
-                        denyButtonText: `取消`,
+                        denyButtonText: `Cancel`,
                         denyButtonColor: '#d33',
                         allowOutsideClick: false,
                     }).then((result) => {
@@ -81,9 +81,10 @@ function setTripPeriod(position) {
                     endDate.setDate(endDate.getDate() + 1)
                     modifyTripDuration(tripId, startDate, endDate) 
                 }
-            } else if (result.isDenied) {
-                location.assign(`/trip.html?id=${tripId}`)
-            }
+            } 
+            // else if (result.isDenied) {
+            //     location.assign(`/trip.html?id=${tripId}`)
+            // }
         })
         let settings = JSON.parse(localStorage.getItem('trip_settings'));
         let initStartDate = document.getElementById('start-date');
@@ -181,13 +182,13 @@ function modifyTripDuration(tripId, tripStart, tripEnd) {
                 getTripSettings(accessToken, tripId);
                 Swal.fire({
                     icon: 'success',
-                    title: '修改成功',
+                    title: 'The trip has been created',
                     showConfirmButton: false,
                     timer: 1000
                 })
                 setTimeout(() => {
                   location.assign(`/trip.html?id=${tripId}`)
-                }, 700);
+                }, 1000);
             } else if (xhr.status == 403) {
                 Swal.fire({
                     icon: 'error',
@@ -218,7 +219,7 @@ function updateTripName() {
                 getTripSettings(accessToken, tripId);
                 Swal.fire({
                     icon: 'success',
-                    title: '修改成功',
+                    title: 'Success!',
                     showConfirmButton: false,
                     timer: 1000
                 })
@@ -255,7 +256,7 @@ function archiveTrip(action) {
                 if (action == 1) {
                     Swal.fire({
                         icon: 'success',
-                        title: '封存成功',
+                        title: 'Trip has been archived',
                         showConfirmButton: false,
                         timer: 1000
                     })
@@ -265,7 +266,7 @@ function archiveTrip(action) {
                 } else if (action == 2) {
                     Swal.fire({
                         icon: 'success',
-                        title: '刪除成功',
+                        title: 'Trip has been deleted',
                         showConfirmButton: false,
                         timer: 1000
                     })
@@ -275,7 +276,7 @@ function archiveTrip(action) {
                 } else if (action == 0) {
                     Swal.fire({
                         icon: 'success',
-                        title: '行程復原成功',
+                        title: 'Trip has been restored',
                         showConfirmButton: false,
                         timer: 1000
                     })
@@ -287,7 +288,7 @@ function archiveTrip(action) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: '您的權限不足',
+                    text: 'Access Denied',
                   })
             }
         }
@@ -300,14 +301,14 @@ function archiveTrip(action) {
         //確認刪除
         Swal.fire({
             position: 'top-end',
-            title: '是否確定刪除行程?',
-            text: "刪除的行程將無法復原",
+            title: 'You are deleting the trip',
+            text: "Deleted trips are not restorable",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: '確認刪除',
-            cancelButtonText:'取消'
+            // cancelButtonColor: '#3085d6',
+            confirmButtonText: 'I am aware',
+            cancelButtonText:'Cancel'
           }).then((result) => {
             if (result.isConfirmed) {
                 xhr.send(JSON.stringify(data));
@@ -320,8 +321,8 @@ function archiveTrip(action) {
 function shareTrip(){
     Swal.fire({
         position: 'top-end',
-        title: '<p>想要發邀請函給誰呢？</p>',
-        html:`<input id="share-email" type="text" placeholder="電子郵件信箱"
+        title: '<p>Send the access link <br>to your friends!</p>',
+        html:`<input id="share-email" type="text" placeholder=" Enter email address"
         style="border-radius: 5px; height: 40px; width: 300px;">`,
         showCloseButton: true,
         focusConfirm: false,
@@ -341,9 +342,10 @@ function shareTrip(){
                 Swal.fire({
                     position: 'top-end',
                     icon: 'success',
-                    title: '邀請函傳送成功，請點擊邀請連結取得權限',
-                    showConfirmButton: false,
-                    timer: 1000
+                    title: 'The Invitation has been sent.<br>Please use the link in the email<br> to obtain trip access',
+                    showConfirmButton: true,
+                    confirmButtonColor: '#3085d6',
+
                 })
                 let xhr = new XMLHttpRequest()
                 xhr.open('POST', '/1.0/share');
@@ -354,7 +356,7 @@ function shareTrip(){
                 Swal.fire({
                     position: 'top-end',
                     icon: 'warning',
-                    title: '請輸入電子郵件地址',
+                    title: 'Please enter email address',
                     showConfirmButton: false,
                     timer: 1000
                 })
@@ -405,13 +407,13 @@ window.addEventListener('beforeunload', ()=>{
 function clearTrip() {
     Swal.fire({
         position: 'top-end',
-        title: '是否確定清空行事曆?',
+        title: 'It can not be undone',
+        text:'Do you want to clear all the schedule?',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: '確認清除',
-        cancelButtonText:'取消'
+        confirmButtonText: 'Clear it',
+        cancelButtonText:'Cancel'
       }).then((result) => {
         if (result.isConfirmed) {
             let xhr = new XMLHttpRequest()
@@ -446,16 +448,15 @@ function createiCalFeed(data, action){
                 if (action == 'create') {
                     Swal.fire({
                         position: 'top-end',
-                        title: 'iCalendar Feed 已建立',
+                        title: 'iCalendar Feed',
                         html:`
-                        
-                        <div>此旅程的日曆網址為：</div>
+                        <div>Import the trip schedule to your own calendar</div>
                         <div style="display: flex; justify-content:space-around; margin-top: 20px;">
-                            <input type="text" style="font-size: 17px; width: 70%;" id="ical-feed" value="${xhr.responseText}">
-                            <button class="btn btn-sm btn-outline-primary" type="button" onclick="copyLink()" id="copy-btn">複製網址</button> <br>
+                            <input type="text" style="font-size: 17px; width: 70%; margin-right:-10px;" id="ical-feed" value="${xhr.responseText}">
+                            <button class="btn btn-sm btn-outline-primary" type="button" onclick="copyLink()" id="copy-btn">Copy URL</button> <br>
                         </div>
-                        <br><a href="https://calendar.google.com/calendar/u/0/r/settings/addbyurl" target="_blank"><div>點擊匯入至 Google Calendar</div></a>
-                        <div style="font-size: 12px; margin-top: 7px;">若您先前已匯入，Google Calendar將自動更新（根據Google更新速度）</div>
+                        <div style="font-size: 12px; margin-top: 7px;">If you have already subscribed to the feed,<br> all the updates at Draglo will be automatically pushed to your calednar.</div>
+                        <br><a href="https://calendar.google.com/calendar/u/0/r/settings/addbyurl" target="_blank"><div>Quick access to Google Calendar</div></a>
                         `,
                         confirmButtonColor: '#3085d6',
                         confirmButtonText: `OK`
@@ -476,6 +477,6 @@ function copyLink() {
     link.select();
     document.execCommand("copy");
     let copyBtn = document.getElementById('copy-btn')
-    copyBtn.innerHTML = '已複製';
+    copyBtn.innerHTML = 'Copied!';
     copyBtn.className = 'btn btn-sm btn-outline-secondary'
 }

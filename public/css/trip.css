@@ -42,34 +42,48 @@
     margin-bottom: 5px;
     color: rgb(6, 16, 34);  
     font-weight: 350;
-    letter-spacing: 2px;
+    /* letter-spacing: 1px; */
   }
 
-  
 
 #delete-message {
   opacity: 0.7;
   align-self: center;
   margin-left: auto;
   justify-self: auto;
-  font-size: 15px;
+  font-size: 14px;
+}
+
+#nav-bar {
+  position: absolute;
+  left: 100px;
 }
 
 #calculateTrip {
   position: absolute;
-  right: 20px;
+  right: 10px;
+}
+
+#iCal-feed {
+  position: absolute;
+  right: 168px;
+}
+
+#trip-title {
+  position: absolute;
+  right: 308px;
 }
 
 #settings {
   position: absolute;
-  right: 148px;
+  left: 215px;
 }
 
 #archive-banner {
   cursor: pointer;
   position: fixed;
   top: 5px;
-  margin-left: 7%;
+  margin-left: 120px;
   opacity: 0.5;
   display: none;
 }

@@ -19,17 +19,7 @@ function createTrip() {
           }
           if(xhr.status == 200) {
               let response = JSON.parse(xhr.responseText); 
-              Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: '建立新旅程',
-                showConfirmButton: false,
-                timer: 1100,
-                confirmButtonColor: '#3085d6'
-              });
-              setTimeout(()=>{
-                  location.assign(`/trip.html?id=${response.tripId}&status=new`);
-              }, 1100)
+              location.assign(`/trip.html?id=${response.tripId}&status=new`);
           }
         }
     }
@@ -40,7 +30,7 @@ function createTrip() {
 function nativeSignOut() {
     Swal.fire({
         icon: 'success',
-        title: '下次再會 :)',
+        title: 'See ya! :)',
         showConfirmButton: false,
         timer: 700,
       });
@@ -132,7 +122,9 @@ function getDashboard(behavior){
                     tripBlock.appendChild(tripImg);
                     let tripTitle = document.createElement('p');
                     tripTitle.className = "trip-title";
-                    tripTitle.innerHTML = '新增旅程';
+                    tripTitle.innerHTML = `
+                    <div style='letter-spacing: 0.7px;'>Click here to create your first trip !</div>
+                    `
                     tripBlock.appendChild(tripTitle);
                 }
             }        

@@ -238,17 +238,17 @@ window.addEventListener('storage', function() {
   
       Swal.fire({
         position: 'top-end',
-        title: '請選擇自動行程安排的城市',
+        title: 'Pick a city to get <br>the optimized schedule',
         confirmButtonColor: '#3085d6',
-        confirmButtonText: '安排行程',
+        confirmButtonText: 'I have chosen',
         html: html
       }).then((result) => {
         if (result.isConfirmed) {
           if (calculateTripBtn.dataset.city == 'null') {
             Swal.fire({
               position: 'top-end',
-              title: '尚未選擇城市',
-              text: "請選擇城市以進行自動行程安排",
+              title: 'Pick a city',
+              text: "Please pick a city for automatic calculation",
               icon: 'warning',
               confirmButtonColor: '#3085d6',
               confirmButtonText: 'OK'
@@ -326,9 +326,6 @@ window.addEventListener('storage', function() {
       html: `
       <div style="color:#007bff; font-size: 20px;">
         城市：${cityName}
-      </div>
-      <div style="color:#007bff; margin-top:10px"> 
-        預計出門時間：${dayStart / 60}點 
       </div>
       `,
       showCancelButton: true,

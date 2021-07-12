@@ -71,14 +71,14 @@ function signIn(googleToken) {
         if (googleToken) {
           Swal.fire({
             icon: 'success',
-            title: 'Google 登入成功',
+            title: 'Signed in with Google',
             showConfirmButton: false,
             timer: 700
           })
         } else {
           Swal.fire({
             icon: 'success',
-            title: '登入成功',
+            title: 'Signed in',
             showConfirmButton: false,
             timer: 700
           })
