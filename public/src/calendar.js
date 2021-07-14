@@ -220,49 +220,59 @@ window.addEventListener('storage', function() {
 
   let calculateTripBtn = document.getElementById('calculateTrip');
   calculateTripBtn.addEventListener('click', ()=>{
-    if (calculateTripBtn.dataset.city == 'null') {
+    
       let cityList = document.getElementsByClassName('city')
-      let html = `
-      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-      `
-      for (let city of cityList) {
-        html += `
-        <label class="btn btn-sm btn-outline-primary" onclick="switchAutomationCity('${city.innerHTML.split(' ')[0]}');">
-          <input type="radio" 
-          name="options" 
-          autocomplete="off" 
-          style="margin-right: 10px;">${city.innerHTML}
-        </label>`
-      }
-      html += `</div>`
-  
-      Swal.fire({
-        position: 'top-end',
-        title: 'Pick a city to get <br>the optimized schedule',
-        confirmButtonColor: '#3085d6',
-        confirmButtonText: 'I have chosen',
-        html: html
-      }).then((result) => {
-        if (result.isConfirmed) {
-          if (calculateTripBtn.dataset.city == 'null') {
-            Swal.fire({
-              position: 'top-end',
-              title: 'Pick a city',
-              text: "Please pick a city for automatic calculation",
-              icon: 'warning',
-              confirmButtonColor: '#3085d6',
-              confirmButtonText: 'OK'
-            })
-          } else {
-            calulateBtnClicked();
-          }
-        } else {
-          switchAutomationCity('null')
+
+      if(cityList.length === 0) {
+        Swal.fire({
+          position: 'top-end',
+          title: 'Add some spots',
+          text: "Please add somes spots for calculation",
+          icon: 'warning',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'OK'
+        })
+      } else {
+        let html = `
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        `
+        for (let city of cityList) {
+          html += `
+          <label class="btn btn-sm btn-outline-primary" onclick="switchAutomationCity('${city.innerHTML.split(' ')[0]}');">
+            <input type="radio" 
+            name="options" 
+            autocomplete="off" 
+            style="margin-right: 10px;">${city.innerHTML}
+          </label>`
         }
-      })
-    } else {
-      calulateBtnClicked();
-    }
+        html += `</div>`
+    
+        Swal.fire({
+          position: 'top-end',
+          title: 'Pick a city to get <br>the optimized schedule',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'I have chosen',
+          html: html
+        }).then((result) => {
+          if (result.isConfirmed) {
+            if (calculateTripBtn.dataset.city == 'null') {
+              Swal.fire({
+                position: 'top-end',
+                title: 'Pick a city',
+                text: "Please pick a city for automatic calculation",
+                icon: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+              })
+            } else {
+              calulateBtnClicked();
+            }
+          } else {
+            switchAutomationCity('null')
+          }
+        })
+      }
+    
 
   })
 
@@ -320,22 +330,22 @@ window.addEventListener('storage', function() {
       })
     }
     startDate = startDate.toString()
-    Swal.fire({
-      position: 'top-end',
-      title: '目前行程計算的設定為：',
-      html: `
-      <div style="color:#007bff; font-size: 20px;">
-        城市：${cityName}
-      </div>
-      `,
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      confirmButtonText: `OK`
-    }).then((result) => {
-      if (result.isConfirmed) {
-        calculateTrip(cityName, startDate, dayStart, previousCityVector, arrangedEvents);
-      }
-    })
+    calculateTrip(cityName, startDate, dayStart, previousCityVector, arrangedEvents);
+    // Swal.fire({
+    //   position: 'top-end',
+    //   title: '目前行程計算的設定為：',
+    //   html: `
+    //   <div style="color:#007bff; font-size: 20px;">
+    //     城市：${cityName}
+    //   </div>
+    //   `,
+    //   showCancelButton: true,
+    //   confirmButtonColor: '#3085d6',
+    //   confirmButtonText: `OK`
+    // }).then((result) => {
+    //   if (result.isConfirmed) {
+    //   }
+    // })
   }
 
   let icalBtn = document.getElementById('iCal-feed');

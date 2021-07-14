@@ -1,7 +1,4 @@
 /* eslint-disable */
-function backToDashboard() {
-  location.assign('/dashboard.html')
-}
 
 // Maps API
 function initMap(spots, path) {
@@ -67,7 +64,7 @@ function initMap(spots, path) {
         map,
       });
       const infowindow = new google.maps.InfoWindow({
-        content: `${s[2]}<br>開放時間:<br>${s[3]}`,
+        content: `${s[2]}<br>Opening Hours:<br>${s[3]}`,
       });
       marker.addListener("mouseover", () => {
         infowindow.open(map, marker);
@@ -182,7 +179,7 @@ function restoreSearchBox() {
   const container = document.getElementById('google_maps_container');
   container.innerHTML = `
     <div style="display: none">
-      <input id="pac-input" class="controls" type="text" placeholder="Search for a touristic spot">
+      <input id="pac-input" class="controls" type="text" placeholder="Find touristic spots">
     </div>
     <div id="map"></div>
     <div id="infowindow-content">
@@ -288,13 +285,18 @@ function getPendingArrangements(city, tripId, placeId) {
         let citiesContainer = document.getElementById('cities-container');
         citiesContainer.innerHTML = '';
         if (cities) {
-          let showAll = document.createElement('div');
-          showAll.setAttribute('id', 'all-cities')
-          showAll.innerHTML = 'List of Cities';
-          showAll.setAttribute('onclick', `
-          getPendingArrangements(${null}, ${tripId});
-          switchAutomationCity('null');`);
-          citiesContainer.appendChild(showAll)
+          
+            let showAll = document.createElement('div');
+            showAll.setAttribute('id', 'all-cities')
+            showAll.innerHTML = '<span>City List</span>';
+            showAll.style.backgroundColor = '#2d4b91';
+            showAll.style.paddingLeft = '5px'
+            showAll.style.height = '40px'
+            showAll.setAttribute('onclick', `
+            getPendingArrangements(${null}, ${tripId});
+            switchAutomationCity('null');`);
+            citiesContainer.appendChild(showAll)
+          
           cities.map(cityName => {
             let city = document.createElement('div');
             city.className = 'city';
@@ -304,6 +306,7 @@ function getPendingArrangements(city, tripId, placeId) {
             getPendingArrangements('${cityName}', ${tripId}); 
             switchAutomationCity('${cityName.split(' ')[0]}');`);
             citiesContainer.appendChild(city)
+            city.style.paddingLeft = '5px'
           })
         }
         if (city) {
@@ -312,13 +315,13 @@ function getPendingArrangements(city, tripId, placeId) {
         let spotList = document.getElementById('external-events')
         if (isArranged) {
           spotList.innerHTML = `
-          <div style='color: grey; padding-top: 5%;'>此景點已安排至行程中</div>`
+          <div style='color: grey; padding-top: 5%;'>This spot has been arranged</div>`
         }
       } else {
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
-          text: 'Failed to refresh spot list <by> Please try again or contact website admin',
+          text: 'Failed to refresh spot list. Please try again or contact website admin',
         }) 
       }
     }

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+  	<title>Draglo - How To</title>
+    <meta charset="utf-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="css/dashboard.css"> -->
+    <link rel="stylesheet" href="css/guide.css">
+    <script src="./script/guide.js"></script>
+
+
+</head>
+<body>
+
+    <a id="guide-logo" href="/dashboard.html">Draglo</a>
+    <main>
+
+        <video id="content1" autoplay muted width="70%" height="50%" loop class="video">
+          <source src="https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/how_to/set_period.mov" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <div class="instruction-div">
+          <div class='instruction_text' >Configure the trip period.</div> 
+          <button class="prev-button btn btn-warning" type="button" onclick="jumpTo('content1')" disabled> PREV </button>
+          <button class="next-button btn btn-success" type="button" onclick="jumpTo('content2')"> NEXT </button>
+        </div>
+
+        <video id="content2" autoplay muted width="70%" height="50%" loop class="video">
+          <source src="https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/how_to/search_spot.mov" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <div class="instruction-div">
+          <div class='instruction_text' ><strong>Search and click</strong> on the search result to add touristic spots.</div> 
+          <button class="prev-button btn btn-warning" type="button" onclick="jumpTo('content1')"> PREV </button>
+          <button class="next-button btn btn-success" type="button" onclick="jumpTo('content3')"> NEXT </button>
+        </div>
+        <video id="content3" autoplay muted width="70%" height="50%" loop class="video">
+          <source src="https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/how_to/drag_and_drop.mov" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <div class="instruction-div">
+          <div class='instruction_text' ><strong>Drag-and-drop</strong> to arrange your trip.</div>
+          <button class="prev-button btn btn-warning" type="button" onclick="jumpTo('content2')"> PREV </button>
+          <button class="next-button btn btn-success" type="button" onclick="jumpTo('content4')"> NEXT </button>
+        </div>
+
+        <video id="content4" autoplay muted width="70%" height="50%" loop class="video">
+          <source src="https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/how_to/auto_scheduling.mov" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <div class="instruction-div">
+          <div class='instruction_text' >Get an optimized trip schedule with <strong>auto-scheduling</strong>!</div>
+          <button class="prev-button btn btn-warning" type="button" onclick="jumpTo('content3')"> PREV </button>
+          <button class="next-button btn btn-success" type="button" onclick="jumpTo('content5')"> NEXT </button>
+        </div>
+
+        <video id="content5" autoplay muted width="70%" height="50%" loop class="video">
+          <source src="https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/how_to/share_with_friend.mov" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <div class="instruction-div">
+          <div class='instruction_text' >Send an invitation link to your friend to edit the trip together <strong>in real time</strong>.</div> 
+          <button class="prev-button btn btn-warning" type="button" onclick="jumpTo('content4')"> PREV </button>
+          <button class="next-button btn btn-success" type="button" onclick="jumpTo('content6')"> NEXT </button>
+        </div>
+
+        <video id="content6" autoplay muted width="70%" height="50%" loop class="video">
+          <source src="https://huichiao-stylish.s3.ap-southeast-1.amazonaws.com/draglo/how_to/icalendar.mov" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <div class="instruction-div">
+          <div class='instruction_text' >Generate an <strong>iCalendar feed</strong> to import the schedule to your own calendar.</div> 
+          <button class="prev-button btn btn-warning" type="button" onclick="jumpTo('content5')"> PREV </button>
+          <button class="next-button btn btn-success" type="button" onclick="jumpTo('content7')"> NEXT </button>
+        </div>
+        <div id="content7">
+          <div id='create-trip' onclick="createTrip()">
+            <img src="/images/create_trip_now.png" alt="create trip now">
+          </div>
+        </div>
+
+    </main>
+</body>
+
+</html>
+

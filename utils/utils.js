@@ -70,13 +70,13 @@ const sendEmail = async (title, email, shareToken) => {
     await transporter.sendMail({
       from: '"Draglo" <noreply@draglo.com>',
       to: email,
-      subject: `邀請編輯通知，旅程：${title}`,
-      text: `您的朋友邀請您一起共同建立旅遊行程 ${title}`,
+      subject: `Invitation to co-edit the trip: ${title}`,
+      text: `Your friend is inviting you to co-edit the trip: ${title}`,
       html: `
-            <div>您的朋友邀請您一起共同建立旅遊行程 ${title}</div>
+            <div>Your friend is inviting you to co-edit the trip: ${title}</div>
             <br>
             <a href='https://draglo.com/share.html?code=${shareToken}'>
-            <div>請點擊此處取得編輯權限</div>
+            <div>Click here to obtain the edit access!</div>
             </a>`,
     });
 

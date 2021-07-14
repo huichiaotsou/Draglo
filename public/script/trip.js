@@ -14,7 +14,7 @@ window.addEventListener('load', ()=>{
 window.addEventListener('storage', ()=> {
     if (urlParams.get('status') == 'new') {
       urlParams.delete('status');
-      setTripPeriod('top');
+      setTripPeriod('middle');
     }
 })
 
@@ -182,7 +182,7 @@ function modifyTripDuration(tripId, tripStart, tripEnd) {
                 getTripSettings(accessToken, tripId);
                 Swal.fire({
                     icon: 'success',
-                    title: 'The trip has been created',
+                    title: 'OK',
                     showConfirmButton: false,
                     timer: 1000
                 })
@@ -193,7 +193,7 @@ function modifyTripDuration(tripId, tripStart, tripEnd) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: '您的權限不足',
+                    text: 'Access Denied',
                   })                  
             } else {
                 alert(xhr.responseText);
@@ -227,7 +227,7 @@ function updateTripName() {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: '您的權限不足',
+                    text: 'Access Denied',
                   })     
             }
         }
@@ -300,7 +300,7 @@ function archiveTrip(action) {
     } else if (action == 2) {
         //確認刪除
         Swal.fire({
-            position: 'top-end',
+            position: 'top-start',
             title: 'You are deleting the trip',
             text: "Deleted trips are not restorable",
             icon: 'warning',
@@ -320,11 +320,10 @@ function archiveTrip(action) {
 
 function shareTrip(){
     Swal.fire({
-        position: 'top-end',
+        position: 'top-start',
         title: '<p>Send the access link <br>to your friends!</p>',
         html:`<input id="share-email" type="text" placeholder=" Enter email address"
         style="border-radius: 5px; height: 40px; width: 300px;">`,
-        showCloseButton: true,
         focusConfirm: false,
         confirmButtonColor: '#3085d6',
         confirmButtonText: `OK`
@@ -340,7 +339,7 @@ function shareTrip(){
                 let email = document.getElementById('share-email').value
                 data.email = email;
                 Swal.fire({
-                    position: 'top-end',
+                    position: 'top-start',
                     icon: 'success',
                     title: 'The Invitation has been sent.<br>Please use the link in the email<br> to obtain trip access',
                     showConfirmButton: true,
@@ -406,9 +405,9 @@ window.addEventListener('beforeunload', ()=>{
 
 function clearTrip() {
     Swal.fire({
-        position: 'top-end',
+        position: 'top-start',
         title: 'It can not be undone',
-        text:'Do you want to clear all the schedule?',
+        text:'Do you want to clear all the arrangements?',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
@@ -427,7 +426,7 @@ function clearTrip() {
                   Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: '您的權限不足',
+                    text: 'Access Denied',
                   })
                 }
               }
@@ -450,13 +449,13 @@ function createiCalFeed(data, action){
                         position: 'top-end',
                         title: 'iCalendar Feed',
                         html:`
-                        <div>Import the trip schedule to your own calendar</div>
+                        <div>Use the link to import the schedule to your own calendar</div>
                         <div style="display: flex; justify-content:space-around; margin-top: 20px;">
                             <input type="text" style="font-size: 17px; width: 70%; margin-right:-10px;" id="ical-feed" value="${xhr.responseText}">
                             <button class="btn btn-sm btn-outline-primary" type="button" onclick="copyLink()" id="copy-btn">Copy URL</button> <br>
                         </div>
-                        <div style="font-size: 12px; margin-top: 7px;">If you have already subscribed to the feed,<br> all the updates at Draglo will be automatically pushed to your calednar.</div>
-                        <br><a href="https://calendar.google.com/calendar/u/0/r/settings/addbyurl" target="_blank"><div>Quick access to Google Calendar</div></a>
+                        <div style="font-size: 12px; margin-top: 10px;">If you have already subscribed to the feed,<br> all the updates at Draglo will be automatically pushed to your calednar.</div>
+                        <br><a href="https://calendar.google.com/calendar/u/0/r/settings/addbyurl" target="_blank"><div>Access Google Calendar</div></a>
                         `,
                         confirmButtonColor: '#3085d6',
                         confirmButtonText: `OK`

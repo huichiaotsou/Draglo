@@ -108,24 +108,46 @@ function getDashboard(behavior){
                   }, 650)
               }
             } else {
-                container.innerHTML = ""
-                if (behavior == null) {
-                    let link = document.createElement('a');
-                    link.setAttribute('onclick', 'createTrip()')
-                    container.appendChild(link);
-                    let tripBlock = document.createElement('div');
-                    tripBlock.className = "trip-block";
-                    link.appendChild(tripBlock);
-                    let tripImg = document.createElement('img');
-                    tripImg.className = "trip-img";
-                    tripImg.src = "images/bg.jpg";
-                    tripBlock.appendChild(tripImg);
-                    let tripTitle = document.createElement('p');
-                    tripTitle.className = "trip-title";
-                    tripTitle.innerHTML = `
-                    <div style='letter-spacing: 0.7px;'>Click here to create your first trip !</div>
-                    `
-                    tripBlock.appendChild(tripTitle);
+                 if(behavior == 'archived') {
+                  let noArchivedImg = document.createElement('img');
+                  noArchivedImg.src = '/images/no_archived.png'
+                  noArchivedImg.style.width = '500px'
+                  noArchivedImg.style.height = '500px'
+                  container.append(noArchivedImg)
+                } else if (behavior == 'shared') {
+                  let noSharedImg = document.createElement('img');
+                  noSharedImg.src = '/images/no_shared.png'
+                  noSharedImg.style.width = '500px'
+                  noSharedImg.style.height = '500px'
+                  container.append(noSharedImg)
+                } 
+                else if (behavior == null) {
+                  container.innerHTML = ""
+                  let link = document.createElement('a');
+                  link.href = '/guide.html'
+                  container.appendChild(link);
+                  let tripBlock = document.createElement('div');
+                  tripBlock.className = "trip-block";
+                  tripBlock.style.width = '500px';
+                  tripBlock.style.height = '270px'
+                  link.appendChild(tripBlock);
+                  let tripImg = document.createElement('img');
+                  tripImg.className = "trip-img";
+                  tripImg.src = "images/how_to_draglo.png";
+                  tripBlock.appendChild(tripImg);
+                  // let tripTitle = document.createElement('p');
+                  // tripTitle.className = "trip-title";
+                  // tripTitle.innerHTML = `
+                  // <div style='letter-spacing: 0.7px;'>Create Your Trip Now!</div>
+                  // `
+                  // tripBlock.appendChild(tripTitle);
+                } 
+                else if(behavior == 'search') {
+                  let noSearchImg = document.createElement('img');
+                  noSearchImg.src = '/images/no_search.png'
+                  noSearchImg.style.width = '500px'
+                  noSearchImg.style.height = '500px'
+                  container.append(noSearchImg)
                 }
             }        
         }

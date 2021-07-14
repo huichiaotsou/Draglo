@@ -3,4 +3,3 @@ node_modules/
 *.DS_Store
 public/calendars/
 .DS_Store
-*.png

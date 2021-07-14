@@ -29,19 +29,19 @@ function calculateTrip (cityName, startDate, dayStart, previousCityVector, arran
     data.arrangedEvents = arrangedEvents
 
     let checkDistance = getGeoDistance( [parseFloat(spots[0].dataset.latitude),parseFloat(spots[0].dataset.longtitude)] , previousCityVector);
-    let html = '系統正根據景點開放時間、景點間之交通，為您計算行程';
+    let html = 'The app is calculating an optimized trip <br> according to the opening days & hours of the spots as well as the transit time';
     if (checkDistance > 60) {
-        html = `<div>系統正根據景點開放時間、景點間之交通，為您計算行程</div>
-        <div style="font-size: 14px; margin-top:10px; font-weight: 700;">安排中的城市似乎距離上個城市有點距離，請記得預留足夠的交通時間 </div>`
+        html = `<div>The app is calculating an optimized trip <br> according to the opening days & hours of the spots as well as the transit time</div>
+        <div style="font-size: 14px; margin-top:10px; font-weight: 700;">The city you are arranging is far from the previous one. <br> Don't forget to leave enough travel time</div>`
     } 
     
     if (checkDistance > 300) {
-        html = `<div>系統正根據景點開放時間、景點間之交通，為您計算行程</div>
-        <div style="font-size: 14px; margin-top:10px; font-weight: 700;">安排中的城市距離上個城市十分遙遠，可能需要坐飛機或火車唷 </div>`
+        html = `<div>The app is calculating an optimized trip <br> according to the opening days & hours of the spots as well as the transit time</div>
+        <div style="font-size: 14px; margin-top:10px; font-weight: 700;">The city you are arranging is very far from the previous one. <br> You might need to take a train or a flight.</div>`
     }
     let timerInterval
     Swal.fire({
-        title: '行程計算中，請耐心等候',
+        title: 'The optimized schedule is being calculated',
         html: html,
         timer: 20000,
         timerProgressBar: true,
@@ -64,7 +64,7 @@ function calculateTrip (cityName, startDate, dayStart, previousCityVector, arran
             localStorage.setItem('remaining_spots', JSON.stringify(otherEvents.remainingSpots))
             Swal.fire({
                 icon: 'success',
-                title: '計算完成',
+                title: 'Calculation is done!',
                 confirmButtonColor: '#3085d6'
               })
             renderUnarrangedResult();
@@ -78,49 +78,55 @@ function calculateTrip (cityName, startDate, dayStart, previousCityVector, arran
 function renderUnarrangedResult(){
     let nightEvents = JSON.parse(localStorage.getItem('night_events'))
     let remainingSpots = JSON.parse(localStorage.getItem('remaining_spots'))
-    let responseContent = '<h5>由於營業時間、營業日等眾多因素</h5><h5>以下景點尚未列入安排：</h5>';
+    let responseContent = '<h5>Because of special opening hours</h5><h5>the following spots are not arranged:</h5>';
     if (nightEvents.length > 0) {
-        responseContent = responseContent + '<strong> 夜晚行程 </strong><div class="dropdown-divider"></div>'
+        responseContent = responseContent + '<strong> Night events </strong><div class="dropdown-divider"></div>'
         nightEvents.map(event => {
             let openDays = []
             event.openDays.split(',').map( day => {
-              if(day == 0) openDays.push(' 週日 ');
-              if(day == 1) openDays.push(' 週一 ');
-              if(day == 2) openDays.push(' 週二 ');
-              if(day == 3) openDays.push(' 週三 ');
-              if(day == 4) openDays.push(' 週四 ');
-              if(day == 5) openDays.push(' 週五 ');
-              if(day == 6) openDays.push(' 週六 ');
+              if(day == 0) openDays.push(' Sunday ');
+              if(day == 1) openDays.push(' Monday ');
+              if(day == 2) openDays.push(' Tuesady ');
+              if(day == 3) openDays.push(' Wednesday ');
+              if(day == 4) openDays.push(' Thursday ');
+              if(day == 5) openDays.push(' Friday ');
+              if(day == 6) openDays.push(' Saturday ');
             })
+            if(openDays.length === 7) {
+              openDays = ['Weekdays and Weekend']
+            }
             let openHour = Math.floor(event.openHour/60);
             let closedHour = Math.floor(event.closedHour/60);
             if (closedHour > 24) closedHour = closedHour - 24;
             responseContent += `
-            <div> 行程名稱：${event.activity} </div>
-            <div> 營業時間：${openHour}點 ~ ${closedHour}點 </div>
-            <div> 營業日：</div>
+            <div> Spot：${event.activity} </div>
+            <div> Opening hours：${openHour}:00 ~ ${closedHour}:00 </div>
+            <div> Opens on：</div>
             <div> ${openDays.toString()} </div>
             <div class="dropdown-divider"></div>
             `  
         })
     }
     if (remainingSpots.length > 0) {
-      responseContent = responseContent + `<br><strong> 其他未安排行程 </strong><div class="dropdown-divider"></div>`
+      responseContent = responseContent + `<br><strong> Other remaining spots </strong><div class="dropdown-divider"></div>`
       remainingSpots.map(event => {
         let openDays = []
         event.openDays.split(',').map( day => {
-            if(day == 0) openDays.push(' 週日 ');
-            if(day == 1) openDays.push(' 週一 ');
-            if(day == 2) openDays.push(' 週二 ');
-            if(day == 3) openDays.push(' 週三 ');
-            if(day == 4) openDays.push(' 週四 ');
-            if(day == 5) openDays.push(' 週五 ');
-            if(day == 6) openDays.push(' 週六 ');
+            if(day == 0) openDays.push(' Sunday ');
+            if(day == 1) openDays.push(' Monday ');
+            if(day == 2) openDays.push(' Tuesady ');
+            if(day == 3) openDays.push(' Wednesday ');
+            if(day == 4) openDays.push(' Thursday ');
+            if(day == 5) openDays.push(' Friday ');
+            if(day == 6) openDays.push(' Saturday ');
         })
+        if(openDays.length === 7) {
+          openDays = ['Weekdays and Weekend']
+        }
         responseContent += `
-        <div> 行程名稱：${event.activity} </div>
-        <div> 營業時間：${Math.floor(event.openHour/60)}點 ~ ${Math.floor(event.closedHour/60)}點 </div>
-        <div> 營業日：</div>
+        <div> Spot：${event.activity} </div>
+        <div> Opening hours：${Math.floor(event.openHour/60)}:00 ~ ${Math.floor(event.closedHour/60)}:00 </div>
+        <div> Opens on：</div>
         <div> ${openDays.toString()} </div>
         <div class="dropdown-divider"></div>
         `
@@ -129,7 +135,7 @@ function renderUnarrangedResult(){
     if(nightEvents.length > 0 || remainingSpots.length > 0) {
       Swal.fire({
           position: 'top',
-          title: '<strong>尚有未安排景點</strong>',
+          title: '<strong>Remaining Spots</strong>',
           icon: 'info',
           html: responseContent,
           confirmButtonColor: '#3085d6'

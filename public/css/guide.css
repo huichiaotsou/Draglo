@@ -1,0 +1,87 @@
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background-color: rgb(241, 244, 250);
+}
+
+#guide-logo {
+  position: fixed;
+  top: 2vh;
+  left: 12px;
+  font-size: 20px;
+  text-decoration: none;
+  color: black;
+}
+
+video {
+  display: flex;
+  margin: 0 auto;
+  padding: 0;
+  padding-top: 18px;
+}
+
+.instruction-div {
+  position: relative;
+  margin-top: 10px;
+  margin-bottom: 80px;
+}
+
+.instruction_text {
+  position: absolute;
+  height: 35px;
+  left: 15%;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.7px;
+  margin: auto;
+  color: white;
+  background-color: rgba(39, 109, 238, 0.85);
+  border-radius: 4px;
+  line-height: 2;
+  width: 55%;
+  height: auto;
+}
+
+.next-button {
+  position: absolute;
+  right: 15%;
+  top: -2px;
+  display: block;
+  font-size: 18px;
+}
+
+.prev-button {
+  position: absolute;
+  right: 15%;
+  margin-right: 75px;
+  top: -2px;
+  display: block;
+  font-size: 18px;
+}
+
+.next-button:hover{
+  color:white;
+}
+
+#content1{
+  margin-top: 15px;
+}
+#content7 {
+  font-size: 100px;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#create-trip img {
+  opacity: 0.7;
+  border-radius: 50%;
+}
+
+#create-trip img:hover {
+  opacity: 1;
+  cursor: pointer;
+}

@@ -19,8 +19,9 @@
   </head>
   <body>
     
-    <header>      
-      <button id="back-dashboard" type="button" class="btn btn-outline-secondary" onclick="backToDashboard()"> Draglo </button>
+    <header>
+      <a class="navbar-brand" id='logo-draglo' href="/dashboard.html">Draglo</a>  
+      <!-- <button id="back-dashboard" type="button" class="btn btn-outline-secondary" onclick="backToDashboard()"> Draglo </button> -->
       
       <div id="nav-bar">
         <div id="account" class="btn-group">
@@ -34,7 +35,7 @@
           </div>
         </div>
         <div class="alert alert-dark" role="alert" id="archive-banner" onclick="archiveTrip(0)">
-          It's an archived trip, click here to restore.
+          Click here to restore the trip.
         </div>      
     </div> 
     
@@ -51,15 +52,15 @@
         Trip Settings
       </button>
       <div class="dropdown-menu">
-        <a class="dropdown-item" onclick="setTripPeriod('top-end')">Modify Trip Period</a>
+        <a class="dropdown-item" onclick="shareTrip()" id="share-trip">Share With Friends</a>
         <!-- <a class="dropdown-item" onclick="changeDayStart()">設定出門時間</a> -->
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" onclick="shareTrip()" id="share-trip">Share with Friends</a>
-        <a class="dropdown-item" onclick="archiveTrip(0)" id="recover-trip">Restore the trip</a>
-        <a class="dropdown-item" onclick="archiveTrip(1)" id="archive-trip">Archive the trip</a>
-        <a class="dropdown-item" onclick="archiveTrip(2)" id="delete-trip">Delete the trip</a>
+        <a class="dropdown-item" onclick="setTripPeriod('top-start')">Update Trip Period</a>
+        <a class="dropdown-item" onclick="archiveTrip(0)" id="recover-trip">Restore The Trip</a>
+        <a class="dropdown-item" onclick="clearTrip()">Clear Calendar</a> 
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" onclick="clearTrip()">Clear calendar</a>
+        <a class="dropdown-item" onclick="archiveTrip(1)" id="archive-trip">Archive Trip</a>
+        <a class="dropdown-item" onclick="archiveTrip(2)" id="delete-trip">Delete Trip</a>
         <!-- <a class="dropdown-item" id="iCal-feed">Export iCalendar Feed</a> -->
       </div>
     </div>
@@ -80,7 +81,7 @@
           <div class="scroll-container">
             <div class="flex-row">
               <span id='spots-list-title'>My spots</span>
-              <span id='delete-message'>double click to remove spots</span>
+              <span id='delete-message'>double click to remove</span>
             </div>
             <div id='external-events'>
             </div>
@@ -88,6 +89,7 @@
 
             
           <div id="cities-container">
+
           </div>
         </div>
           

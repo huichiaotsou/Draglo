@@ -22,13 +22,13 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        My Account
+                        Account
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                          <li><a class="dropdown-item" onclick="getDashboard()">Show my trips</a></li>
-                        <li><a class="dropdown-item" onclick="getDashboard('shared')">Shared with me</a></li>
-                        <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" onclick="getDashboard()">Active Trips</a></li>
+                        <li><a class="dropdown-item" onclick="getDashboard('shared')">Shared With Me</a></li>
                         <li><a class="dropdown-item" onclick="getDashboard('archived')">Archived</a></li>
+                        <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" onclick="nativeSignOut(); googleSignOut();">Sign Out</a></li>
                         </ul>
                     </li>
@@ -38,7 +38,7 @@
                 </ul>
                 <div class="d-flex">
                     <input id="keyword" class="form-control me-2" type="search" placeholder="Search my trips" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit" onclick="getDashboard()">Search</button>
+                    <button class="btn btn-outline-success" type="submit" onclick="getDashboard('search')">Search</button>
                 </div>
             </div>
         </div>
