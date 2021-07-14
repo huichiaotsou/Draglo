@@ -22,6 +22,21 @@ function jumpTo(content) {
 }
 
 window.addEventListener('load', () => {
-  window.resizeTo(2000, 2000);
   jumpTo('content1');
 });
+
+setInterval(() => {
+  let nextButtons = document.querySelectorAll('.next-button')
+  for(let i=0; i < nextButtons.length; i++) {
+    nextButtons[i].style.backgroundColor = 'green';
+  }
+
+  setTimeout(() => {
+    let nextButtons = document.querySelectorAll('.next-button')
+    for (let i=0; i < nextButtons.length; i++) {
+      nextButtons[i].style.backgroundColor = '#5cb85c';
+    }
+  }, 500);
+}, 1000);
+
+

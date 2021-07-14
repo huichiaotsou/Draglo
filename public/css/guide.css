@@ -30,17 +30,18 @@ video {
 .instruction_text {
   position: absolute;
   height: 35px;
-  left: 15%;
+  right: 15%;
+  margin-right: 152px;
   text-align: center;
   font-size: 18px;
   font-weight: 400;
   letter-spacing: 0.7px;
-  margin: auto;
+  /* margin: auto; */
   color: white;
   background-color: rgba(39, 109, 238, 0.85);
   border-radius: 4px;
   line-height: 2;
-  width: 55%;
+  width: 59.5%;
   height: auto;
 }
 

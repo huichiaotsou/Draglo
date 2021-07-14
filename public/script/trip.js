@@ -353,7 +353,7 @@ function shareTrip(){
                 xhr.send(JSON.stringify(data));
             } else {
                 Swal.fire({
-                    position: 'top-end',
+                    position: 'top-start',
                     icon: 'warning',
                     title: 'Please enter email address',
                     showConfirmButton: false,
