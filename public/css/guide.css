@@ -18,7 +18,7 @@ video {
   display: flex;
   margin: 0 auto;
   padding: 0;
-  padding-top: 18px;
+  padding-top: 25px;
 }
 
 .instruction-div {
@@ -30,7 +30,7 @@ video {
 .instruction_text {
   position: absolute;
   height: 35px;
-  right: 15%;
+  left: 15%;
   margin-right: 152px;
   text-align: center;
   font-size: 18px;
@@ -41,7 +41,7 @@ video {
   background-color: rgba(39, 109, 238, 0.85);
   border-radius: 4px;
   line-height: 2;
-  width: 59.5%;
+  width: 47%;
   height: auto;
 }
 
