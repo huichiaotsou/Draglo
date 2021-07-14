@@ -56,7 +56,7 @@ function getDashboard(behavior){
     let container = document.getElementById('trips-container');
     let keyword = document.getElementById('keyword').value;
     let xhr = new XMLHttpRequest();
-    if (keyword) {
+    if (behavior == 'search') {
         xhr.open('GET', `/1.0/dashboard?keyword=${keyword}`);
         container.innerHTML = "";
     } else if (behavior == 'archived'){
